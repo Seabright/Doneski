@@ -1,0 +1,10 @@
+.bundle
+db/*.sqlite3
+log/*.log
+log/*.pid
+tmp/**/*
+config/mongoid.yml
+vendor/cache/*
+Gemfile.lock
+*.psd
+*.tmproj
