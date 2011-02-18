@@ -1,0 +1,28 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    kgio (2.1.1)
+    memcache-client (1.8.3)
+    rack (1.2.1)
+    rack-mount (0.6.13)
+      rack (>= 1.0.0)
+    redis (2.1.1)
+    unicorn (3.3.1)
+      kgio (~> 2.1)
+      rack
+    utf8_utils (2.0.1)
+    warden (1.0.3)
+      rack (>= 1.0.0)
+    yajl-ruby (0.7.9)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  memcache-client
+  rack-mount
+  redis
+  unicorn
+  utf8_utils
+  warden
+  yajl-ruby

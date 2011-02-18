@@ -1,0 +1,25 @@
+/* YUI Reset + Font Reset
+Copyright (c) 2009, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.net/yui/license.txt
+version: 2.8.0r4
+*/
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var,optgroup{font-style:inherit;font-weight:inherit;}del,ins{text-decoration:none;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:baseline;}sub{vertical-align:baseline;}legend{color:#000;}input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}input,button,textarea,select{*font-size:100%;}
+body{font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}select,input,button,textarea,button{font:99% arial,helvetica,clean,sans-serif;}table{font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
+
+body{padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;}
+content,header,section{display:block;}
+content{width:960px;margin:0 auto;padding:1em 0;}
+header{position:relative;padding:2em 0;font-size:14pt;}
+header logo{width:139px;height:52px;display:inline-block;background:transparent url(/images/logo.png) top left no-repeat;text-indent:-9999em;}
+header aside{height:52px;position:absolute;right:0;bottom:0;line-height:100%;}
+a{color:#3892b2;text-decoration:none;}
+h1{font-weight:300;font-size:33pt;letter-spacing:-0.04em;line-height:1em;margin-bottom:.8em;}
+strong{font-weight:600;}
+section{margin-top:1em;background:-webkit-gradient(linear,left top, right top, color-stop(0,#e4e8ea), color-stop(48%,#e4e8ea), color-stop(48.1%,#f1f4f5), color-stop(100%,#f1f4f5));}
+section:nth-child(even){background:-webkit-gradient(linear,left top, right top, color-stop(0,#f1f4f5), color-stop(48%,#f1f4f5), color-stop(48.1%,#e4e8ea), color-stop(100%,#e4e8ea));}
+section block{display:inline-block;width:46%;padding:.6em 2%;background:#e4e8ea;font-size:16pt;vertical-align:top;height:100%;color:#404040;line-height:1.6em;}
+section block ul li span{font-size:16pt;}
+section block ul li{font-size:10pt;list-style:disc inside;font-weight:100;line-height:2em;}
+section:nth-child(odd) block:nth-child(even){background:#f1f4f5;}
+section:nth-child(even) block:nth-child(odd){background:#f1f4f5;}
