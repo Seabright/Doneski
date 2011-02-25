@@ -1,24 +1,31 @@
 <!DOCTYPE html>
+<!--<html lang="en" manifest="cache.manifest">-->
 <html lang="en">
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-		<title>Doneski: Signin</title>
-		<meta name="keywords" content=""/>
-		<meta name="description" content="Seabright" />
-		<meta name="author" content="John Bragg"/>
+		<title>Doneski</title>
+		<meta name="keywords" content="todo list, productivity, doneski"/>
+		<meta name="description" content="Doneski is an app for to-do lists, simple as that. It's dirt simple, easy to use, and works seriously everywhere." />
+		<meta name="author" content="Seabright Studios Ltd."/>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<link rel="apple-touch-icon" href="/images/icon-dark.png" />
+		<link rel="apple-touch-startup-image" href="/images/splash.png" />
+		
 		<link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
 		<link rel="icon" href="/images/doneski.png" type="image/png" />
 		<link rel="shortcut icon" href="/images/doneski.png" type="image/png" />
+		<script type="text/javascript" src="/javascripts/doneski.js"></script>
 		<!--<script type="text/javascript" src="http://use.typekit.com/tle6zhh.js"></script>
 		<script type="text/javascript">try{Typekit.load();}catch(e){}</script>-->
 	</head>
-	<body>
+	<body class="">
 		<content>
-			<header>
+			<header class="initial">
 				<logo>Doneski</logo>
-				<aside>
-					<a href="/signin">Sign in</a>
-				</aside>
+				<tagline>The dirt simplest to-do app that works everywhere.</tagline>
 			</header>
 			<%= yield %>
 		</content>

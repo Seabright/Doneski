@@ -1,6 +1,10 @@
 module Doneski
-  MODELS = [:User, :Task, :List]
-  PAGES = [:signin]
+  MODELS = {
+    :User => {},
+    :Task => {},
+    :List => {:save_history! => true}
+  }
+  PAGES = [:signin, :list]
 end
 
 require 'seabright/class_factory'

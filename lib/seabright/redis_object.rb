@@ -4,6 +4,10 @@ module Seabright
     require "yajl"
     # include AbstractController::Callbacks
     
+    def self.inherited(subclass)
+       puts "Created new subclass: #{subclass}" if DEBUG
+    end
+
     def self.all
       redis.smembers(self.name.pluralize).collect {|member| self.new(member)}
     end
@@ -25,6 +29,18 @@ module Seabright
       end
       out.join("\n")
     end
+    
+    def self.save_history!(v)
+      @save_history = v
+    end
+    
+    def self.save_history?
+      @save_history || false
+    end
+    
+    def save_history?
+      save_history || self.class.save_history?
+    end
 
     def dump
       require "utf8_utils"
@@ -39,6 +55,10 @@ module Seabright
       end if @data[:collections]
       out << "a#{s_id}.save"
       out.join("\n")
+    end
+    
+    def store_image
+      (@data[:object_history] ||= []).push({:timestamp => Time.now, :snapshot => actual}.to_json)
     end
     
     def actual
@@ -89,6 +109,7 @@ module Seabright
     def save
       @data[:class] = self.class.name
       @data[:key] = key
+      store_image if store_history?
       update_timestamps
       redis.set key, Yajl::Encoder.encode(@data)
       redis.sadd(self.class.name.pluralize, id) if !redis.sismember(self.class.name.pluralize, id)
