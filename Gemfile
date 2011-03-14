@@ -13,3 +13,5 @@ gem 'unicorn'
 gem 'warden'
 
 gem 'rack-mount'
+
+gem 'rack-ssl-enforcer'
