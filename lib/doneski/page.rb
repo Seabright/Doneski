@@ -6,6 +6,7 @@ module Doneski
       :layout_name => "default",
       :title => "Signin"
     }
+    require 'erb'
     class << self
       def call(env)
         @params = Rack::Request.new(env).params.merge(env["rack.routing_args"]).inject({}){|acc,(k,v)| acc[k.to_sym] = v; acc}
