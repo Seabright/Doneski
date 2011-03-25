@@ -1,17 +1,18 @@
 # Use a trailing '/'
-APP_ROOT = "/home/john/Doneski/"
+APP_NAME = "doneski"
+APP_ROOT = "/home/john/Products/Doneski/"
 RVM = "/usr/local/bin/rvm"
 UNICORN = "/usr/local/bin/unicorn"
 
 # The list of ports which our website is running on. We want to setup God monitoring for each of these ports as each port has a separate master unicorn process. In our case we're just going to use one port
-%w{21000,22000}.each do |port|
+%w{31000 32000}.each do |port|
   God.watch do |w|
-    w.name = "doneski-#{port}"
-    w.group = "doneski"
+    w.name = "#{APP_NAME}-#{port}"
+    w.group = APP_NAME
     w.log = "#{APP_ROOT}log/god.#{port}.log"
     w.interval = 30.seconds # default
     # Go into the website root before starting unicorn
-    w.start = "cd #{APP_ROOT} && unicorn -l #{port} -c #{APP_ROOT}config/unicorn.#{port}.conf -E production"
+    w.start = "cd #{APP_ROOT} && unicorn -l #{port} -c #{APP_ROOT}config/unicorn.#{port}.conf -E production -D"
     # -QUIT = graceful shutdown, waits for workers to finish their current request before finishing
     w.stop = "kill -QUIT `cat #{APP_ROOT}log/unicorn-master.#{port}.pid`"
     # -USR2 = reexecute the running binary. A separate QUIT should be sent to the original process once the child is verified to be up and running.
