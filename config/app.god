@@ -1,6 +1,6 @@
 # Use a trailing '/'
 APP_NAME = "doneski"
-APP_ROOT = "/home/john/Products/Doneski/"
+APP_ROOT = "/deploy/Doneski/"
 RVM = "/usr/local/bin/rvm"
 UNICORN = "/usr/local/bin/unicorn"
 

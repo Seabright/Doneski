@@ -1,5 +1,7 @@
 var _Doneski = function(options) {
 	var doneski = this;
+	doneski.separator = "::D::";
+	doneski.list_name = "def";
 	var core = {
 		_init: function(options) {
 			if('localStorage' in window && window['localStorage'] !== null) {
@@ -8,8 +10,7 @@ var _Doneski = function(options) {
 				doneski.captureInputs();
 				if(localStorage["doneski.lists"]) {
 					var lists = localStorage["doneski.lists"].split(",");
-					console.log(lists);
-					doneski.rollupQuick();
+					doneski.rollup();
 					for(var i=0;i<lists.length;i++) {
 						doneski.loadList(lists[i]);
 					};
@@ -18,6 +19,7 @@ var _Doneski = function(options) {
 				// No local storage - hmmm...
 				console.log("no LS",doneski._hasLS);
 			};
+			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
 		},
 		captureInputs: function() {
 			var inp = document.body.getElementsByClassName("task");
@@ -36,9 +38,9 @@ var _Doneski = function(options) {
 		},
 		loadList: function(id) {
 			var liststr = localStorage["doneski.lists."+id], dat = liststr ? liststr.split(",") : [], frm = document.body.getElementsByTagName("form")[0];
-			console.log(id,dat);
 			for(var i=0;i<dat.length;i++) {
-				doneski.addItem(frm,dat[i]);
+				var obj = dat[i].split(doneski.separator);
+				doneski.addItem(frm,obj);
 			};
 		},
 		inputHandler: function(event) {
@@ -48,15 +50,22 @@ var _Doneski = function(options) {
 			// event.preventDefault();
 			// return(false);
 		},
-		addItem: function(frm,txt) {
+		addItem: function(frm,obj) {
 			var el = document.createElement("task");
+			if(typeof obj=="string") {
+				var txt = obj;
+				var val = false;
+			} else {
+				var txt = obj[0];
+				var val = obj[1]=="true";
+			};
 			el.innerHTML = txt;
 			var tsk = frm.parentNode.getElementsByTagName("tasks")[0];
 			tsk.insertBefore(el,tsk.firstChild);
-			window.setTimeout(function(){el.className = "active";},200);
+			if(!val) el.className = "active"; //window.setTimeout(function(){el.className = "active";},200);
 			el.addEventListener("click",doneski.taskClick,true);
 			el.addEventListener("touchend",doneski.taskClick,true);
-			doneski.tasks[txt] = false;
+			doneski.tasks[txt] = val;
 			doneski.store();
 		},
 		taskClick: function(event) {
@@ -71,12 +80,13 @@ var _Doneski = function(options) {
 			doneski.store();
 		},
 		store: function() {
-			localStorage["doneski.lists"] = ["default","hmm"];
+			localStorage["doneski.lists"] = [doneski.list_name,"hmm"];
 			var st = [];
 			for(var k in doneski.tasks) {
-				if(!doneski.tasks[k]) st.push(k);
+				var str = [k,doneski.tasks[k]].join(doneski.separator);
+				if(!doneski.tasks[k]) st.push(str);
 			};
-			localStorage["doneski.lists.default"] = st;
+			localStorage["doneski.lists."+doneski.list_name] = st.join(",");
 		},
 		formHandler: function(event) {
 			event.preventDefault();
