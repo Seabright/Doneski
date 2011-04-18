@@ -2,8 +2,81 @@ var _Doneski = function(options) {
 	var doneski = this;
 	doneski.separator = "::D::";
 	doneski.list_name = "def";
+	var List = function(id, title) {
+		var list = doneski.list_template.cloneNode(true);
+		list.className = "";
+		list.formHandler = function(event) {
+			event.preventDefault();
+			doneski.rollup();
+			var lst = event.target.list, tsk = list.getElementsByClassName("task")[0];
+			list.add(tsk.value);
+			tsk.value = "";
+			return(false);
+		};
+		list.form = list.getElementsByTagName("form")[0];
+		list.form.list = list;
+		list.form.addEventListener("submit",list.formHandler,true);
+		list.task_container = list.getElementsByTagName("tasks")[0];
+		list.id = id;
+		list.title = title || "";
+		list.items = [];
+		// list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
+		list.add = function(obj) {
+			var el = document.createElement("task"), txt, val;
+			if(typeof obj=="string") {
+				txt = obj;
+				val = false;
+			} else {
+				txt = obj[0];
+				val = obj[1]=="true";
+			};
+			el.innerHTML = txt;
+			el.clickable = true;
+			el.addEventListener("click",list.taskClick,true);
+			el.addEventListener("touchmove",list.taskMove,true);
+			el.addEventListener("touchend",list.taskClick,true);
+			list.task_container.insertBefore(el,list.task_container.firstChild);
+			if(!val) window.setTimeout(function(){el.className = "active";},1);
+			list.items[txt] = val;
+			list.store();
+		};
+		list.store = function() {
+			var st = [];
+			for(var k in list.items) {
+				var str = [k,list.items[k]].join(doneski.separator);
+				if(!list.items[k]) st.push(str);
+			};
+			localStorage["doneski.lists."+list.id] = st.join(",");
+		};
+		list.taskClick = function(event) {
+			var tgt = event.target;
+			if(!tgt.nocancel && tgt.clickable) {
+				tgt.className += " clicky";
+				window.setTimeout(function(){list.deleteItem(tgt);},1000);
+			};
+			tgt.nocancel = false;
+		};
+		list.taskMove = function(event) {
+			var targt = event.target;
+			targt.nocancel = true;
+		};
+		list.deleteItem = function(target) {
+			target.className = target.className.replace("active","");
+			window.setTimeout(function(){target.parentNode.removeChild(target);},200);
+			list.items[target.innerHTML] = true;
+			list.store();
+		};
+		if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(list.id)==-1) {
+			var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
+			cur.push(list.id);
+			//localStorage["doneski.lists"] = cur;
+		};
+		return(list);
+	};
 	var core = {
 		_init: function(options) {
+			doneski.lists_container = document.body.getElementsByTagName("lists")[0];
+			doneski.list_template = document.body.getElementsByClassName("list_template")[0];
 			if('localStorage' in window && window['localStorage'] !== null) {
 				doneski.touch();
 				window.scrollTo(0,35);
@@ -14,6 +87,9 @@ var _Doneski = function(options) {
 					for(var i=0;i<lists.length;i++) {
 						doneski.loadList(lists[i]);
 					};
+				} else {
+					var lst = new List(doneski.list_name);
+					doneski.lists_container.appendChild(lst);
 				};
 			} else {
 				// No local storage - hmmm...
@@ -30,18 +106,16 @@ var _Doneski = function(options) {
 			for(i=0;i<btn.length;i++) {
 				btn[i].addEventListener("click",doneski.buttonHandler,true);
 			};
-			var frm = document.body.getElementsByTagName("form");
-			for(i=0;i<frm.length;i++) {
-				frm[i].addEventListener("submit",doneski.formHandler,true);
-			};
 			inp[0].focus();
 		},
 		loadList: function(id) {
-			var liststr = localStorage["doneski.lists."+id], dat = liststr ? liststr.split(",") : [], frm = document.body.getElementsByTagName("form")[0];
+			var liststr = localStorage["doneski.lists."+id], dat = liststr ? liststr.split(",") : [];
+			var lst = new List(id);
 			for(var i=0;i<dat.length;i++) {
 				var obj = dat[i].split(doneski.separator);
-				doneski.addItem(frm,obj);
+				lst.add(obj);
 			};
+			doneski.lists_container.appendChild(lst);
 		},
 		inputHandler: function(event) {
 			
@@ -50,51 +124,31 @@ var _Doneski = function(options) {
 			// event.preventDefault();
 			// return(false);
 		},
-		addItem: function(frm,obj) {
-			var el = document.createElement("task");
+		addItem: function(lst,obj) {
+			var el = document.createElement("task"), txt, val;
 			if(typeof obj=="string") {
-				var txt = obj;
-				var val = false;
+				txt = obj;
+				val = false;
 			} else {
-				var txt = obj[0];
-				var val = obj[1]=="true";
+				txt = obj[0];
+				val = obj[1]=="true";
 			};
 			el.innerHTML = txt;
-			var tsk = frm.parentNode.getElementsByTagName("tasks")[0];
-			tsk.insertBefore(el,tsk.firstChild);
+			lst.add(el);
 			if(!val) el.className = "active"; //window.setTimeout(function(){el.className = "active";},200);
 			el.addEventListener("click",doneski.taskClick,true);
 			el.addEventListener("touchend",doneski.taskClick,true);
 			doneski.tasks[txt] = val;
 			doneski.store();
 		},
-		taskClick: function(event) {
-			var tgt = event.target;
-			tgt.className += " clicky";
-			window.setTimeout(function(){Doneski.deleteItem(tgt);},1000);
-		},
-		deleteItem: function(target) {
-			target.className = target.className.replace("active","");
-			window.setTimeout(function(){target.parentNode.removeChild(target);},200);
-			doneski.tasks[target.innerHTML] = true;
-			doneski.store();
-		},
 		store: function() {
-			localStorage["doneski.lists"] = [doneski.list_name,"hmm"];
+			localStorage["doneski.lists"] = [doneski.list_name,false];
 			var st = [];
 			for(var k in doneski.tasks) {
 				var str = [k,doneski.tasks[k]].join(doneski.separator);
 				if(!doneski.tasks[k]) st.push(str);
 			};
 			localStorage["doneski.lists."+doneski.list_name] = st.join(",");
-		},
-		formHandler: function(event) {
-			event.preventDefault();
-			doneski.rollup();
-			var frm = event.target, tsk = frm.getElementsByClassName("task")[0];
-			doneski.addItem(frm,tsk.value);
-			tsk.value = "";
-			return(false);
 		},
 		rollup: function() {
 			if((bdy = document.getElementsByTagName("body")[0]) && bdy.className.indexOf("compact")<0) bdy.className += " compact";

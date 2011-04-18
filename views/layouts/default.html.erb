@@ -18,16 +18,19 @@
 		<link rel="icon" href="/images/doneski.png" type="image/png" />
 		<link rel="shortcut icon" href="/images/doneski.png" type="image/png" />
 		<script type="text/javascript" src="/javascripts/doneski.js"></script>
-		<!--<script type="text/javascript" src="http://use.typekit.com/tle6zhh.js"></script>
-		<script type="text/javascript">try{Typekit.load();}catch(e){}</script>-->
+		<script type="text/javascript" src="/javascripts/iscroll-min.js"></script>
 	</head>
-	<body class="">
+	<body class="init">
+		<fudge>&nbsp;</fudge>
 		<content>
 			<header class="initial">
 				<logo>Doneski</logo>
-				<tagline>The dirt simplest to-do app<br/> that works everywhere.</tagline>
+				<tagline>The dirt simplest to-do app that works everywhere.</tagline>
 			</header>
 			<%= yield %>
 		</content>
 	</body>
+	<script language="javascript">
+	if(!('localStorage' in window && window['localStorage'] !== null && localStorage["doneski.lists"])) document.body.className = document.body.className.replace("init","");
+	</script>
 </html>

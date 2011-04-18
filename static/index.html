@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>Doneski</title>
+		<meta name="keywords" content="todo list, productivity, doneski"/>
+		<meta name="description" content="Doneski is an app for to-do lists, simple as that. It's dirt simple, easy to use, and works seriously everywhere." />
+		<meta name="author" content="Seabright Studios Ltd."/>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+		
+		<link href="stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
+		<link rel="icon" href="images/doneski.png" type="image/png" />
+		<link rel="shortcut icon" href="images/doneski.png" type="image/png" />
+	</head>
+	<body class="">
+		<content>
+			<header class="initial">
+				<logo>Doneski</logo>
+				<tagline>The dirt simplest to-do app<br/> that works everywhere.</tagline>
+			</header>
+			<section>
+				<lists>
+					<list class="list_template">
+						<wrapper>
+							<input type="text" name="title" placeholder="Name your list" class="delayed"/>
+							<form action="/task" method="post" class="tasklist">
+								<h2 class="initial">Add your first item:</h2>
+								<input type="text" class="task"/><button class="add">+</button>
+								<input type="search" value="Add" style="display:none;"/>
+							</form>
+							<tasks></tasks>
+						</wrapper>
+					</list>
+				</lists>
+				<toolbar>
+					&nbsp;
+				</toolbar>
+			</section>
+		</content>
+	</body>
+</html>
