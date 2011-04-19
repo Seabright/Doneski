@@ -13,7 +13,7 @@ require 'rack/mount'
 
 app = Rack::Builder.new do
   
-  use Rack::Static, :urls => ["/stylesheets", "/images", "/javascripts"], :root => "static"
+  use Rack::Static, :urls => ["/stylesheets", "/images", "/javascripts", "/index.html"], :root => "static"
   
   # use Rack::SslEnforcer, :only => ["/login", /\.xml$/], :strict => true
   

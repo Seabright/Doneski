@@ -7,36 +7,97 @@
 		<meta name="description" content="Doneski is an app for to-do lists, simple as that. It's dirt simple, easy to use, and works seriously everywhere." />
 		<meta name="author" content="Seabright Studios Ltd."/>
 		
-		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 		
-		<link href="stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
-		<link rel="icon" href="images/doneski.png" type="image/png" />
-		<link rel="shortcut icon" href="images/doneski.png" type="image/png" />
+		<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAP5JREFUeNpi/P//PwMlgImBQkCxASw4JSxifYCULRArAfFhIN7z58Tia+jqGNHDAKiRC0jNBeIINLV/gdgeaMhRQl6YDtIsyMvN0JYdzrCiNZchNcARJM4MxEeAFljj9AJQkgPqbIaTC5oYlKTFwOIhzmYMIAO7Fm8BcV2A+CguF4A0KzqbasM1w4CzmQ6yGpxeeAci3n/+Rl40AgPoLJA6de7GfYbZG/bDxd9//srQtWgzjHuYUCzEAqlFILaRhiLQ71wM95+9Zrj39BVI6DYQ6wEt+oHTACRDcoDYDEl4JxAnAzU/xesCNIOMgZQQEN8DaryLTQ3j0M9MAAEGABMdVpYyyE9tAAAAAElFTkSuQmCC" type="image/png" />
+		<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAP5JREFUeNpi/P//PwMlgImBQkCxASw4JSxifYCULRArAfFhIN7z58Tia+jqGNHDAKiRC0jNBeIINLV/gdgeaMhRQl6YDtIsyMvN0JYdzrCiNZchNcARJM4MxEeAFljj9AJQkgPqbIaTC5oYlKTFwOIhzmYMIAO7Fm8BcV2A+CguF4A0KzqbasM1w4CzmQ6yGpxeeAci3n/+Rl40AgPoLJA6de7GfYbZG/bDxd9//srQtWgzjHuYUCzEAqlFILaRhiLQ71wM95+9Zrj39BVI6DYQ6wEt+oHTACRDcoDYDEl4JxAnAzU/xesCNIOMgZQQEN8DaryLTQ3j0M9MAAEGABMdVpYyyE9tAAAAAElFTkSuQmCC" type="image/png" />
+		<style>
+		/* YUI Reset + Font Reset
+		Copyright (c) 2009, Yahoo! Inc. All rights reserved.
+		Code licensed under the BSD License:
+		http://developer.yahoo.net/yui/license.txt
+		version: 2.8.0r4
+		*/
+		html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var,optgroup{font-style:inherit;font-weight:inherit;}del,ins{text-decoration:none;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:baseline;}sub{vertical-align:baseline;}legend{color:#000;}input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}input,button,textarea,select{*font-size:100%;}
+		body{font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}select,input,button,textarea,button{font:99% arial,helvetica,clean,sans-serif;}table{font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
+		
+		body{padding:0;overflow:hidden;box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;width:100%;}
+		fudge{z-index:-1;height:100%;width:100%;position:absolute;top:0;left:0;background-color:#011422;}
+		content,header,section,footer{display:block;}
+		header,section,footer{background:#FFF;}
+		header{padding:7% 1em;}
+		header logo{width:167px;height:59px;display:block;background:transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKcAAAA7CAMAAAApbGrmAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowMTgwMTE3NDA3MjA2ODExQUIwODk4NzQ3QzYxNDREQSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo0N0U3OUM1ODYyRDYxMUUwOTdBMjgwNkY2RjVFQjkwNiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo0N0U3OUM1NzYyRDYxMUUwOTdBMjgwNkY2RjVFQjkwNiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjA1ODAxMTc0MDcyMDY4MTE4RjYyOUYyMkIwQzA1MTg0IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAxODAxMTc0MDcyMDY4MTFBQjA4OTg3NDdDNjE0NERBIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+FzdJCQAAADBQTFRF7vL0vMrUiKGyRmyHE0NmJVJy3eTpq7zJzdfeeZSomq++Y4OaNV99////Azdc////9RYvsgAAABB0Uk5T////////////////////AOAjXRkAAAMPSURBVHja7JrrtuIgDIWhBMqll/d/26EklICdc6xVl87Av0aBD5JsQlWss5uWz26g5CpWtXxBk0J+A+YyieErOKFzds7O2Tk7Z+fsnP8Dp1al6ZdNnIaHxujkoO/mdDNvxgd4BWcavCl9ZTQJ/Rjn1tW9h3NKNvcw5zxbeAenSrbhAucLQI/8bg5sv3FiHjlvEFS+g3MaZxNO5lG7veENnOd0qeGkZ7PfUV1s4eYqrTczt+qwWThJ6pktz+dMckEbqv2uV4HNt2hJ4aGLC+vvwSCyfHhdc0L6REw/sd/DGfY8DILlloSds9jFdJOLHu+1XOgC5wSbO17kXHImhQMRwIkZ/a1kRFAwtSJDYSqYlznRqaTDsxkH8vKYx94myiRTFkIbVPA0Na7QR8tgMIYyE2JiVD2JU5bzQts8Jm1tpAOfP5d5EeQCuYxMwVUK2dzfMzV5DqfmxwXGvs9+h6LTDvedTEtaEKZZngkYE8d8Eifa88E0JBga26ONds2V7aTRyP+jKxUSMlWYlzkNhmV1LikKRl47OObkqjnFEs3pkpv1EXKREx0+SrZz2aiqsYlT3nIunj+OUPKPDXmVEw2u5pzOcMYgcJX0cj0T0wEnNCX6HZwaZ4Af/H7AKR1rm2ch+LKAQPFSgxZN9fxsu4+TBM6TXR/lUc1Z5VFTBYQsXtgPvWKg4cQF2TOcdCRGmdE8mnSlSzXnVC0IME1253pcRXUAUHmbx5rmmxrtr5zRW4OUcmZd8MFD0upK52tO1AeLoMqmpbnZARM5t/dzbOuyLezpd7aeDyV1ZiGlbc7NhhPnEWNcqsVtV/gcC2/Z5p8vbso29SCnUbxwOqhDGs5ahTYX1GXInu9qP7ES6G6jr+tTnMZBE6w3dV3LiVmW29B0TAts6zpem1AVGO6/x1lZVeSxTs4T2oMzuXAuao/sMWUQFP00rulHwhc4e0wPfe29Dd47fn9RQveOclGdttR0D/7419+Ddc7O2Tk7Z+fsnP8i5/gVnFoI/Q2cXqzm8//ABMMq1nUV9rObiYx/BBgA8r/6Q0P3pD8AAAAASUVORK5CYII=) center center no-repeat;text-indent:-9999em;margin:0 auto;}
+		header tagline{display:block;font-weight:600;text-transform:uppercase;text-align:center;padding-top:1.5em;}
+		tagline ibr{clear:none;}
+		section{font-size:131%;text-align:center;padding:0 1em 14%;font-weight:600;font-style:normal;}
+		section footnote{font-size:10pt;}
+		form{-webkit-border-radius:.2em;background-color:#FFF;border:1px solid rgba(0,0,0,.11);display:inline-block;padding:.2em;padding-left:.4em;clear:both;position:relative;margin:.65em 0 1.5em;width:100%;max-width:600px;box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, rgba(0,0,0,0.04)), color-stop(100%, rgba(255,255,255,0)));}
+		form input[type=email]{outline:none;border:none;background:transparent;font-size:14pt;width:70%;float:left;position:relative;top:.5em;-webkit-appearance:none;}
+		form input[type=submit]{border:none;background-color:#3caff1;background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, rgba(255,255,255,0)), color-stop(49.5%, rgba(255,255,255,0)), color-stop(50%, rgba(0,0,0,.05)), color-stop(100%, rgba(0,0,0,.1)));-webkit-border-radius:.2em;padding:.75em 1em;color:#FFF;font-weight:800;font-size:11pt;text-shadow:rgba(0,0,0,.2) 0px 1px 2px;letter-spacing:-0.07em;float:right;}
+		footer{background:transparent;text-align:center;padding:5em 2em;color:#FFF;line-height:20px;}
+		footer .logo{width:86px;height:20px;display:inline-block;background:transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFYAAAAUCAYAAAAXxsqQAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA+xJREFUeNrkWe1t2zAQlYP8LzeoMkHVCaxOEHmCqBPEmcDOBEomsDKBnAnkTCB3AqsT2F0gKhm8C16vpL/koEBN4GDpSN1Rd+8+KA+6rot42PvY/mSWDFitpYWlW0tPg8FgqdZH5zysPfx8Noy9LuzPGMbcWErU+isrqD2xYQuPnjtLyx4ynbwK7zDC++z7XKF4S+znIMO+GcbR6+trYamzlBPPWJqCXwufyfL7UmJpBh2OxtDbR2ZF8qYHPOf0pvRsg/0FnyE7pWyXSxjXAKnOAyV5w3l8aucFwR8xHCJ+qvu+un4gnUUHoHWM9FcSb7Nn5LhnJ85kfyBWeSn3ITNEeyIhputU3UcUFR3mGT2HIDUn2ekOtCU0L/rXuJe91OodkoDOt/V/IVYhZGYnhvb3URcqlUIM8lGu0HZvaU48VwxXKIAp8RfIfxqdKbzPa0vkOaP0tZA/oesHS79ojYEuyaETQjMj8z6AzlTVAc7bFdcHa5PazVu7jRh5NXlKaAVvxgqlBnOSh8SbDXgFeXRGuS6jNR3mNGIFKRUQJLwKemZqf3q/qVozJYSuVVSkxFtRbu8IwTK3UvzYs++pRLw2VuUx7vtDHiesVaGJab2ETYOC5FtTewybqXBdK5mp2tcactakJ/UYtiIHcSiPVeHUhs1pbeN5v25bKpBCNbJMB+0bhJyhkJigtZpTmLZS9FRYGYSbC62vuE/xm+woBBuVWkrSkVFYy9or0rltZFTYIpVmpMUaIpVo/b69bdV36enLltK7WUNmOBiIIW88MoaeKu/GJyiv6PnFERX+2eM8Xwexbycx3OLIk43LHacKh865NfAYXo3VEl2o9GiA0A2QK63PvziuSfGUyPEZ9OVUyi6kwltaIQ34DPwQ8O5wxykmoZdqT7DfPui6o+drAsk0EPb9DIu8OYYid7rKPP2qIQMxQvNAzkwVuuMd+/iyw0Ey5j0PIt/g4AQtYIdUV2Juc8pUYCA8opzoXuCJFBUU+kvMy4eaGht7xoZvwR8p48ywxpenuRDcUi7mvd1Tr3rsEIcvEPaSo09yskRNMm9y0d50gT6W245MnalDrdmKWpEiIKtW10bpX6k+tqD2q/HI0iehRskqFC+071ztg+UXqvVrPN853m01cA8pZDmrf4ZnX+DNecCjiTrFtJ48lVJXsKH5RBUWn7wNdLeE4CRQmDjtxIEWcAbkl5DjeNfUdSww75OfeFqsJaVEmSvdF0Bt2P95SGfz3eP8GYwzVyns6O+xF2f0TdpQDjeKL1HyeLIP4GeE2ASF1iC1POEQk1M7dnC7FfwH4YwMG9HXsWvKvS8w6FFdQciwvwUYAGtMzJd3PJ2SAAAAAElFTkSuQmCC) center center no-repeat;text-indent:-9999em;margin:0;}
+		body .appear, body.confirmed .goaway{display:none;}
+		body.confirmed .appear{display:block;}
+		.appear{display:block;max-width:520px;margin:0 auto;}
+		box{background:rgba(0,0,0,.04);-webkit-border-radius:.3em;display:inline-block;padding:1.5em 2em;margin:0 auto;}
+		@media only screen and (max-device-width: 480px)
+		{
+			form input[type=email]{font-size:11pt;top:.9em;}
+			header{padding-bottom:14%;}
+			fudge{z-index:-1;height:160%;width:100%;position:absolute;top:0;left:0;background-color:#011422;}
+			box{padding:.6em .4em;}
+			tagline ibr{display:block;height:0px;}
+		}
+		</style>
+		<script type="text/javascript" src="http://use.typekit.com/cns3nfh.js"></script>
+		<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 	</head>
-	<body class="">
+	<body>
 		<content>
-			<header class="initial">
+			<header>
 				<logo>Doneski</logo>
-				<tagline>The dirt simplest to-do app<br/> that works everywhere.</tagline>
+				<tagline>The dirt simplest to-do app <ibr/>that works everywhere.</tagline>
 			</header>
-			<section>
-				<lists>
-					<list class="list_template">
-						<wrapper>
-							<input type="text" name="title" placeholder="Name your list" class="delayed"/>
-							<form action="/task" method="post" class="tasklist">
-								<h2 class="initial">Add your first item:</h2>
-								<input type="text" class="task"/><button class="add">+</button>
-								<input type="search" value="Add" style="display:none;"/>
-							</form>
-							<tasks></tasks>
-						</wrapper>
-					</list>
-				</lists>
-				<toolbar>
-					&nbsp;
-				</toolbar>
+			<section class="initial">
+				<box>
+					<span class="goaway">Enter your email address and we'll tell you when Doneski launches.</span><br/>
+					<span class="appear">OK. We received your email address, and will let you know the very minute Doneski launches. We can’t wait, and we’ll see you soon!</span>
+					<form action="/signup" method="POST" class="goaway">
+						<input type="email" name="email" placeholder="you@email.com"/>
+						<input type="submit" value="Add me"/>
+					</form><br/>
+					<footnote class="goaway">We'd rather eat dirt than spam you, promise!</footnote>
+				</box>
 			</section>
+			<footer>
+				Brought to you by <a href="http://seabrightstudios.com" class="logo seabright">Seabright</a>
+			</footer>
 		</content>
+		<fudge/>
 	</body>
+	<script language="javascript">
+		var frm = document.body.getElementsByTagName("form")[0];
+		frm.onsubmit = function(event) {
+			event.preventDefault();
+			var tgt;
+			if(!event) var event = window.event;
+			if(event.target) tgt = event.target;
+			else if(e.srcElement) tgt = e.srcElement;
+			if(tgt.nodeType == 3) tgt = tgt.parentNode;
+			var req = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+			req.open('POST', tgt.action, true);
+			req.onreadystatechange = function (event) {
+				if(req.readyState == 4) {
+					document.body.className = "confirmed";
+					window.focus();
+				};
+			};
+			req.setRequestHeader("Content-Type","application/json");
+			req.send("{ \"email\": \""+tgt.getElementsByTagName("input")[0].value+"\" }");
+			return(false);
+		};
+		document.body.getElementsByTagName("input")[0].focus();
+	</script>
 </html>
