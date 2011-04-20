@@ -81,16 +81,16 @@
 		var frm = document.body.getElementsByTagName("form")[0];
 		frm.onsubmit = function(event) {
 			event.preventDefault();
-			var eml = tgt.getElementsByTagName("input")[0].value;
-			if(!eml || !eml.length || eml.length<1) {
-				document.body.getElementsByTagName("input")[0].focus();
-				return(false);
-			};
 			var tgt;
 			if(!event) event = window.event;
 			if(event.target) tgt = event.target;
 			else if(e.srcElement) tgt = e.srcElement;
 			if(tgt.nodeType == 3) tgt = tgt.parentNode;
+			var inp = tgt.getElementsByTagName("input")[0], eml = inp.value;
+			if(!eml || !eml.length || eml.length<1) {
+				inp.focus();
+				return(false);
+			};
 			var req = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 			req.open('POST', tgt.action, true);
 			req.onreadystatechange = function (event) {
