@@ -82,7 +82,10 @@
 		frm.onsubmit = function(event) {
 			event.preventDefault();
 			var eml = tgt.getElementsByTagName("input")[0].value;
-			if(!eml || !eml.length || eml.length<1) return(false);
+			if(!eml || !eml.length || eml.length<1) {
+				document.body.getElementsByTagName("input")[0].focus();
+				return(false);
+			};
 			var tgt;
 			if(!event) event = window.event;
 			if(event.target) tgt = event.target;
