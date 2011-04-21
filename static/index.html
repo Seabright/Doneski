@@ -89,9 +89,9 @@
 	<script language="javascript">
 		var frm = document.body.getElementsByTagName("form")[0];
 		frm.onsubmit = function(event) {
-			event.preventDefault();
 			var tgt;
 			if(!event) event = window.event;
+			event.preventDefault();
 			if(event.target) tgt = event.target;
 			else if(e.srcElement) tgt = e.srcElement;
 			if(tgt.nodeType == 3) tgt = tgt.parentNode;
