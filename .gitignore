@@ -8,3 +8,4 @@ vendor/cache/*
 Gemfile.lock
 *.psd
 *.tmproj
+.DS_Store

@@ -3,7 +3,7 @@ var _Doneski = function() {
 	doneski.linger = 1000;
 	doneski.list_name = "default";
 	doneski.separator = "::";
-	doneski.tag = function(id,attr,content){var tg=document.createElement(id);if(!content && typeof attr=="string"){attr=undefined;content=attr;};if(attr){for(var k in attr){tg[k]=attr[k];};};if(content){tg.innerHTML=content;};return(tg);};
+	doneski.tag = function(id,attr,content){var tg=document.createElement(id);if(!content && typeof attr=="string"){attr=undefined;content=attr;};if(attr){for(var k in attr){tg.setAttribute(k,attr[k]);};};if(content){tg.innerHTML=content;};return(tg);};
 	doneski.bind = function(f,obj) {obj=obj||doneski;return(function(){f.apply(obj,arguments);});};
 	doneski.lists = [];
 	var core = {
@@ -99,16 +99,6 @@ var _Doneski = function() {
 };
 
 _Doneski.prototype.List = function(id,title,tasks) {
-	// <list class="list_template">
-	// 	<input type="text" name="title" placeholder="Name this list" class="delayed"/>
-	// 	<form action="/task" method="post" class="tasklist">
-	// 		<input type="text" class="task" placeholder="Add your first to-do"/><button class="add">+</button>
-	// 		<input type="submit" value="Add" style="display:none;"/>
-	// 	</form>
-	// 	<tasks></tasks>
-	// 	<tasks class="completed"></tasks>
-	// </list>
-	// function tag(id,attr,content){var tg=document.creatElement(id);if(!content && typeof attr=="string"){attr=undefined;content=attr;};if(attr){for(var k in attr){tg[k]=attr[k];};};if(content){tg.innerHTML=content;};return(tg);};
 	var tag = Doneski.tag;
 	var list = tag("list");
 	list.appendChild(tag("input",{ "type":"text", "name":"title", "placeholder":"Name this list", "class":"delayed"}));
@@ -117,7 +107,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	list.task_input = tag("input",{"type":"text", "class":"task", "placeholder":"Add your first to-do"});
 	list.form.appendChild(list.task_input);
 	list.form.appendChild(tag("button",{"class":"add"},"+"));
-	list.form.appendChild(tag("input",{"type":"submit", "value":"Add", "placeholder":"Add your first to-do"}));
+	list.form.appendChild(tag("input",{"type":"submit", "value":"Add", "style":"display:none;"}));
 	list.task_container = tag("tasks",{"class":"active"});
 	list.appendChild(list.task_container);
 	list.appendChild(tag("tasks",{"class":"completed"}));

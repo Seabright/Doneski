@@ -15,7 +15,7 @@ body.init header{display:none;}
 header{position:relative;padding:1em 0 .5em;}
 .compact .initial{-webkit-transform:scale3d(1,0,0);padding:0;height:0;}
 .compact.quick .initial{-webkit-transition:none;}
-.delayed{height:0px;opacity:0;}
+.delayed{height:0px;opacity:0;overflow:hidden;}
 .compact .delayed{opacity:1;height:auto;}
 header logo{width:77px;height:28px;display:inline-block;background:transparent url(/images/logo-sm.png) center center no-repeat;text-indent:-9999em;}
 header tagline{font-weight:500;font-size:14pt;letter-spacing:-0.04em;line-height:28px;margin-left:.5em;text-align:left;display:inline-block;vertical-align:bottom;}
