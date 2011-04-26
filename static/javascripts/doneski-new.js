@@ -1,8 +1,101 @@
 var _Doneski = function() {
 	var doneski = this;
 	doneski.linger = 1000;
-	doneski.tag = function(id,attr,content){var tg=document.creatElement(id);if(!content && typeof attr=="string"){attr=undefined;content=attr;};if(attr){for(var k in attr){tg[k]=attr[k];};};if(content){tg.innerHTML=content;};return(tg);};
+	doneski.list_name = "default";
+	doneski.separator = "::";
+	doneski.tag = function(id,attr,content){var tg=document.createElement(id);if(!content && typeof attr=="string"){attr=undefined;content=attr;};if(attr){for(var k in attr){tg[k]=attr[k];};};if(content){tg.innerHTML=content;};return(tg);};
 	doneski.bind = function(f,obj) {obj=obj||doneski;return(function(){f.apply(obj,arguments);});};
+	doneski.lists = [];
+	var core = {
+		_init: function(options) {
+			doneski.lists_container = document.body.getElementsByTagName("lists")[0];
+			var b = doneski.lists_container.getElementsByTagName("list");
+			if('localStorage' in window && window['localStorage'] !== null) {
+				doneski.touch();
+				window.scrollTo(0,35);
+				if(localStorage["doneski.lists"]) {
+					var lists = localStorage["doneski.lists"].split(",");
+					doneski.rollup();
+					for(var i=0;i<lists.length;i++) {
+						doneski.loadList(lists[i]);
+					};
+				} else {
+					doneski.newList();
+				};
+			} else {
+				// No local storage - hmmm...
+				console.log("no LS",doneski._hasLS);
+			};
+//			doneski.lists[0].focus();
+			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
+		},
+		loadList: function(id) {
+			var a = new Doneski.List(id);
+			doneski.lists.push(a);
+			doneski.lists_container.appendChild(a);
+			return(a);
+		},
+		newList: function() {
+			var lid = doneski.generateListId();
+			var cur = doneski.loadList(doneski.last_id);
+			doneski.go(doneski.lists[doneski.lists.length-1]);
+		},
+		go: function(lst) {
+			for(var i=0;i<doneski.lists.length;i++) {
+				doneski.lists[i].deactivate();
+			};
+			lst.activate();
+		},
+		generateListId: function() {
+			// some "guid" generator i found
+			doneski.last_id = 'l_xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);});
+			return(doneski.last_id);
+		},
+		saveLists: function() {
+			var out = [];
+			for(var i=0;i<doneski.lists.length;i++) {
+				var a = doneski.lists[i];
+				out.push(a.id);
+			};
+			localStorage["doneski.lists"] = out;
+		},
+		store: function() {
+			localStorage["doneski.lists"] = [doneski.list_name,false];
+			var st = [];
+			for(var k in doneski.tasks) {
+				var str = [k,doneski.tasks[k]].join(doneski.separator);
+				if(!doneski.tasks[k]) st.push(str);
+			};
+			localStorage["doneski.lists."+doneski.list_name] = st.join(",");
+		},
+		rollup: function() {
+			if((bdy = document.getElementsByTagName("body")[0]) && bdy.className.indexOf("compact")<0) bdy.className += " compact";
+			window.scrollTo(0,0);
+		},
+		rollupQuick: function() {
+			if((bdy = document.getElementsByTagName("body")[0]) && bdy.className.indexOf("quick")<0) bdy.className += " quick";
+			if((bdy = document.getElementsByTagName("body")[0]) && bdy.className.indexOf("compact")<0) bdy.className += " compact";
+			window.scrollTo(0,0);
+		},
+		add: function(event) {
+			
+		},
+		touch: function() {
+			doneski.hasLocalStorage() && (localStorage["doneski.lastSeen"] = new Date());
+		},
+		lastSeen: function() {
+			return(doneski.hasLocalStorage() && localStorage["doneski.lastSeen"]);
+		},
+		hasLocalStorage: function() {
+			return('localStorage' in window && window['localStorage'] !== null);
+		},
+		ping: function() {
+			console.log("Yeah yeah.", doneski);
+		}
+	};
+	for(var i in core) {
+		doneski[i] = doneski.bind(core[i]);
+	};
 };
 
 _Doneski.prototype.List = function(id,title,tasks) {
@@ -16,12 +109,13 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	// 	<tasks class="completed"></tasks>
 	// </list>
 	// function tag(id,attr,content){var tg=document.creatElement(id);if(!content && typeof attr=="string"){attr=undefined;content=attr;};if(attr){for(var k in attr){tg[k]=attr[k];};};if(content){tg.innerHTML=content;};return(tg);};
-	var tag = _Doneski.tag;
+	var tag = Doneski.tag;
 	var list = tag("list");
 	list.appendChild(tag("input",{ "type":"text", "name":"title", "placeholder":"Name this list", "class":"delayed"}));
 	list.form = tag("form",{"action":"/task","method":"post","class":"tasklist"});
 	list.appendChild(list.form);
-	list.form.appendChild(tag("input",{"type":"text", "class":"task", "placeholder":"Add your first to-do"}));
+	list.task_input = tag("input",{"type":"text", "class":"task", "placeholder":"Add your first to-do"});
+	list.form.appendChild(list.task_input);
 	list.form.appendChild(tag("button",{"class":"add"},"+"));
 	list.form.appendChild(tag("input",{"type":"submit", "value":"Add", "placeholder":"Add your first to-do"}));
 	list.task_container = tag("tasks",{"class":"active"});
@@ -31,10 +125,9 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	var core = {
 		formHandler: function(event) {
 			event.preventDefault();
-			doneski.rollup();
-			var lst = event.target.list, tsk = list.getElementsByClassName("task")[0];
-			list.add(tsk.value);
-			tsk.value = "";
+			Doneski.rollup();
+			list.push(list.task_input.value);
+			list.task_input.value = "";
 			return(false);
 		},
 		taskClick: function(event) {
@@ -66,12 +159,12 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			list.task_container.insertBefore(el,list.task_container.firstChild);
 			if(!val) window.setTimeout(function(){el.className = "active";},1);
 			list.items[txt] = val;
-			list.store();
+			list.save();
 		},
 		save: function() {
 			var st = [];
 			for(var k in list.items) {
-				var str = [k,list.items[k]].join(doneski.separator);
+				var str = [k,list.items[k]].join(Doneski.separator);
 				if(!list.items[k]) st.push(str);
 			};
 			localStorage["doneski.lists."+list.id] = st.join(",");
@@ -81,10 +174,20 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			window.setTimeout(function(){target.parentNode.removeChild(target);},200);
 			list.items[target.innerHTML] = true;
 			list.store();
+		},
+		focus: function() {
+			list.task_input.focus();
+		},
+		activate: function() {
+			list.className = "active";
+			list.task_input.focus();
+		},
+		deactivate: function() {
+			list.className = "";
 		}
 	};
 	for(var i in core) {
-		list[i] = _Doneski.bind(core[i],list);
+		list[i] = Doneski.bind(core[i],list);
 	};
 	list.form.list = list;
 	list.form.addEventListener("submit",list.formHandler,true);
