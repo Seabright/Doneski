@@ -26,7 +26,7 @@ var _Doneski = function() {
 				// No local storage - hmmm...
 				console.log("no LS",doneski._hasLS);
 			};
-//			doneski.lists[0].focus();
+			doneski.lists[0].focus();
 			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
 		},
 		loadList: function(id) {
@@ -91,17 +91,24 @@ var _Doneski = function() {
 		},
 		ping: function() {
 			console.log("Yeah yeah.", doneski);
+		},
+		bkp: function(event) {
+			if(event.keyCode==39) {
+				doneski.newList();
+			};
 		}
 	};
 	for(var i in core) {
 		doneski[i] = doneski.bind(core[i]);
 	};
+	// window.addEventListener("keyup",doneski.bkp,true);
 };
 
 _Doneski.prototype.List = function(id,title,tasks) {
 	var tag = Doneski.tag;
 	var list = tag("list");
-	list.appendChild(tag("input",{ "type":"text", "name":"title", "placeholder":"Name this list", "class":"delayed"}));
+	list.name_input = tag("input",{ "type":"text", "name":"title", "placeholder":"Name this list", "class":"delayed"});
+	list.appendChild(list.name_input);
 	list.form = tag("form",{"action":"/task","method":"post","class":"tasklist"});
 	list.appendChild(list.form);
 	list.task_input = tag("input",{"type":"text", "class":"task", "placeholder":"Add your first to-do"});
@@ -113,6 +120,19 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	list.appendChild(tag("tasks",{"class":"completed"}));
 	
 	var core = {
+		name: function(name) {
+			localStorage["doneski.lists."+list.id+".name"] = name;
+			list.name_input.className = "setted";
+			list.task_input.focus();
+		},
+		nameB: function(event) {
+			list.name(event.target.value);
+		},
+		nameK: function(event) {
+			if(event.keyCode==13) {
+				list.name(event.target.value);
+			};
+		},
 		formHandler: function(event) {
 			event.preventDefault();
 			Doneski.rollup();
@@ -124,7 +144,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			var tgt = event.target;
 			if(!tgt.nocancel && tgt.clickable) {
 				tgt.className += " clicky";
-				window.setTimeout(function(){list.deleteItem(tgt);},1000);
+				window.setTimeout(function(){list.remove(tgt);},1000);
 			};
 			tgt.nocancel = false;
 		},
@@ -150,6 +170,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			if(!val) window.setTimeout(function(){el.className = "active";},1);
 			list.items[txt] = val;
 			list.save();
+			list.task_input.setAttribute("placeholder","Add another one");
 		},
 		save: function() {
 			var st = [];
@@ -181,14 +202,29 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	};
 	list.form.list = list;
 	list.form.addEventListener("submit",list.formHandler,true);
+	
+	list.name_input.addEventListener("blur",list.nameB,true);
+	list.name_input.addEventListener("keypress",list.nameK,true);
+	
 	list.id = id;
 	list.title = title || "";
-	list.items = [];
+	list.items = {};
 	// list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
 	if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(list.id)==-1) {
 		var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
 		cur.push(list.id);
-		//localStorage["doneski.lists"] = cur;
+		localStorage["doneski.lists"] = cur;
+	};
+	if(localStorage["doneski.lists."+list.id+".name"]) {
+		list.name_input.value = localStorage["doneski.lists."+list.id+".name"];
+		list.name_input.className = "setted";
+	};
+	if(localStorage["doneski.lists."+list.id]) {
+		var itms = localStorage["doneski.lists."+list.id].split(","), itm = "";
+		for(i=0;i<itms.length;i++) {
+			itm = itms[i].split(Doneski.separator);
+			list.push(itm);
+		};
 	};
 	return(list);
 };
