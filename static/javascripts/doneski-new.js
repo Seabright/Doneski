@@ -19,6 +19,7 @@ var _Doneski = function() {
 					for(var i=0;i<lists.length;i++) {
 						doneski.loadList(lists[i]);
 					};
+					doneski.lists[0].focus();
 				} else {
 					doneski.newList();
 				};
@@ -26,8 +27,8 @@ var _Doneski = function() {
 				// No local storage - hmmm...
 				console.log("no LS",doneski._hasLS);
 			};
-			doneski.lists[0].focus();
 			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
+			doneski.loaded = true;
 		},
 		loadList: function(id) {
 			var a = new Doneski.List(id);
@@ -169,10 +170,15 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			list.task_container.insertBefore(el,list.task_container.firstChild);
 			if(!val) window.setTimeout(function(){el.className = "active";},1);
 			list.items[txt] = val;
-			list.save();
+			if(Doneski.loaded) list.save();
 			list.task_input.setAttribute("placeholder","Add another one");
 		},
 		save: function() {
+			if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(list.id)==-1) {
+				var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
+				cur.push(list.id);
+				localStorage["doneski.lists"] = cur;
+			};
 			var st = [];
 			for(var k in list.items) {
 				var str = [k,list.items[k]].join(Doneski.separator);
@@ -184,7 +190,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			target.className = target.className.replace("active","");
 			window.setTimeout(function(){target.parentNode.removeChild(target);},200);
 			list.items[target.innerHTML] = true;
-			list.store();
+			list.save();
 		},
 		focus: function() {
 			list.task_input.focus();
@@ -210,11 +216,6 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	list.title = title || "";
 	list.items = {};
 	// list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
-	if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(list.id)==-1) {
-		var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
-		cur.push(list.id);
-		localStorage["doneski.lists"] = cur;
-	};
 	if(localStorage["doneski.lists."+list.id+".name"]) {
 		list.name_input.value = localStorage["doneski.lists."+list.id+".name"];
 		list.name_input.className = "setted";
