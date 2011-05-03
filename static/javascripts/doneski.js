@@ -38,7 +38,8 @@ var _Doneski = function() {
 		},
 		newList: function() {
 			var lid = doneski.generateListId();
-			var cur = doneski.loadList(doneski.last_id);
+			console.log(lid);
+			var cur = doneski.loadList(lid);
 			doneski.go(doneski.lists[doneski.lists.length-1]);
 		},
 		go: function(lst) {
@@ -47,10 +48,14 @@ var _Doneski = function() {
 			};
 			lst.activate();
 		},
+		generateTaskId: function() {
+			return("t_"+doneski.generateUUID());
+		},
 		generateListId: function() {
-			// some "guid" generator i found
-			doneski.last_id = 'l_xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);});
-			return(doneski.last_id);
+			return("l_"+doneski.generateUUID());
+		},
+		generateUUID: function() {
+			return("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);})+"");
 		},
 		saveLists: function() {
 			var out = [];
@@ -99,8 +104,10 @@ var _Doneski = function() {
 			};
 		}
 	};
+	
 	for(var i in core) {
-		doneski[i] = doneski.bind(core[i]);
+		// doneski[i] = doneski.bind(core[i]);
+		doneski[i] = core[i];
 	};
 	// window.addEventListener("keyup",doneski.bkp,true);
 };
@@ -154,23 +161,16 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			targt.nocancel = true;
 		},
 		push: function(obj) {
-			var el = document.createElement("task"), txt, val;
-			if(typeof obj=="string") {
-				txt = obj;
-				val = false;
-			} else {
-				txt = obj[0];
-				val = obj[1]=="true";
-			};
-			el.innerHTML = txt;
-			el.clickable = true;
-			el.addEventListener("click",list.taskClick,true);
-			el.addEventListener("touchmove",list.taskMove,true);
-			el.addEventListener("touchend",list.taskClick,true);
-			list.task_container.insertBefore(el,list.task_container.firstChild);
-			if(!val) window.setTimeout(function(){el.className = "active";},1);
-			list.items[txt] = val;
+			var tsk = new Doneski.Task(list,obj);
+			list.task_container.insertBefore(tsk,list.task_container.firstChild);
+			list.items.push(tsk.id);
 			if(Doneski.loaded) list.save();
+			list.task_input.setAttribute("placeholder","Add another one");
+		},
+		loadTask: function(id) {
+			var tsk = new Doneski.Task(list,false,id);
+			list.task_container.insertBefore(tsk,list.task_container.firstChild);
+			list.items.push(tsk.id);
 			list.task_input.setAttribute("placeholder","Add another one");
 		},
 		save: function() {
@@ -179,12 +179,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 				cur.push(list.id);
 				localStorage["doneski.lists"] = cur;
 			};
-			var st = [];
-			for(var k in list.items) {
-				var str = [k,list.items[k]].join(Doneski.separator);
-				if(!list.items[k]) st.push(str);
-			};
-			localStorage["doneski.lists."+list.id] = st.join(",");
+			localStorage["doneski.lists."+list.id] = list.items.join(",");
 		},
 		remove: function(target) {
 			target.className = target.className.replace("active","");
@@ -214,59 +209,108 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	
 	list.id = id;
 	list.title = title || "";
-	list.items = {};
+	list.items = [];
 	// list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
 	if(localStorage["doneski.lists."+list.id+".name"]) {
 		list.name_input.value = localStorage["doneski.lists."+list.id+".name"];
 		list.name_input.className = "setted";
 	};
 	if(localStorage["doneski.lists."+list.id]) {
-		var itms = localStorage["doneski.lists."+list.id].split(","), itm = "";
+		var itms = localStorage["doneski.lists."+list.id].split(",");
 		for(i=0;i<itms.length;i++) {
-			itm = itms[i].split(Doneski.separator);
-			list.push(itm);
+			list.loadTask(itms[i]);
 		};
 	};
 	return(list);
 };
 
-_Doneski.prototype.Task = function(content) {
-	function tag(id,attr,content){var tg=document.creatElement(id);if(!content && typeof attr=="string"){attr=undefined;content=attr;};if(attr){for(var k in attr){tg[k]=attr[k];};};if(content){tg.innerHTML=content;};return(tg);};
+_Doneski.prototype.Task = function(list,obj,id) {
 	
-	var task = tag("task",{"class":"active"},content);
+	var task = Doneski.tag("task",{});
+	task.list = list;
+
+	if(id) {
+		
+	} else {
+		var txt, val;
+		if(typeof obj=="string") {
+			txt = obj;
+			val = false;
+		} else {
+			txt = obj[0];
+			val = obj[1]=="true";
+		};
+		task.id = Doneski.generateTaskId();
+	};
 	
-	task.events = {
-		click: function(event) {
-			var tgt = event.target;
-			if(!tgt.nocancel && tgt.clickable) {
-				tgt.className += " clicky";
-				window.setTimeout(function(){tgt.events.destroy();},_Doneski.linger);
+	task.innerHTML = txt;
+	
+	var core = {
+		taskClick: function(event) {
+			if(!task.nocancel && task.clickable) {
+				task.className += " clicky";
+				window.setTimeout(function(){task.complete();},1000);
 			};
-			tgt.nocancel = false;
+			task.nocancel = false;
 		},
-		move: function(event) {
-			var targt = event.target;
-			targt.nocancel = true;
+		taskMove: function(event) {
+			task.nocancel = true;
+		},
+		save: function() {
+			if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(task.list.id)==-1) {
+				var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
+				cur.push(task.list.id);
+				localStorage["doneski.lists"] = cur;
+			};
+			var st = [];
+			for(var i=0;i<task.list.items.length;i++) {
+				var str = [task.list.items[i].innerHTML,task.list.items[i].completed?"true":"false"].join(Doneski.separator);
+				st.push(str);
+			};
+			console.log(st.join(","));
+			localStorage["doneski.lists."+task.list.id] = st.join(",");
+		},
+		complete: function() {
+			task.className = task.className.replace("active","");
+			window.setTimeout(function(){task.parentNode.removeChild(task);},200);
+			task.completed = true;
+			task.save();
+		},
+		uncomplete: function() {
+			task.className = task.className.replace("active","");
+			task.completed = false;
+			task.save();
+		},
+		focus: function() {
+			// list.task_input.focus();
 		}
 	};
-	el.addEventListener("click",task.events["click"],true);
-	el.addEventListener("touchend",doneski.taskClick,true);
-	el.addEventListener("touchmove",list.taskMove,true);
-	
-	
 	for(var i in core) {
-		list[i] = _Doneski.bind(core[i],task);
+		task[i] = core[i];
 	};
-	task.id = id;
-	list.title = title || "";
-	list.items = [];
-	// list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
-	if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(list.id)==-1) {
-		var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
-		cur.push(list.id);
-		//localStorage["doneski.lists"] = cur;
+	
+	task.clickable = true;
+	task.addEventListener("click",task.taskClick,true);
+	task.addEventListener("touchmove",task.taskMove,true);
+	task.addEventListener("touchend",task.taskClick,true);
+	
+	task.completed = val;
+
+	if(!task.completed) {
+		console.log("activating:",txt);
+		window.setTimeout(function(){task.className = "active";},1);
 	};
-	return(list);	
+	
+	// task.id = id;
+	// list.title = title || "";
+	// list.items = [];
+	// // list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
+	// if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(list.id)==-1) {
+	// 	var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
+	// 	cur.push(list.id);
+	// 	//localStorage["doneski.lists"] = cur;
+	// };
+	return(task);	
 };
 window.Doneski = new _Doneski();
 window.setTimeout("Doneski._init();",0);
