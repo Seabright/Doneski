@@ -14,4 +14,6 @@ gem 'warden'
 
 gem 'rack-mount'
 
+gem 'closure-compiler'
+
 #gem 'rack-ssl-enforcer'

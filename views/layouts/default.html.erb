@@ -14,10 +14,13 @@
 		<link rel="apple-touch-icon" href="/images/icon-dark.png" />
 		<link rel="apple-touch-startup-image" href="/images/splash.png" />
 		
-		<link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
-		<link rel="icon" href="/images/doneski.png" type="image/png" />
-		<link rel="shortcut icon" href="/images/doneski.png" type="image/png" />
-		<script type="text/javascript" src="/javascripts/doneski.js"></script>
+		<link rel="icon" href="data:image/png;base64,<%= @@doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
+		<link rel="shortcut icon" href="data:image/png;base64,<%= @@doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
+		<!-- <link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" /> -->
+		<!-- // <script type="text/javascript" src="/javascripts/doneski.js"></script> -->
+		<style>
+		<%= @@doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified%>
+		</style>
 	</head>
 	<body class="init">
 		<fudge>&nbsp;</fudge>
@@ -29,6 +32,9 @@
 			<%= yield %>
 		</content>
 	</body>
+	<script type="text/javascript">
+	<%= @@doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))%>
+	</script>
 	<script language="javascript">
 	if(!('localStorage' in window && window['localStorage'] !== null && localStorage["doneski.lists"])) document.body.className = document.body.className.replace("init","");
 	</script>
