@@ -16,11 +16,13 @@
 		
 		<link rel="icon" href="data:image/png;base64,<%= @@doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
 		<link rel="shortcut icon" href="data:image/png;base64,<%= @@doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
-		<!-- <link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" /> -->
-		<!-- // <script type="text/javascript" src="/javascripts/doneski.js"></script> -->
+		<% if COMPRESS_ASSETS||=false %>
 		<style>
 		<%= @@doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified%>
 		</style>
+		<% else %>
+		<link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
+		<% end %>
 	</head>
 	<body class="init">
 		<fudge>&nbsp;</fudge>
@@ -32,9 +34,17 @@
 			<%= yield %>
 		</content>
 	</body>
+	<% if COMPRESS_ASSETS||=false %>
+	<script type="text/javascript">
+	<%= @@touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchy.js', 'r'))%>
+	</script>
 	<script type="text/javascript">
 	<%= @@doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))%>
 	</script>
+	<% else %>
+	<script type="text/javascript" src="/javascripts/touchy.js"></script>
+	<script type="text/javascript" src="/javascripts/doneski.js"></script>
+	<% end %>
 	<script language="javascript">
 	if(!('localStorage' in window && window['localStorage'] !== null && localStorage["doneski.lists"])) document.body.className = document.body.className.replace("init","");
 	</script>

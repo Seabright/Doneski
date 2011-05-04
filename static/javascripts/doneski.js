@@ -9,44 +9,76 @@ var _Doneski = function() {
 	var core = {
 		_init: function(options) {
 			doneski.lists_container = document.body.getElementsByTagName("lists")[0];
-			var b = doneski.lists_container.getElementsByTagName("list");
+			doneski.list_nav = document.body.getElementsByTagName("listnav")[0];
 			if('localStorage' in window && window['localStorage'] !== null) {
 				doneski.touch();
 				window.scrollTo(0,35);
-				if(localStorage["doneski.lists"]) {
-					var lists = localStorage["doneski.lists"].split(",");
+				if(localStorage["lists"]) {
+					var lists = localStorage["lists"].split(",");
 					doneski.rollup();
 					for(var i=0;i<lists.length;i++) {
 						doneski.loadList(lists[i]);
 					};
-					doneski.lists[0].focus();
+					var focus = localStorage["last_list"] ? doneski.find(localStorage["last_list"]) : doneski.lists[0];
+					doneski.go(focus);
 				} else {
 					doneski.newList();
 				};
 			} else {
 				// No local storage - hmmm...
-				console.log("no LS",doneski._hasLS);
+			};
+			window.addEventListener("keyup",doneski.bkp,true);
+			if(typeof TouchyFeely != "undefined") {
+				TouchyFeely.touchify(document.body);
+				// window.pager.captureNav(cont);
+				document.body.addEventListener("swipe",doneski.swipe,true);
+				//doneski.lists_container.addEventListener("swipemove",window.pager.swipemove,true);
+				//doneski.lists_container.addEventListener("touchstart",window.pager.touchstart,true);
 			};
 			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
 			doneski.loaded = true;
 		},
 		loadList: function(id) {
 			var a = new Doneski.List(id);
+			var b = new Doneski.ListNav(a);
+			a.nav_item = b;
 			doneski.lists.push(a);
 			doneski.lists_container.appendChild(a);
+			doneski.list_nav.appendChild(b);
 			return(a);
 		},
 		newList: function() {
 			var lid = doneski.generateListId();
-			console.log(lid);
 			var cur = doneski.loadList(lid);
-			doneski.go(doneski.lists[doneski.lists.length-1]);
+			doneski.go(cur);
+		},
+		find: function(id) {
+			for(var i=0;i<doneski.lists.length;i++) {
+				if(doneski.lists[i].id==id) return(doneski.lists[i]);
+			};
+			return(undefined);
 		},
 		go: function(lst) {
 			for(var i=0;i<doneski.lists.length;i++) {
-				doneski.lists[i].deactivate();
+				if(doneski.lists[i] && doneski.lists[i]!=lst) doneski.lists[i].deactivate();
 			};
+			doneski.current_list = lst;
+			localStorage["last_list"] = lst.id;
 			lst.activate();
+		},
+		goNext: function() {
+			var idx = doneski.lists.indexOf(doneski.current_list) + 1;
+			if(idx>=doneski.lists.length) {
+				doneski.newList();
+			} else {
+				doneski.go(doneski.lists[idx]);
+			};
+		},
+		goPrevious: function() {
+			var idx = doneski.lists.indexOf(doneski.current_list) - 1;
+			if(idx>=0) {
+				doneski.go(doneski.lists[idx]);
+			};
 		},
 		generateTaskId: function() {
 			return("t_"+doneski.generateUUID());
@@ -63,16 +95,16 @@ var _Doneski = function() {
 				var a = doneski.lists[i];
 				out.push(a.id);
 			};
-			localStorage["doneski.lists"] = out;
+			localStorage["lists"] = out;
 		},
 		store: function() {
-			localStorage["doneski.lists"] = [doneski.list_name,false];
+			localStorage["lists"] = [doneski.list_name,false];
 			var st = [];
 			for(var k in doneski.tasks) {
 				var str = [k,doneski.tasks[k]].join(doneski.separator);
 				if(!doneski.tasks[k]) st.push(str);
 			};
-			localStorage["doneski.lists."+doneski.list_name] = st.join(",");
+			localStorage["lists."+doneski.list_name] = st.join(",");
 		},
 		rollup: function() {
 			if((bdy = document.getElementsByTagName("body")[0]) && bdy.className.indexOf("compact")<0) bdy.className += " compact";
@@ -87,10 +119,10 @@ var _Doneski = function() {
 			
 		},
 		touch: function() {
-			doneski.hasLocalStorage() && (localStorage["doneski.lastSeen"] = new Date());
+			doneski.hasLocalStorage() && (localStorage["lastSeen"] = new Date());
 		},
 		lastSeen: function() {
-			return(doneski.hasLocalStorage() && localStorage["doneski.lastSeen"]);
+			return(doneski.hasLocalStorage() && localStorage["lastSeen"]);
 		},
 		hasLocalStorage: function() {
 			return('localStorage' in window && window['localStorage'] !== null);
@@ -100,16 +132,42 @@ var _Doneski = function() {
 		},
 		bkp: function(event) {
 			if(event.keyCode==39) {
-				doneski.newList();
+				doneski.goNext();
+			} else if(event.keyCode==37) {
+				doneski.goPrevious();
 			};
+		},
+		swipe: function(event) {
+			// console.log(event);
+		},
+		intercepts: [],
+		intercept: function(obj) {
+			if(obj.intercepts) {
+				for(var i=0;i<obj.intercepts.length;i++) {
+					var method = obj[obj.intercepts[i]];
+					if(method) {
+						console.log(method.constructor);
+					};
+				};
+			};
+		},
+		perform: function() {
+			var args = Array.prototype.slice.call(arguments);
+			var obj = args.shift(), action = args.shift();
+			doneski.journal(obj,action,args);
+			return(obj[action].apply(obj,args));
+		},
+		journal: function() {
+			console.log(doneski.serialize(Array.prototype.slice.call(arguments)));
+		},
+		serialize: function(obj) {
+			return(JSON.stringify(obj));
 		}
 	};
-	
 	for(var i in core) {
 		// doneski[i] = doneski.bind(core[i]);
 		doneski[i] = core[i];
-	};
-	// window.addEventListener("keyup",doneski.bkp,true);
+	};	
 };
 
 _Doneski.prototype.List = function(id,title,tasks) {
@@ -129,7 +187,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	
 	var core = {
 		name: function(name) {
-			localStorage["doneski.lists."+list.id+".name"] = name;
+			localStorage["lists."+list.id+".name"] = name;
 			list.name_input.className = "setted";
 			list.task_input.focus();
 		},
@@ -174,12 +232,12 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			list.task_input.setAttribute("placeholder","Add another one");
 		},
 		save: function() {
-			if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(list.id)==-1) {
-				var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
+			if(!localStorage["lists"] || localStorage["lists"].split(",").indexOf(list.id)==-1) {
+				var cur = localStorage["lists"] ? localStorage["lists"].split(",") : [];
 				cur.push(list.id);
-				localStorage["doneski.lists"] = cur;
+				localStorage["lists"] = cur;
 			};
-			localStorage["doneski.lists."+list.id] = list.items.join(",");
+			localStorage["lists."+list.id] = list.items.join(",");
 		},
 		remove: function(target) {
 			target.className = target.className.replace("active","");
@@ -193,13 +251,15 @@ _Doneski.prototype.List = function(id,title,tasks) {
 		activate: function() {
 			list.className = "active";
 			list.task_input.focus();
+			list.nav_item.className = "active";
 		},
 		deactivate: function() {
 			list.className = "";
+			list.nav_item.className = "";
 		}
 	};
 	for(var i in core) {
-		list[i] = Doneski.bind(core[i],list);
+		list[i] = core[i];
 	};
 	list.form.list = list;
 	list.form.addEventListener("submit",list.formHandler,true);
@@ -211,12 +271,12 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	list.title = title || "";
 	list.items = [];
 	// list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
-	if(localStorage["doneski.lists."+list.id+".name"]) {
-		list.name_input.value = localStorage["doneski.lists."+list.id+".name"];
+	if(localStorage["lists."+list.id+".name"]) {
+		list.name_input.value = localStorage["lists."+list.id+".name"];
 		list.name_input.className = "setted";
 	};
-	if(localStorage["doneski.lists."+list.id]) {
-		var itms = localStorage["doneski.lists."+list.id].split(",");
+	if(localStorage["lists."+list.id]) {
+		var itms = localStorage["lists."+list.id].split(",");
 		for(i=0;i<itms.length;i++) {
 			list.loadTask(itms[i]);
 		};
@@ -224,15 +284,28 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	return(list);
 };
 
+_Doneski.prototype.ListNav = function(list) {
+	var tag = Doneski.tag;
+	var nav = tag("list");
+	nav.list = list;
+	// var core = {
+	// };
+	// for(var i in core) {
+	// 	nav[i] = core[i];
+	// };
+	return(nav);
+};
+
 _Doneski.prototype.Task = function(list,obj,id) {
 	
 	var task = Doneski.tag("task",{});
 	task.list = list;
 
-	if(id) {
-		
+	var txt, val;
+	if(id && localStorage["tasks."+id]) {
+		var s = localStorage["tasks."+id].split(Doneski.separator); txt = s[0]; val = s[1]=="true";
+		task.id = id;
 	} else {
-		var txt, val;
 		if(typeof obj=="string") {
 			txt = obj;
 			val = false;
@@ -257,18 +330,7 @@ _Doneski.prototype.Task = function(list,obj,id) {
 			task.nocancel = true;
 		},
 		save: function() {
-			if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(task.list.id)==-1) {
-				var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
-				cur.push(task.list.id);
-				localStorage["doneski.lists"] = cur;
-			};
-			var st = [];
-			for(var i=0;i<task.list.items.length;i++) {
-				var str = [task.list.items[i].innerHTML,task.list.items[i].completed?"true":"false"].join(Doneski.separator);
-				st.push(str);
-			};
-			console.log(st.join(","));
-			localStorage["doneski.lists."+task.list.id] = st.join(",");
+			localStorage["tasks."+task.id] = [task.innerHTML,task.completed].join(Doneski.separator);
 		},
 		complete: function() {
 			task.className = task.className.replace("active","");
@@ -297,19 +359,11 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	task.completed = val;
 
 	if(!task.completed) {
-		console.log("activating:",txt);
 		window.setTimeout(function(){task.className = "active";},1);
 	};
 	
-	// task.id = id;
-	// list.title = title || "";
-	// list.items = [];
-	// // list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
-	// if(!localStorage["doneski.lists"] || localStorage["doneski.lists"].split(",").indexOf(list.id)==-1) {
-	// 	var cur = localStorage["doneski.lists"] ? localStorage["doneski.lists"].split(",") : [];
-	// 	cur.push(list.id);
-	// 	//localStorage["doneski.lists"] = cur;
-	// };
+	task.save();
+	
 	return(task);	
 };
 window.Doneski = new _Doneski();

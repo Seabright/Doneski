@@ -24,4 +24,5 @@ require 'doneski/signup'
 require 'doneski/controller'
 require 'doneski/router'
 
-Doneski.load_resources
+# COMPRESS_ASSETS = true
+# Doneski.load_resources
