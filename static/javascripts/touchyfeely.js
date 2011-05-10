@@ -53,6 +53,15 @@ var TouchyFeely = function(element) {
 			touchy.currentEvent = touchy.clone(touchy.baseEvent);
 		}
 	};
+
+	touchy.swipemove = function(event) {
+		
+	};
+
+	touchy.scrollmove = function(event) {
+		
+	};
+
 	var TouchEvent = function(type) {
 		var evObj = document.createEvent('UIEvents');
 		evObj.initUIEvent('type', true, true, window, 1);
