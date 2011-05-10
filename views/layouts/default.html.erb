@@ -36,13 +36,13 @@
 	</body>
 	<% if COMPRESS_ASSETS||=false %>
 	<script type="text/javascript">
-	<%= @@touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchy.js', 'r'))%>
+	<%= @@touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchyfeely.js', 'r'))%>
 	</script>
 	<script type="text/javascript">
 	<%= @@doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))%>
 	</script>
 	<% else %>
-	<script type="text/javascript" src="/javascripts/touchy.js"></script>
+	<script type="text/javascript" src="/javascripts/touchyfeely.js"></script>
 	<script type="text/javascript" src="/javascripts/doneski.js"></script>
 	<% end %>
 	<script language="javascript">
