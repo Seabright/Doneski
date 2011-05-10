@@ -20,6 +20,7 @@ var _Doneski = function() {
 						doneski.loadList(lists[i]);
 					};
 					var focus = localStorage["last_list"] ? doneski.find(localStorage["last_list"]) : doneski.lists[0];
+					if(!focus) focus = doneski.lists[0];
 					doneski.go(focus);
 				} else {
 					doneski.newList();
@@ -28,13 +29,13 @@ var _Doneski = function() {
 				// No local storage - hmmm...
 			};
 			window.addEventListener("keyup",doneski.bkp,true);
-			if(typeof TouchyFeely != "undefined") {
-				TouchyFeely.touchify(document.body);
-				// window.pager.captureNav(cont);
-				document.body.addEventListener("swipe",doneski.swipe,true);
-				//doneski.lists_container.addEventListener("swipemove",window.pager.swipemove,true);
-				//doneski.lists_container.addEventListener("touchstart",window.pager.touchstart,true);
-			};
+			// if(typeof TouchyFeely != "undefined") {
+			// 	TouchyFeely.touchify(document.body);
+			// 	// window.pager.captureNav(cont);
+			// 	document.body.addEventListener("swipe",doneski.swipe,true);
+			// 	//doneski.lists_container.addEventListener("swipemove",window.pager.swipemove,true);
+			// 	//doneski.lists_container.addEventListener("touchstart",window.pager.touchstart,true);
+			// };
 			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
 			doneski.loaded = true;
 		},
@@ -59,12 +60,18 @@ var _Doneski = function() {
 			return(undefined);
 		},
 		go: function(lst) {
+			var aft = "";
 			for(var i=0;i<doneski.lists.length;i++) {
-				if(doneski.lists[i] && doneski.lists[i]!=lst) doneski.lists[i].deactivate();
+				if(doneski.lists[i]!=lst) {
+					doneski.lists[i].deactivate(aft);
+				} else {
+					doneski.lists[i].activate();
+					aft = "after";
+				};
 			};
 			doneski.current_list = lst;
 			localStorage["last_list"] = lst.id;
-			lst.activate();
+			//lst.activate();
 		},
 		goNext: function() {
 			var idx = doneski.lists.indexOf(doneski.current_list) + 1;
@@ -253,8 +260,9 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			list.task_input.focus();
 			list.nav_item.className = "active";
 		},
-		deactivate: function() {
-			list.className = "";
+		deactivate: function(cls) {
+			cls = cls || "";
+			list.className = cls;
 			list.nav_item.className = "";
 		}
 	};
