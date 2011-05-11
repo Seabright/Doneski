@@ -15,23 +15,23 @@ var TouchyFeely = function(element) {
 				touchy.currentEvent.startX = event.touches[0].pageX;
 				touchy.currentEvent.startY = event.touches[0].pageY;
 			} else {
-				touchy.touchCancel(event);
+				touchy.cancel();
 			};
 		},
 		"touchmove" : function(event) {
 			event.preventDefault();
-			if(event.touches.length == 1) {
-				touchy.currentEvent.curX = event.touches[0].pageX;
-				touchy.currentEvent.curY = event.touches[0].pageY;
-				touchy.currentEvent.swipeLength = touchy.swipeLength();
-				touchy.currentEvent.swipeAngle = touchy.calculateAngle();
-				touchy.currentEvent.swipeDirection = touchy.swipeDirection();
-				if(touchy.currentEvent.target) TouchEvent("swipemove");
-			} else {
-				touchy.touchCancel(event);
+			touchy.update(event);
+			if(!touchy.currentEvent.type) {
+				// try to determine type of event
 			};
+			if(touchy.currentEvent.type) {
+				// if we have a type, fire it up
+				if(touchy.currentEvent.target) TouchEvent("swipemove");
+			};
+			return(false);
 		},
 		"touchend" : function(event) {
+			touchy.update(event,"changedTouches");
 			if(touchy.swipeLength()>0) event.preventDefault();
 			// check to see if more than one finger was used and that there is an ending coordinate
 			if(touchy.currentEvent.fingerCount == 1 && touchy.currentEvent.curX != 0) {
@@ -43,11 +43,9 @@ var TouchyFeely = function(element) {
 					touchy.currentEvent.swipeAngle = null;
 					touchy.currentEvent.swipeDirection = null;
 				};
-				TouchEvent(swipe);
-				touchy.touchCancel(event); // reset the variables
-			} else {
-				touchy.touchCancel(event);
+				TouchEvent("swipe");
 			};
+			touchy.cancel();
 		},
 		"touchcancel" : function(event) {
 			touchy.currentEvent = touchy.clone(touchy.baseEvent);
@@ -104,8 +102,8 @@ var TouchyFeely = function(element) {
 		return(Math.round(Math.sqrt(Math.pow(touchy.currentEvent.deltaX,2)+Math.pow(touchy.currentEvent.deltaY,2))));
 	};
 	touchy.calculateAngle = function() {
-		touchy.currentEvent.horzDiff = touchy.currentEvent.startX-touchy.current.curX;
-		touchy.currentEvent.vertDiff = touchy.currentEvent.curY-touchy.current.startY;
+		touchy.currentEvent.horzDiff = touchy.currentEvent.startX - touchy.current.curX;
+		touchy.currentEvent.vertDiff = touchy.currentEvent.curY - touchy.current.startY;
 		var ang = Math.round((Math.atan2(touchy.currentEvent.vertDiff,touchy.currentEvent.horzDiff))*180/Math.PI); //angle in degrees
 		if(ang < 0) ang = 360 - Math.abs(ang);
 		return(ang);
@@ -119,6 +117,17 @@ var TouchyFeely = function(element) {
 			return('down');
 		};
 		return('up');
+	};
+	touchy.update = function(event,key) {
+		key = key || "touches";
+		touchy.currentEvent.curX = event[key][0].pageX;
+		touchy.currentEvent.curY = event[key][0].pageY;
+		touchy.currentEvent.swipeLength = touchy.swipeLength();
+		touchy.currentEvent.swipeAngle = touchy.calculateAngle();
+		touchy.currentEvent.swipeDirection = touchy.swipeDirection();
+	};
+	touchy.cancel = function() {
+		touchy.currentEvent = touchy.clone(touchy.baseEvent);
 	};
 	touchy.currentEvent = touchy.clone(touchy.baseEvent);
 	touchy.hook(element);
