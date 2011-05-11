@@ -97,13 +97,9 @@ var TouchyFeely = function(element) {
 	};
 	touchy.hook = function(elem) { for(var i in TouchHooks) { elem.addEventListener(i, TouchHooks[i], true); }; };
 	touchy.swipeLength = function() {
-		touchy.currentEvent.deltaX = touchy.currentEvent.curX - touchy.currentEvent.startX;
-		touchy.currentEvent.deltaY = touchy.currentEvent.curY - touchy.currentEvent.startY;
 		return(Math.round(Math.sqrt(Math.pow(touchy.currentEvent.deltaX,2)+Math.pow(touchy.currentEvent.deltaY,2))));
 	};
 	touchy.calculateAngle = function() {
-		touchy.currentEvent.horzDiff = touchy.currentEvent.startX - touchy.current.curX;
-		touchy.currentEvent.vertDiff = touchy.currentEvent.curY - touchy.current.startY;
 		var ang = Math.round((Math.atan2(touchy.currentEvent.vertDiff,touchy.currentEvent.horzDiff))*180/Math.PI); //angle in degrees
 		if(ang < 0) ang = 360 - Math.abs(ang);
 		return(ang);
@@ -122,6 +118,10 @@ var TouchyFeely = function(element) {
 		key = key || "touches";
 		touchy.currentEvent.curX = event[key][0].pageX;
 		touchy.currentEvent.curY = event[key][0].pageY;
+		touchy.currentEvent.deltaX = touchy.currentEvent.curX - touchy.currentEvent.startX;
+		touchy.currentEvent.deltaY = touchy.currentEvent.curY - touchy.currentEvent.startY;
+		touchy.currentEvent.horzDiff = touchy.currentEvent.startX - touchy.current.curX;
+		touchy.currentEvent.vertDiff = touchy.currentEvent.curY - touchy.current.startY;
 		touchy.currentEvent.swipeLength = touchy.swipeLength();
 		touchy.currentEvent.swipeAngle = touchy.calculateAngle();
 		touchy.currentEvent.swipeDirection = touchy.swipeDirection();
