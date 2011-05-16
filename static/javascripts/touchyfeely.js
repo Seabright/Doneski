@@ -9,7 +9,7 @@ var TouchyFeely = function(element,options) {
 	var TouchHooks = {
 		touchstart : function(event) {
 			if(event.touches.length == 1) {
-				touchy.update(event,false);
+				touchy.update(event,true);
 				touchy.currentEvent.target = touchy.getTarget(event);
 			};
 		},
