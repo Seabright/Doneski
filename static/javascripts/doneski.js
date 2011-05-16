@@ -29,15 +29,24 @@ var _Doneski = function() {
 				// No local storage - hmmm...
 			};
 			window.addEventListener("keyup",doneski.bkp,true);
-			// if(typeof TouchyFeely != "undefined") {
-			// 	TouchyFeely.touchify(document.body);
-			// 	// window.pager.captureNav(cont);
-			// 	document.body.addEventListener("swipe",doneski.swipe,true);
-			// 	//doneski.lists_container.addEventListener("swipemove",window.pager.swipemove,true);
-			// 	//doneski.lists_container.addEventListener("touchstart",window.pager.touchstart,true);
-			// };
+			if(typeof TouchyFeely != "undefined") {
+				doneski.toucher = new TouchyFeely(document,{capturescroll : false});
+				document.addEventListener("swipeend",doneski.swipeHandler,true);
+				//doneski.lists_container.addEventListener("swipemove",window.pager.swipemove,true);
+				//doneski.lists_container.addEventListener("touchstart",window.pager.touchstart,true);
+			};
 			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
 			doneski.loaded = true;
+		},
+		swipeHandler: function(event) {
+			if(event.swipeDirection && event.swipeDirection=="left") {
+				doneski.goNext();
+			} else if(event.swipeDirection) {
+				doneski.goPrevious();
+			};
+		},
+		scrollHandler: function(event) {
+			console.log(event.swipeDirection);
 		},
 		loadList: function(id) {
 			var a = new Doneski.List(id);
@@ -301,6 +310,7 @@ _Doneski.prototype.ListNav = function(list) {
 	// for(var i in core) {
 	// 	nav[i] = core[i];
 	// };
+	nav.addEventListener("click",function(){Doneski.go(nav.list);},true);
 	return(nav);
 };
 

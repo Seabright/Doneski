@@ -4,96 +4,59 @@
 // 	Created by John Bragg for Seabright Studios
 // */
 
-var TouchyFeely = function(element) {
+var TouchyFeely = function(element,options) {
 	var touchy = this;
 	var TouchHooks = {
-		"touchstart" : function(event) {
-			touchy.currentEvent.target = touchy.getTarget(event);
-			event.preventDefault();
-			touchy.currentEvent.fingerCount = event.touches.length;
-			if(touchy.currentEvent.fingerCount == 1) {
-				touchy.currentEvent.startX = event.touches[0].pageX;
-				touchy.currentEvent.startY = event.touches[0].pageY;
-			} else {
-				touchy.cancel();
+		touchstart : function(event) {
+			if(event.touches.length == 1) {
+				touchy.update(event,false);
+				touchy.currentEvent.target = touchy.getTarget(event);
 			};
 		},
-		"touchmove" : function(event) {
-			event.preventDefault();
-			touchy.update(event);
-			if(!touchy.currentEvent.type) {
-				// try to determine type of event
+		touchmove : function(event) {
+			if(touchy.currentEvent) {
+				touchy.update(event);
+				if(touchy.currentEvent.type) { TouchEvent(touchy.currentEvent.type+"move"); };
+				return(false);
 			};
-			if(touchy.currentEvent.type) {
-				// if we have a type, fire it up
-				if(touchy.currentEvent.target) TouchEvent("swipemove");
-			};
-			return(false);
+			return(true);
 		},
-		"touchend" : function(event) {
-			touchy.update(event,"changedTouches");
-			if(touchy.swipeLength()>0) event.preventDefault();
-			// check to see if more than one finger was used and that there is an ending coordinate
-			if(touchy.currentEvent.fingerCount == 1 && touchy.currentEvent.curX != 0) {
-				touchy.currentEvent.swipeLength = touchy.swipeLength();
-				if(touchy.currentEvent.swipeLength >= touchy.config.minLength) {
-					touchy.currentEvent.swipeAngle = touchy.calculateAngle();
-					touchy.currentEvent.swipeDirection = touchy.swipeDirection();
-				} else {
-					touchy.currentEvent.swipeAngle = null;
-					touchy.currentEvent.swipeDirection = null;
-				};
-				TouchEvent("swipe");
+		touchend : function(event) {
+			if(touchy.currentEvent) {
+				touchy.update(event);
+				if(touchy.currentEvent.type) { TouchEvent(touchy.currentEvent.type+"end"); };
 			};
 			touchy.cancel();
 		},
-		"touchcancel" : function(event) {
-			touchy.currentEvent = touchy.clone(touchy.baseEvent);
-		}
+		touchcancel : function(event) { touchy.cancel(); }
 	};
-
-	touchy.swipemove = function(event) {
-		
-	};
-
-	touchy.scrollmove = function(event) {
-		
-	};
-
 	var TouchEvent = function(type) {
 		var evObj = document.createEvent('UIEvents');
-		evObj.initUIEvent('type', true, true, window, 1);
+		evObj.initUIEvent(type, true, true, window, 1);
 		for(var i in touchy.currentEvent) { evObj[i] = touchy.currentEvent[i]; };
 		touchy.element.dispatchEvent(evObj);
+		// console.log("Event: "+type,evObj);
 	};
 	var baseEvent = {
-		target : null,
-		fingerCount : 0,
-		startX : 0,
-		startY : 0,
-		curX : 0,
-		curY : 0,
-		deltaX : 0,
-		deltaY : 0,
-		horzDiff : 0,
-		vertDiff : 0,
-		swipeLength : 0,
-		swipeAngle : null,
-		swipeDirection : null,
-		type : undefined
+		history : []
 	};
 	touchy.element = element;
 	touchy.config = {
-		minLength : 20
+		minLength : 20,
+		capturescroll : true,
+		captureswipe : true
+	};
+	for(var o in (options||{})) {
+		touchy.config[o] = options[o];
 	};
 	touchy.clone = function(obj) {
 	  var newObj = (obj instanceof Array) ? [] : {};
-	  for (i in obj) {
-	    if (i == 'clone') continue;
-	    if (obj[i] && typeof obj[i] == "object") {
+	  for(i in obj) {
+	    if(obj[i] && typeof obj[i] == "object") {
 	      newObj[i] = touchy.clone(obj[i]);
 	    } else newObj[i] = obj[i];
-	  }; return newObj;
+	  };
+		return newObj;
 	};
 	touchy.hook = function(elem) { for(var i in TouchHooks) { elem.addEventListener(i, TouchHooks[i], true); }; };
 	touchy.swipeLength = function() {
@@ -114,22 +77,49 @@ var TouchyFeely = function(element) {
 		};
 		return('up');
 	};
-	touchy.update = function(event,key) {
-		key = key || "touches";
-		touchy.currentEvent.curX = event[key][0].pageX;
-		touchy.currentEvent.curY = event[key][0].pageY;
-		touchy.currentEvent.deltaX = touchy.currentEvent.curX - touchy.currentEvent.startX;
-		touchy.currentEvent.deltaY = touchy.currentEvent.curY - touchy.currentEvent.startY;
-		touchy.currentEvent.horzDiff = touchy.currentEvent.startX - touchy.current.curX;
-		touchy.currentEvent.vertDiff = touchy.currentEvent.curY - touchy.current.startY;
-		touchy.currentEvent.swipeLength = touchy.swipeLength();
-		touchy.currentEvent.swipeAngle = touchy.calculateAngle();
-		touchy.currentEvent.swipeDirection = touchy.swipeDirection();
+	touchy.getType = function() {
+		var cev = touchy.currentEvent;
+		if(cev.swipeDirection=="left"||cev.swipeDirection=="right") return("swipe");
+		else if(cev.swipeDirection=="up"||cev.swipeDirection=="down") return("scroll");
+		else return(undefined);
 	};
-	touchy.cancel = function() {
-		touchy.currentEvent = touchy.clone(touchy.baseEvent);
+	touchy.getTarget = function(event) {
+		return(event.currentTarget);
 	};
-	touchy.currentEvent = touchy.clone(touchy.baseEvent);
+	touchy.update = function(event,capture) {
+		if(!touchy.currentEvent) touchy.newEvent();
+		var tch = event["touches"][0] || event["changedTouches"][0], cev = touchy.currentEvent;
+		cev.curX = tch.pageX;
+		cev.curY = tch.pageY;
+		cev.history = cev.history || [];
+		cev.history.push([cev.curX,cev.curY]);
+		if(!cev.fingerCount) cev.fingerCount = event["touches"].length;
+		if(!cev.startX) cev.startX = cev.curX;
+		if(!cev.startY) cev.startY = cev.curY;
+		cev.deltaX = cev.curX - cev.startX;
+		cev.deltaY = cev.curY - cev.startY;
+		cev.horzDiff = cev.startX - cev.curX;
+		cev.vertDiff = cev.curY - cev.startY;
+		if(cev.deltaX > 0 || cev.deltaY > 0) {
+			cev.swipeLength = touchy.swipeLength();
+			if(cev.swipeLength >= touchy.config.minLength) {
+				cev.swipeAngle = touchy.calculateAngle();
+				cev.swipeDirection = touchy.swipeDirection();
+				if(!cev.type) {
+					cev.type = touchy.getType();
+					if(cev.type) TouchEvent(cev.type+"start");
+				};
+			} else {
+				cev.swipeAngle = undefined;
+				cev.swipeDirection = undefined;
+			};
+		};
+		if(capture && (!cev.type || touchy.config["capture"+cev.type]==true)) event.preventDefault();
+		// if(cev.type) console.log(touchy.config["capture"+cev.type]+"");
+	};
+	touchy.newEvent = function() { delete touchy["currentEvent"]; touchy.currentEvent = touchy.clone(touchy.baseEvent); };
+	touchy.cancel = function() { delete touchy["currentEvent"]; };
+	touchy.currentEvent = false;
 	touchy.hook(element);
 	return(touchy);
 };
