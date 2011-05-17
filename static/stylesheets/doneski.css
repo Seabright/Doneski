@@ -8,7 +8,7 @@ html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pr
 body{font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}select,input,button,textarea,button{font:99% arial,helvetica,clean,sans-serif;}table{font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
 
 body{padding:3em 0;margin:0;font-family:Helvetica,Arial,sans-serif;background-color:#DDD;}
-fudge{z-index:-1;height:10%;width:100%;position:absolute;top:0;left:0;background-color:#DDD;}
+fudge{z-index:-1;height:100%;width:100%;position:absolute;top:0;left:0;background-color:#DDD;}
 content,header,section,tagline,tasks,task{display:block;}
 content{margin:0 auto;padding:.5em;max-width:960px;background-color:#FFF;-webkit-box-shadow: 0 0 1em rgba(150,150,150,.3);-webkit-border-radius:0;padding:1em;min-height:45em;overflow:hidden;}
 body.init header{display:none;}
@@ -53,7 +53,7 @@ body.loaded tasks.completed{-webkit-transition:opacity 1s;-webkit-transition-tim
 lists{position:relative;left:0;width:100%;display:block;text-align:left;}
 lists list{position:absolute;top:0;display:inline-block;width:100%;opacity:0;-webkit-transform:translate3d(-50%,0,0);/*left:-50%;*/}
 lists list.after{-webkit-transform:translate3d(50%,0,0);/*left:50%;*/}
-lists list.active{opacity:1;-webkit-transform:translate3d(0,0,0);/*left:0;*/}
+lists list.active{opacity:1;position:relative;-webkit-transform:translate3d(0,0,0);/*left:0;*/}
 body.loaded lists list{-webkit-transition:all .2s linear;}
 body.loaded lists list.active{}
 
@@ -74,6 +74,6 @@ max-device-width: 480px seems to only select the iPhone*/
 
 body{padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;background:none;}
 fudge{display:none;}
-content{margin:0 auto;padding:.5em;-webkit-box-shadow: none;-webkit-border-radius:0;}
+content{margin:0 auto;padding:.5em;-webkit-box-shadow: none;-webkit-border-radius:0;min-height:25em;}
 
 }
