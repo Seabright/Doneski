@@ -32,6 +32,8 @@ var _Doneski = function() {
 			if(typeof TouchyFeely != "undefined") {
 				doneski.toucher = new TouchyFeely(document,{capturescroll : false});
 				document.addEventListener("swipeend",doneski.swipeHandler,true);
+				// document.addEventListener("scrollstart",doneski.scrollStart,true);
+				// document.addEventListener("scrollmove",doneski.scrollHandler,true);
 				//doneski.lists_container.addEventListener("swipemove",window.pager.swipemove,true);
 				//doneski.lists_container.addEventListener("touchstart",window.pager.touchstart,true);
 			};
@@ -46,7 +48,16 @@ var _Doneski = function() {
 			};
 		},
 		scrollHandler: function(event) {
-			console.log(event.swipeDirection);
+			// var top = doneski.scrollstart - event.vertDiff;
+			// var pagedims = window.scrollHeight || window.offsetHeight || window.innerHeight + window.scrollMaxY;
+			// var vpdims = window.clientHeight;
+			// var max = pagedims - vpdims;
+			// if(top < 0) top = 0;
+			// if(top > max) top = max;
+			// window.scrollTo(0,top);
+		},
+		scrollStart: function(event) {
+			doneski.scrollstart = window.pageYOffset || window.scrollY;
 		},
 		loadList: function(id) {
 			var a = new Doneski.List(id);
