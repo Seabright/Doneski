@@ -210,7 +210,8 @@ _Doneski.prototype.List = function(id,title,tasks) {
 	list.form.appendChild(tag("input",{"type":"submit", "value":"Add", "style":"display:none;"}));
 	list.task_container = tag("tasks",{"class":"active"});
 	list.appendChild(list.task_container);
-	list.appendChild(tag("tasks",{"class":"completed"}));
+	list.completed_container = tag("tasks",{"class":"completed"});
+	list.appendChild(list.completed_container);
 	
 	var core = {
 		name: function(name) {
@@ -233,14 +234,14 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			list.task_input.value = "";
 			return(false);
 		},
-		taskClick: function(event) {
-			var tgt = event.target;
-			if(!tgt.nocancel && tgt.clickable) {
-				tgt.className += " clicky";
-				window.setTimeout(function(){list.remove(tgt);},1000);
-			};
-			tgt.nocancel = false;
-		},
+		// taskClick: function(event) {
+		// 	var tgt = event.target;
+		// 	if(!tgt.nocancel && tgt.clickable) {
+		// 		tgt.className += " clicky";
+		// 		window.setTimeout(function(){list.completed_container.insertBefore(tgt,list.completed_container.firstChild);},1000);
+		// 	};
+		// 	tgt.nocancel = false;
+		// },
 		taskMove: function(event) {
 			var targt = event.target;
 			targt.nocancel = true;
@@ -254,7 +255,8 @@ _Doneski.prototype.List = function(id,title,tasks) {
 		},
 		loadTask: function(id) {
 			var tsk = new Doneski.Task(list,false,id);
-			list.task_container.insertBefore(tsk,list.task_container.firstChild);
+			if(tsk.completed) list.completed_container.insertBefore(tsk,list.completed_container.firstChild);
+			else list.task_container.insertBefore(tsk,list.task_container.firstChild);
 			list.items.push(tsk.id);
 			list.task_input.setAttribute("placeholder","Add another one");
 		},
@@ -351,7 +353,8 @@ _Doneski.prototype.Task = function(list,obj,id) {
 		taskClick: function(event) {
 			if(!task.nocancel && task.clickable) {
 				task.className += " clicky";
-				window.setTimeout(function(){task.complete();},1000);
+				if(task.completed) window.setTimeout(function(){task.uncomplete();},1000);
+				else window.setTimeout(function(){task.complete();},1000);
 			};
 			task.nocancel = false;
 		},
@@ -362,13 +365,16 @@ _Doneski.prototype.Task = function(list,obj,id) {
 			localStorage["tasks."+task.id] = [task.innerHTML,task.completed].join(Doneski.separator);
 		},
 		complete: function() {
-			task.className = task.className.replace("active","");
-			window.setTimeout(function(){task.parentNode.removeChild(task);},200);
+			console.log("complete");
+			task.className = "";
+			task.list.completed_container.insertBefore(task,task.list.completed_container.firstChild);
 			task.completed = true;
 			task.save();
 		},
 		uncomplete: function() {
-			task.className = task.className.replace("active","");
+			console.log("uncomplete");
+			task.list.task_container.insertBefore(task,task.list.task_container.firstChild);
+			task.className = "active";
 			task.completed = false;
 			task.save();
 		},

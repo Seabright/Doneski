@@ -21,9 +21,11 @@
 		<% if COMPRESS_ASSETS||=false %>
 		<style>
 		<%= @@doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified%>
+		<%= @@papercss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/paper.css')).minified%>
 		</style>
 		<% else %>
 		<link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href="/stylesheets/paper.css" media="screen" rel="stylesheet" type="text/css" />
 		<% end %>
 	</head>
 	<body class="init">

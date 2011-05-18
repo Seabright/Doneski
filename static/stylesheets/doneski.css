@@ -34,12 +34,13 @@ form.tasklist input{border:1px solid rgba(21,53,64,.5);-webkit-border-radius:.1e
 button{display:none;font-size:22pt;border:none;margin:0;-webkit-border-radius:.1em;overflow:hidden;text-align:center;line-height:1em;position:relative;top:.15em;background:-webkit-gradient(linear,left top, left bottom, color-stop(0,#60aae1), color-stop(49.9%,#60aae1), color-stop(50%,#59a0d7), color-stop(100%,#59a0d7));color:#FFF;text-shadow: rgba(0,0,0,.1) 0px 1px 2px;width:10%;}
 button.add{}
 tasks{font-size:17pt;padding:0;}
-task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}
-task.active{padding:.75em .5em;border-bottom:1px dashed #888;-webkit-transform:scale3d(1,1,1);text-decoration:none;height:auto;}
+tasks.completed task.active, task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}
+tasks.completed task, task.active{padding:.75em .5em;border-bottom:1px dashed #888;-webkit-transform:scale3d(1,1,1);text-decoration:none;height:auto;}
 task.clicky{text-decoration:line-through;background-color:rgba(20,53,65,.7);color:#FFF;}
 tasks task:last-of-type{border-bottom:none;}
 
 tasks.completed{padding-top:48px;background:transparent url(/images/logo-sm.png) .5em 14px no-repeat;opacity:0;}
+tasks.completed task{text-decoration:line-through;}
 .compact tasks.completed{opacity:1;}
 
 section form, list > input, form.tasklist input, button, toolbar, list{box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;}
