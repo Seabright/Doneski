@@ -7,10 +7,10 @@ background: gradient #ebebeb mostly - top right subtle gradient from #f7f7f7
 */
 
 body,fudge{background-color:#ebebeb;padding:0;}
-.compact lists list > input{margin-left:8%;background:transparent;outline:none;-webkit-appearance:none;}
-listnav{padding-left:8%;padding-top:1em;}
-section form{margin:0;background:transparent;padding:0 2% 0 8%;margin-top:.4em;font-size:14pt;line-height:1.5em;}
-form.tasklist input, section form{-webkit-border-radius:1em;}
+.compact lists list > input{margin-left:10%;margin-right:2%;display:block;background:transparent;outline:none;-webkit-appearance:none;width:auto;}
+listnav{padding-left:10%;padding-top:1em;}
+section form{margin:0;background:transparent;padding:0 4% 1em 9%;margin-top:.4em;font-size:14pt;line-height:1.5em;outline:none;-webkit-appearance:none;border-bottom:1px solid rgba(68,140,203,.3);}
+form.tasklist input{-webkit-box-shadow: inset 0 0 4px rgba(0,0,0,.1);border-color:rgba(0,0,0,.2);border-width:2px;background:#FFF;-webkit-border-radius:.85em;outline:none;-webkit-appearance:none;}
 content{margin:0 auto;padding:0;max-width:960px;background:transparent;
 	background-image:
 		-webkit-gradient(linear,left top, right top, 
@@ -24,11 +24,12 @@ content{margin:0 auto;padding:0;max-width:960px;background:transparent;
 			color-stop(5.8%,rgba(236,0,140,.2)), 
 			color-stop(5.9%,rgba(236,0,140,0)), 
 			color-stop(100%,rgba(236,0,140,0)));
-	-webkit-box-shadow:none;-webkit-border-radius:0;min-height:45em;overflow:hidden;}
+	-webkit-box-shadow:none;-webkit-border-radius:0;min-height:45em;overflow:hidden;
+}
 
 tasks{font-size:17pt;padding:0;}
 tasks.completed task.active, task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}
-tasks.completed task, task.active{padding:.75em .5em .75em 8%;border-bottom:1px solid rgba(68,140,203,.3);-webkit-transform:scale3d(1,1,1);text-decoration:none;height:auto;}
+tasks.completed task, task.active{padding:.55em .5em .15em 10%;border-bottom:1px solid rgba(68,140,203,.3);-webkit-transform:scale3d(1,1,1);text-decoration:none;height:auto;}
 task.clicky{text-decoration:line-through;background-color:rgba(20,53,65,.7);color:#FFF;}
 tasks.completed task{text-decoration:line-through;color:rgba(0,0,0,.9);opacity:.5;}
 tasks task:last-of-type{border-bottom:1px solid rgba(68,140,203,.3);}
