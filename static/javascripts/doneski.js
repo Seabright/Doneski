@@ -41,9 +41,9 @@ var _Doneski = function() {
 			doneski.loaded = true;
 		},
 		swipeHandler: function(event) {
-			if(event.swipeDirection && event.swipeDirection=="left") {
+			if(event.direction && event.direction=="left") {
 				doneski.goNext();
-			} else if(event.swipeDirection) {
+			} else if(event.direction) {
 				doneski.goPrevious();
 			};
 		},
@@ -323,7 +323,7 @@ _Doneski.prototype.ListNav = function(list) {
 	// for(var i in core) {
 	// 	nav[i] = core[i];
 	// };
-	nav.addEventListener("click",function(){Doneski.go(nav.list);},true);
+	// nav.addEventListener("click",function(){Doneski.go(nav.list);},true);
 	return(nav);
 };
 
