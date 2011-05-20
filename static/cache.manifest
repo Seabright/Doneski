@@ -1,5 +1,7 @@
 CACHE MANIFEST
 # 
 /
-# /stylesheets/doneski.css
-# /javascripts/doneski.js
+/stylesheets/doneski.css
+/stylesheets/paper.css
+/javascripts/doneski.js
+/javascripts/touchyfeely.js
