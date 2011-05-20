@@ -402,4 +402,6 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	return(task);	
 };
 window.Doneski = new _Doneski();
+window.applicationCache.addEventListener("cached",function(){console.log("cached");},true);
+window.applicationCache.addEventListener("noupdate",function(){console.log("cache up to date");},true);
 window.setTimeout("Doneski._init();",0);
