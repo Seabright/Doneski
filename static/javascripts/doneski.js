@@ -404,4 +404,5 @@ _Doneski.prototype.Task = function(list,obj,id) {
 window.Doneski = new _Doneski();
 window.applicationCache.addEventListener("cached",function(){console.log("cached");},true);
 window.applicationCache.addEventListener("noupdate",function(){console.log("cache up to date");},true);
+window.applicationCache.addEventListener("updateready",function(){console.log("got updated stuff");},true);
 window.setTimeout("Doneski._init();",0);
