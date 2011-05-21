@@ -10,6 +10,7 @@ var _Doneski = function() {
 		_init: function(options) {
 			doneski.lists_container = document.body.getElementsByTagName("lists")[0];
 			doneski.list_nav = document.body.getElementsByTagName("listnav")[0];
+			doneski.toolbar = document.body.getElementsByTagName("toolbar")[0];
 			if('localStorage' in window && window['localStorage'] !== null) {
 				doneski.touch();
 				window.scrollTo(0,35);
@@ -38,7 +39,44 @@ var _Doneski = function() {
 				//doneski.lists_container.addEventListener("touchstart",window.pager.touchstart,true);
 			};
 			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
+			window.setTimeout(function(){doneski.noisify(doneski.toolbar,{opacity:0.3,range:50});},100);
+			window.setTimeout(function(){doneski.notebookify(document.body.getElementsByTagName("content")[0]);},100);
 			doneski.loaded = true;
+		},
+		noisify: function(element,options) {
+			var opts = {
+				opacity: 0.2,
+				range: 100
+			};
+			if(options) {
+				for(var i in options) opts[i]=options[i];
+			};
+			if(!!!document.createElement('canvas').getContext) { return false; }
+			var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d');
+			canvas.width = element.clientWidth;
+			canvas.height = element.clientHeight;
+			for(var x=0;x<canvas.width;x++) {
+				for(var y=0;y<canvas.height;y++) {
+					var number = Math.floor(Math.random()*opts.range);
+					ctx.fillStyle = "rgba("+number+","+number+","+number+","+opts.opacity+")";
+					ctx.fillRect(x, y, 1, 1);
+				};
+			};
+			element.style.backgroundImage = "url("+canvas.toDataURL("image/png")+")";  
+			return(true);
+		},
+		notebookify: function(element) {
+			if(!!!document.createElement('canvas').getContext) { return false; }
+			var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d'), offset = 20;
+			canvas.width = 4;
+			canvas.height = 1;
+			ctx.fillStyle = "rgba(236,0,140,.2)";
+			ctx.fillRect(0, 0, 1, 1);
+			ctx.fillRect(3, 0, 1, 1);
+			element.style.backgroundImage = "url("+canvas.toDataURL("image/png")+")";
+			element.style.backgroundRepeat = "repeat-y";
+			element.style.backgroundPosition = offset+"px top";
+			return(true);
 		},
 		swipeHandler: function(event) {
 			if(event.direction && event.direction=="left") {
@@ -66,7 +104,15 @@ var _Doneski = function() {
 			doneski.lists.push(a);
 			doneski.lists_container.appendChild(a);
 			doneski.list_nav.appendChild(b);
+			doneski.rejig_nav();
 			return(a);
+		},
+		rejig_nav: function() {
+			if(doneski.list_nav.clientWidth > (doneski.toolbar.clientWidth*0.8)) {
+				doneski.list_nav.className = doneski.list_nav.className.replace("tight2","tight3");
+				doneski.list_nav.className = doneski.list_nav.className.replace("tight1","tight2");
+				doneski.list_nav.className = doneski.list_nav.className.replace("notight","tight1");
+			};
 		},
 		newList: function() {
 			var lid = doneski.generateListId();
@@ -279,7 +325,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 		},
 		activate: function() {
 			list.className = "active";
-			list.task_input.focus();
+			//list.task_input.focus();
 			list.nav_item.className = "active";
 		},
 		deactivate: function(cls) {
@@ -316,7 +362,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 
 _Doneski.prototype.ListNav = function(list) {
 	var tag = Doneski.tag;
-	var nav = tag("list");
+	var nav = tag("list",{"class":"hidden"});
 	nav.list = list;
 	// var core = {
 	// };
@@ -404,5 +450,5 @@ _Doneski.prototype.Task = function(list,obj,id) {
 window.Doneski = new _Doneski();
 window.applicationCache.addEventListener("cached",function(){console.log("cached");},true);
 window.applicationCache.addEventListener("noupdate",function(){console.log("cache up to date");},true);
-window.applicationCache.addEventListener("updateready",function(){console.log("got updated stuff");},true);
+window.applicationCache.addEventListener("updateready",function(){console.log("got updated stuff");window.applicationCache.swapCache();console.log("swapped");},true);
 window.setTimeout("Doneski._init();",0);
