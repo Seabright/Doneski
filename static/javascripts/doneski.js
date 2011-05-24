@@ -11,6 +11,7 @@ var _Doneski = function() {
 			doneski.lists_container = document.body.getElementsByTagName("lists")[0];
 			doneski.list_nav = document.body.getElementsByTagName("listnav")[0];
 			doneski.toolbar = document.body.getElementsByTagName("toolbar")[0];
+			doneski.fudge = document.body.getElementsByTagName("content")[0];
 			if('localStorage' in window && window['localStorage'] !== null) {
 				doneski.touch();
 				window.scrollTo(0,35);
@@ -26,21 +27,23 @@ var _Doneski = function() {
 				} else {
 					doneski.newList();
 				};
+				doneski.setFudgeHeight();
 			} else {
 				// No local storage - hmmm...
 			};
 			window.addEventListener("keyup",doneski.bkp,true);
 			if(typeof TouchyFeely != "undefined") {
 				doneski.toucher = new TouchyFeely(document,{capturescroll : false});
+				document.addEventListener("swipestart",doneski.swipeStarter,true);
+				document.addEventListener("swipemove",doneski.swipeMoveHandler,true);
 				document.addEventListener("swipeend",doneski.swipeHandler,true);
-				// document.addEventListener("scrollstart",doneski.scrollStart,true);
-				// document.addEventListener("scrollmove",doneski.scrollHandler,true);
-				//doneski.lists_container.addEventListener("swipemove",window.pager.swipemove,true);
-				//doneski.lists_container.addEventListener("touchstart",window.pager.touchstart,true);
+				document.addEventListener("scrollstart",doneski.scrollStart,true);
+				document.addEventListener("scrollmove",doneski.scrollHandler,true);
 			};
-			window.setTimeout("document.getElementsByTagName('body')[0].className += ' loaded';",500);
-			window.setTimeout(function(){doneski.noisify(doneski.toolbar,{opacity:0.3,range:50});},100);
-			window.setTimeout(function(){doneski.notebookify(document.body.getElementsByTagName("content")[0]);},100);
+			window.setTimeout(function(){document.getElementsByTagName('body')[0].className += ' loaded';},500);
+			window.setTimeout(function(){doneski.noisify(doneski.toolbar,{opacity:0.3,range:50});},0);
+			window.setTimeout(function(){doneski.notebookify(document.body.getElementsByTagName("content")[0]);},0);
+			window.scrollTo(0,0);
 			doneski.loaded = true;
 		},
 		noisify: function(element,options) {
@@ -48,11 +51,9 @@ var _Doneski = function() {
 				opacity: 0.2,
 				range: 100
 			};
-			if(options) {
-				for(var i in options) opts[i]=options[i];
-			};
+			if(options) {for(var i in options) opts[i]=options[i];};
 			if(!!!document.createElement('canvas').getContext) { return false; }
-			var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d');
+			var ctx = (canvas = document.createElement("canvas")).getContext('2d');
 			canvas.width = element.clientWidth;
 			canvas.height = element.clientHeight;
 			for(var x=0;x<canvas.width;x++) {
@@ -78,24 +79,31 @@ var _Doneski = function() {
 			element.style.backgroundPosition = offset+"px top";
 			return(true);
 		},
+		swipeStarter: function(event) {
+			// event.direction=="left"?doneski.goNext() : doneski.goPrevious();
+		},
 		swipeHandler: function(event) {
-			if(event.direction && event.direction=="left") {
-				doneski.goNext();
-			} else if(event.direction) {
-				doneski.goPrevious();
-			};
+			event.direction=="left"?doneski.goNext() : doneski.goPrevious();
+		},
+		swipeMoveHandler: function(event) {
+			//
 		},
 		scrollHandler: function(event) {
-			// var top = doneski.scrollstart - event.vertDiff;
-			// var pagedims = window.scrollHeight || window.offsetHeight || window.innerHeight + window.scrollMaxY;
-			// var vpdims = window.clientHeight;
-			// var max = pagedims - vpdims;
-			// if(top < 0) top = 0;
-			// if(top > max) top = max;
-			// window.scrollTo(0,top);
+			// console.log(event.vD);
+			// console.log(event.cY);
+			if((top = doneski.scrollstart - event.vD) < 0) top = 0;
+			// console.log("top: "+top);
+			if(top > (max=doneski.maxScroll())) top = max;
+			// console.log("moving top to: "+top+" (max: "+max+")");
+			window.scrollTo(0,top);
 		},
 		scrollStart: function(event) {
 			doneski.scrollstart = window.pageYOffset || window.scrollY;
+			// console.log("started scroll at position: "+doneski.scrollstart);
+			// console.log("started scroll at cY: "+event.cY);
+		},
+		maxScroll: function() {
+			return(document.body.clientHeight-window.innerHeight);
 		},
 		loadList: function(id) {
 			var a = new Doneski.List(id);
@@ -108,16 +116,16 @@ var _Doneski = function() {
 			return(a);
 		},
 		rejig_nav: function() {
-			if(doneski.list_nav.clientWidth > (doneski.toolbar.clientWidth*0.8)) {
-				doneski.list_nav.className = doneski.list_nav.className.replace("tight2","tight3");
-				doneski.list_nav.className = doneski.list_nav.className.replace("tight1","tight2");
-				doneski.list_nav.className = doneski.list_nav.className.replace("notight","tight1");
+			ln=doneski.list_nav;
+			if(ln.clientWidth > (doneski.toolbar.clientWidth*0.9)) {
+				a="tight";
+				for(i=4;i--;) { ln.className = ln.className.replace(a+(i-1),a+i); };
 			};
 		},
 		newList: function() {
-			var lid = doneski.generateListId();
-			var cur = doneski.loadList(lid);
-			doneski.go(cur);
+			var b = doneski.loadList(doneski.generateListId());
+			b.className = "after";
+			window.setTimeout(function(){doneski.go(b);},200);
 		},
 		find: function(id) {
 			for(var i=0;i<doneski.lists.length;i++) {
@@ -132,12 +140,18 @@ var _Doneski = function() {
 					doneski.lists[i].deactivate(aft);
 				} else {
 					doneski.lists[i].activate();
+					doneski.fudge.style.height = lst.clientHeight;
 					aft = "after";
 				};
 			};
 			doneski.current_list = lst;
+			doneski.setFudgeHeight();
 			localStorage["last_list"] = lst.id;
 			//lst.activate();
+		},
+		setFudgeHeight: function() {
+			doneski.fudge.style.height = ((cL = doneski.current_list.clientHeight+50) > window.innerHeight ? cL : window.innerHeight) + "px";
+			window.setTimeout(function(){doneski.setFudgeHeight();},200);
 		},
 		goNext: function() {
 			var idx = doneski.lists.indexOf(doneski.current_list) + 1;
@@ -298,6 +312,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 			list.items.push(tsk.id);
 			if(Doneski.loaded) list.save();
 			list.task_input.setAttribute("placeholder","Add another one");
+			Doneski.setFudgeHeight();
 		},
 		loadTask: function(id) {
 			var tsk = new Doneski.Task(list,false,id);
@@ -448,7 +463,7 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	return(task);	
 };
 window.Doneski = new _Doneski();
-window.applicationCache.addEventListener("cached",function(){console.log("cached");},true);
-window.applicationCache.addEventListener("noupdate",function(){console.log("cache up to date");},true);
-window.applicationCache.addEventListener("updateready",function(){console.log("got updated stuff");window.applicationCache.swapCache();console.log("swapped");},true);
+// window.applicationCache.addEventListener("cached",function(){console.log("cached");},true);
+// window.applicationCache.addEventListener("noupdate",function(){console.log("cache up to date");},true);
+window.applicationCache.addEventListener("updateready",function(){/*console.log("got updated stuff");*/window.applicationCache.swapCache();/*console.log("swapped");*/},true);
 window.setTimeout("Doneski._init();",0);

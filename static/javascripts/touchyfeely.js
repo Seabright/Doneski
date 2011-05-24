@@ -8,118 +8,91 @@ var TouchyFeely = function(element,options) {
 	var touchy = this;
 	var TouchHooks = {
 		start : function(event) {
-			if(event.touches.length == 1) {
-				touchy.update(event,false);
-				// touchy.cE.trg = touchy.trg(event);
-			};
+			(event.touches.length == 1)&&touchy.u(event,true);
+			touchy.b.s = event;
 		},
 		move : function(event) {
-			if(touchy.cE) {
-				touchy.update(event);
-				if(touchy.cE.type) { TouchEvent(touchy.cE.type+"move"); };
+			if(touchy.b) {
+				touchy.u(event);
+				touchy.b.type&&TouchEvent(touchy.b.type+"move");
 				return(false);
 			};
 			return(true);
 		},
 		end : function(event) {
-			if(touchy.cE) {
-				touchy.update(event);
-				if(touchy.cE.type) { TouchEvent(touchy.cE.type+"end"); };
+			if(touchy.b) {
+				touchy.u(event);
+				touchy.b.type&&TouchEvent(touchy.b.type+"end");
 			};
-			touchy.cancel();
+			touchy.z();
 		},
-		cancel : function(event) { touchy.cancel(); }
+		cancel : function(event) { touchy.z(); }
 	};
 	var TouchEvent = function(type) {
-		var evObj = document.createEvent('UIEvents');
-		evObj.initUIEvent(type, true, true, window, 1);
-		for(var i in touchy.cE) { evObj[i] = touchy.cE[i]; };
-		touchy.el.dispatchEvent(evObj);
-		// console.log("Event: "+type,evObj);
+		(evObj = document.createEvent('UIEvents')).initUIEvent(type, true, true, window, 1);
+		for(i in touchy.b) { evObj[i] = touchy.b[i]; };
+		touchy.e.dispatchEvent(evObj);
 	};
-	var bE = {
-		h : []
+	touchy.e = element;
+	touchy.c = {
+		mL : 20,
+		cscroll : true,
+		cswipe : true
 	};
-	touchy.el = element;
-	touchy.config = {
-		minLength : 20,
-		capturescroll : true,
-		captureswipe : true
+	for(o in (options||{})) {
+		touchy.c[o] = options[o];
 	};
-	for(var o in (options||{})) {
-		touchy.config[o] = options[o];
+	touchy.h = function(elem) { for(i in TouchHooks) { elem.addEventListener("touch"+i, TouchHooks[i], true); }; };
+	touchy.l = function() {
+		return(Math.round(Math.sqrt(Math.pow(touchy.b.dX,2)+Math.pow(touchy.b.dY,2))));
 	};
-	touchy.clone = function(obj) {
-	  var newObj = (obj instanceof Array) ? [] : {};
-	  for(i in obj) {
-	    if(obj[i] && typeof obj[i] == "object") {
-	      newObj[i] = touchy.clone(obj[i]);
-	    } else newObj[i] = obj[i];
-	  };
-		return newObj;
+	touchy.a = function() {
+		var ang = Math.round((Math.atan2(touchy.b.vD,touchy.b.hD))*180/Math.PI); //angle in degrees
+		return(ang||(360 - Math.abs(ang)));
 	};
-	touchy.hook = function(elem) { for(var i in TouchHooks) { elem.addEventListener("touch"+i, TouchHooks[i], true); }; };
-	touchy.length = function() {
-		return(Math.round(Math.sqrt(Math.pow(touchy.cE.dX,2)+Math.pow(touchy.cE.dY,2))));
-	};
-	touchy.ang = function() {
-		var ang = Math.round((Math.atan2(touchy.cE.vD,touchy.cE.hD))*180/Math.PI); //angle in degrees
-		if(ang < 0) ang = 360 - Math.abs(ang);
-		return(ang);
-	};
-	touchy.dir = function() {
-		if ( ((touchy.cE.angle <= 45) && (touchy.cE.angle >= 0)) || ((touchy.cE.angle <= 360) && (touchy.cE.angle >= 315)) ) {
-			return('left');
-		} else if ( (touchy.cE.angle >= 135) && (touchy.cE.angle <= 225) ) {
-			return('right');
-		} else if ( (touchy.cE.angle > 45) && (touchy.cE.angle < 135) ) {
-			return('down');
-		};
+	touchy.d = function() {
+		if ( (((b=touchy.b.angle) <= 45) && (b >= 0)) || ((b <= 360) && (b >= 315)) ) return('left');
+		else if ( (b >= 135) && (b <= 225) ) return('right');
+		else if ( (b > 45) && (b < 135) ) return('down');
 		return('up');
 	};
-	touchy.type = function() {
-		var cev = touchy.cE;
-		if(cev.direction=="left"||cev.direction=="right") return("swipe");
-		else if(cev.direction=="up"||cev.direction=="down") return("scroll");
-		else return(undefined);
+	touchy.t = function() {
+		var v = touchy.b;
+		if(v.direction in {left:0,right:0}) return("swipe");
+		if(v.direction in {up:0,down:0}) return("scroll");
+		return(undefined);
 	};
-	touchy.trg = function(event) {
-		return(event.currentTarget);
-	};
-	touchy.update = function(event,capture) {
-		var tch = event["touches"][0] || event["changedTouches"][0], cev = touchy.cE || touchy.nE();
-		cev.cX = tch.pageX;
-		cev.cY = tch.pageY;
-		cev.h = cev.h || [];
-		cev.h.push([cev.cX,cev.cY]);
-		if(!cev.fC) cev.fC = event["touches"].length;
-		if(!cev.sX) cev.sX = cev.cX;
-		if(!cev.sY) cev.sY = cev.cY;
-		cev.dX = cev.cX - cev.sX;
-		cev.dY = cev.cY - cev.sY;
-		cev.hD = cev.sX - cev.cX;
-		cev.vD = cev.cY - cev.sY;
-		if(cev.dX > 0 || cev.dY > 0) {
-			cev.length = touchy.length();
-			if(cev.length >= touchy.config.minLength) {
-				cev.angle = touchy.ang();
-				cev.direction = touchy.dir();
-				if(!cev.type) {
-					cev.type = touchy.type();
-					if(cev.type) TouchEvent(cev.type+"start");
+	touchy.u = function(event) {
+		var o="ouches", tch = event["t"+o][0] || event["changedT"+o][0], v = touchy.b || touchy.n();
+		v.cX = tch.pageX;
+		v.cY = tch.pageY;
+		v.h = v.h || [];
+		v.h.push([v.cX,v.cY]);
+		v.fC||(v.fC = event["t"+o].length);
+		v.sX||(v.sX = v.cX);
+		v.sY||(v.sY = v.cY);
+		v.dX = v.cX - v.sX;
+		v.dY = v.cY - v.sY;
+		v.hD = v.sX - v.cX;
+		v.vD = v.cY - v.sY;
+		if(v.dX||v.dY) {
+			if((v.length = touchy.l()) >= touchy.c.mL) {
+				v.angle = touchy.a();
+				v.direction = touchy.d();
+				if(!v.type&&(v.type = touchy.t())) {
+					TouchEvent(v.type+"start");
 				};
 			} else {
-				cev.angle = undefined;
-				cev.direction = undefined;
+				v.angle = undefined;
+				v.direction = undefined;
 			};
 		};
-		if(capture && (!cev.type || touchy.config["capture"+cev.type]==true)) event.preventDefault();
-		// if(cev.type) console.log(touchy.config["capture"+cev.type]+"");
+		event.preventDefault();
 	};
-	touchy.nE = function() { delete touchy["cE"]; touchy.cE = touchy.clone(touchy.bE); return(touchy.cE); };
-	touchy.cancel = function() { delete touchy["cE"]; };
-	touchy.cE = false;
-	touchy.currentEvent = touchy.cE;
-	touchy.hook(element);
+	touchy.n = function() { delete touchy["b"]; touchy.b = {h : []}; return(touchy.b); };
+	touchy.z = function() { delete touchy["b"]; };
+	touchy.b = false;
+	touchy.Event = touchy.b;
+	touchy.h(element);
 	return(touchy);
 };
