@@ -150,7 +150,8 @@ var _Doneski = function() {
 			//lst.activate();
 		},
 		setFudgeHeight: function() {
-			doneski.fudge.style.height = ((cL = doneski.current_list.clientHeight+50) > window.innerHeight ? cL : window.innerHeight) + "px";
+			if(!(cl=doneski.current_list)) return;
+			doneski.fudge.style.height = ((cL = cl.clientHeight+50) > (wh=window.innerHeight) ? cL : wh) + "px";
 			window.setTimeout(function(){doneski.setFudgeHeight();},200);
 		},
 		goNext: function() {
