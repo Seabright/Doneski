@@ -456,7 +456,7 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	task.completed = val;
 
 	if(!task.completed) {
-		window.setTimeout(function(){task.className = "active";},1);
+		task.className = "active";
 	};
 	
 	task.save();
