@@ -8,13 +8,13 @@ var _Doneski = function() {
 	doneski.lists = [];
 	var core = {
 		_init: function(options) {
-			doneski.lists_container = document.body.getElementsByTagName("lists")[0];
-			doneski.list_nav = document.body.getElementsByTagName("listnav")[0];
-			doneski.toolbar = document.body.getElementsByTagName("toolbar")[0];
-			doneski.fudge = document.body.getElementsByTagName("content")[0];
-			if('localStorage' in window && window['localStorage'] !== null) {
+			doneski.lists_container = (gtn=doneski.gtn)("lists")[0];
+			doneski.list_nav = gtn("listnav")[0];
+			doneski.toolbar = (t=gtn("toolbar")[0]);
+			doneski.fudge = gtn("content")[0];
+			if('localStorage' in (w=window) && w['localStorage'] !== null) {
 				doneski.touch();
-				window.scrollTo(0,35);
+				w.scrollTo(0,35);
 				if(localStorage["lists"]) {
 					var lists = localStorage["lists"].split(",");
 					doneski.rollup();
@@ -31,64 +31,80 @@ var _Doneski = function() {
 			} else {
 				// No local storage - hmmm...
 			};
-			window.addEventListener("keyup",doneski.bkp,true);
+			(ael=doneski.ael)("keyup",doneski.bkp,true);
 			if(typeof TouchyFeely != "undefined") {
-				doneski.toucher = new TouchyFeely(document,{capturescroll : false});
-				document.addEventListener("swipestart",doneski.swipeStarter,true);
-				document.addEventListener("swipemove",doneski.swipeMoveHandler,true);
-				document.addEventListener("swipeend",doneski.swipeHandler,true);
-				document.addEventListener("scrollstart",doneski.scrollStart,true);
-				document.addEventListener("scrollmove",doneski.scrollHandler,true);
+				doneski.toucher = new TouchyFeely(document,{cscroll : 0});
+				ael((a="swipe")+"start",doneski.swS,true);
+				ael(a+"move",doneski.swM,true);
+				ael(a+"end",doneski.swE,true);
+				ael((a="scroll")+"start",doneski.scS,true);
+				ael(a+"move",doneski.scM,true);
 			};
-			window.setTimeout(function(){document.getElementsByTagName('body')[0].className += ' loaded';},500);
-			window.setTimeout(function(){doneski.noisify(doneski.toolbar,{opacity:0.3,range:50});},0);
-			window.setTimeout(function(){doneski.notebookify(document.body.getElementsByTagName("content")[0]);},0);
-			window.scrollTo(0,0);
+			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},500);
+			st(function(){doneski.noisify(t,{opacity:0.3,range:50},"tb");},0);
+			st(function(){doneski.notebookify(gtn("content")[0]);},0);
+			w.scrollTo(0,0);
 			doneski.loaded = true;
 		},
-		noisify: function(element,options) {
-			var opts = {
-				opacity: 0.2,
-				range: 100
-			};
-			if(options) {for(var i in options) opts[i]=options[i];};
-			if(!!!document.createElement('canvas').getContext) { return false; }
-			var ctx = (canvas = document.createElement("canvas")).getContext('2d');
-			canvas.width = element.clientWidth;
-			canvas.height = element.clientHeight;
-			for(var x=0;x<canvas.width;x++) {
-				for(var y=0;y<canvas.height;y++) {
-					var number = Math.floor(Math.random()*opts.range);
-					ctx.fillStyle = "rgba("+number+","+number+","+number+","+opts.opacity+")";
-					ctx.fillRect(x, y, 1, 1);
+		ael: function(a,b,c) {
+			return(document.body.addEventListener(a,b,c));
+		},
+		gtn: function(a) {
+			return(document.getElementsByTagName(a));
+		},
+		noisify: function(element,options,id,opts,strg) {
+			id&&localStorage[(id="ns"+id)]&&(strg = localStorage[id]);
+			if(!strg) {
+				opts = {
+					opacity: 0.2,
+					range: 100
 				};
+				if(options) {for(var i in options) opts[i]=options[i];};
+				if(!!!document.createElement('canvas').getContext) { return false; }
+				var ctx = (canvas = document.createElement("canvas")).getContext('2d');
+				canvas.width = element.clientWidth;
+				canvas.height = element.clientHeight;
+				for(var x=0;x<canvas.width;x++) {
+					for(var y=0;y<canvas.height;y++) {
+						var number = Math.floor(Math.random()*opts.range);
+						ctx.fillStyle = "rgba("+number+","+number+","+number+","+opts.opacity+")";
+						ctx.fillRect(x, y, 1, 1);
+					};
+				};
+				strg = "url("+canvas.toDataURL("image/png")+")";
+				localStorage[id] = strg;
 			};
-			element.style.backgroundImage = "url("+canvas.toDataURL("image/png")+")";  
+			element.style.backgroundImage = strg;
 			return(true);
 		},
-		notebookify: function(element) {
-			if(!!!document.createElement('canvas').getContext) { return false; }
-			var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d'), offset = 20;
-			canvas.width = 4;
-			canvas.height = 1;
-			ctx.fillStyle = "rgba(236,0,140,.2)";
-			ctx.fillRect(0, 0, 1, 1);
-			ctx.fillRect(3, 0, 1, 1);
-			element.style.backgroundImage = "url("+canvas.toDataURL("image/png")+")";
+		notebookify: function(element,strg,offset) {
+			offset = 20;
+			if(!(strg=localStorage["bg"])) {
+				if(!!!document.createElement('canvas').getContext) { return false; }
+				var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d');
+				canvas.width = 4;
+				canvas.height = 1;
+				ctx.fillStyle = "rgba(236,0,140,.2)";
+				ctx.fillRect(0, 0, 1, 1);
+				ctx.fillRect(3, 0, 1, 1);
+				strg = "url("+canvas.toDataURL("image/png")+")";
+				localStorage["bg"] = strg;
+			};
+			element.style.backgroundImage = strg;
 			element.style.backgroundRepeat = "repeat-y";
 			element.style.backgroundPosition = offset+"px top";
 			return(true);
 		},
-		swipeStarter: function(event) {
+		swS: function(event) {
 			// event.direction=="left"?doneski.goNext() : doneski.goPrevious();
 		},
-		swipeHandler: function(event) {
+		swE: function(event) {
 			event.direction=="left"?doneski.goNext() : doneski.goPrevious();
 		},
-		swipeMoveHandler: function(event) {
+		swM: function(event) {
 			//
 		},
-		scrollHandler: function(event) {
+		scM: function(event) {
 			// console.log(event.vD);
 			// console.log(event.cY);
 			if((top = doneski.scrollstart - event.vD) < 0) top = 0;
@@ -97,7 +113,7 @@ var _Doneski = function() {
 			// console.log("moving top to: "+top+" (max: "+max+")");
 			window.scrollTo(0,top);
 		},
-		scrollStart: function(event) {
+		scS: function(event) {
 			doneski.scrollstart = window.pageYOffset || window.scrollY;
 			// console.log("started scroll at position: "+doneski.scrollstart);
 			// console.log("started scroll at cY: "+event.cY);
