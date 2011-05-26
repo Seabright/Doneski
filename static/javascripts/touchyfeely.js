@@ -44,11 +44,11 @@ var TouchyFeely = function(element,options) {
 	};
 	touchy.h = function(elem) { for(i in TouchHooks) { elem.addEventListener("touch"+i, TouchHooks[i], true); }; };
 	touchy.l = function() {
-		return(Math.round(Math.sqrt(Math.pow(touchy.b.dX,2)+Math.pow(touchy.b.dY,2))));
+		return((m=Math).round(m.sqrt(m.pow(touchy.b.dX,2)+m.pow(touchy.b.dY,2))));
 	};
 	touchy.a = function() {
-		var ang = Math.round((Math.atan2(touchy.b.vD,touchy.b.hD))*180/Math.PI); //angle in degrees
-		return(ang||(360 - Math.abs(ang)));
+		var ang = (m=Math).round((m.atan2(touchy.b.vD,touchy.b.hD))*180/m.PI); //angle in degrees
+		return(ang||(360 - m.abs(ang)));
 	};
 	touchy.d = function() {
 		if ( (((b=touchy.b.angle) <= 45) && (b >= 0)) || ((b <= 360) && (b >= 315)) ) return('left');
@@ -64,15 +64,16 @@ var TouchyFeely = function(element,options) {
 	};
 	touchy.u = function(event) {
 		var o="ouches", tch = event["t"+o][0] || event["changedT"+o][0], v = touchy.b || touchy.n();
-		v.cX = tch.pageX;
-		v.cY = tch.pageY;
+		v.cX = tch.screenX;
+		v.cY = tch.screenY;
 		v.h = v.h || [];
 		v.h.push([v.cX,v.cY]);
-		v.fC||(v.fC = event["t"+o].length);
-		v.sX||(v.sX = v.cX);
-		v.sY||(v.sY = v.cY);
+		v.fC!=undefined||(v.fC = event["t"+o].length);
+		v.sX!=undefined||(v.sX = v.cX);
+		v.sY!=undefined||(v.sY = v.cY);
 		v.dX = v.cX - v.sX;
 		v.dY = v.cY - v.sY;
+		// console.log("Current: "+v.cX+", "+v.cY+" Diff: "+v.dX+", "+v.dY);
 		v.hD = v.sX - v.cX;
 		v.vD = v.cY - v.sY;
 		if(v.dX||v.dY) {
