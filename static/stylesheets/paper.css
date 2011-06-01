@@ -27,7 +27,7 @@ header tagline{}
 section form{margin:0;background:transparent;padding:0 4% 1em 28px;margin-top:.4em;font-size:14pt;line-height:1.5em;outline:none;-webkit-appearance:none;border-bottom:1px solid rgba(68,140,203,.3);}
 form.tasklist input{-webkit-box-shadow: inset 0 0 4px rgba(0,0,0,.1);border-color:rgba(0,0,0,.2);border-width:2px;background:#FFF;-webkit-border-radius:.85em;outline:none;-webkit-appearance:none;}
 
-content{margin:0 auto;padding:0;max-width:960px;background-color:transparent;-webkit-box-shadow:none;-webkit-border-radius:0;overflow:hidden;}
+content{margin:0 auto;padding:0;max-width:960px;background-color:transparent;-webkit-box-shadow:none;-webkit-border-radius:0;overflow:hidden;position:relative;}
 content,fudge{min-height:0;}
 
 tasks{font-size:17pt;padding:0;}
