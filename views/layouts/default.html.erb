@@ -53,6 +53,9 @@
 	<script type="text/javascript">
 	<%= @@doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))%>
 	</script>
+	<% elsif USE_MINIFIED||=false %>
+	<script type="text/javascript" src="/javascripts/touchyfeely-min.js"></script>
+	<script type="text/javascript" src="/javascripts/doneski-min.js"></script>
 	<% else %>
 	<script type="text/javascript" src="/javascripts/touchyfeely.js"></script>
 	<script type="text/javascript" src="/javascripts/doneski.js"></script>

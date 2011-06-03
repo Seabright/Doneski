@@ -3,6 +3,8 @@ CACHE MANIFEST
 # /
 /stylesheets/doneski.css
 /stylesheets/paper.css
+/javascripts/doneski-min.js
+/javascripts/touchyfeely-min.js
 /javascripts/doneski.js
 /javascripts/touchyfeely.js
 /images/logo-sm.png

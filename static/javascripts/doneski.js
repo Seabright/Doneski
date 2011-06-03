@@ -44,7 +44,7 @@ var _Doneski = function() {
 			st(function(){doneski.ns(tb,{opacity:0.3,range:50},tb);},0);
 			st(function(){doneski.nb("body "+l+"s "+l);},0);
 			w.scrollTo(0,0);
-			st(function(){doneski.sync();},1000);
+			// st(function(){doneski.sync();},1000);
 			doneski.loaded = true;
 		},
 		sync: function() {
@@ -300,22 +300,44 @@ var _Doneski = function() {
 _Doneski.prototype.Synchro = function(obj,opts,synchro) {
 	synchro = this;
 	var core = {
+		intervals: [15000,60000,360000],
+		retries: 4,
+		offs: 0,
+		speed: -1,
 		_init: function(o) {
-			
+			synchro.ping();
+			synchro.setSpeed(0);
 		},
 		online: function() {
 			synchro.onLine = false;
 			try {
 				var x=new XMLHttpRequest();
-				x.open('HEAD', '', false);
+				x.open('GET', '', false);
 				x.send();
 				synchro.onLine = true;
-			} catch(e) {};
+				synchro.offs = 0;
+				synchro.setSpeed(0);
+			} catch(e) {
+				synchro.offs++;
+				if(synchro.offs>synchro.retries) synchro.setSpeed(parseInt(synchro.offs/synchro.retries,10));
+			};
 			return(synchro.onLine);
+		},
+		setSpeed: function(speed) {
+			if(speed!=synchro.speed && synchro.intervals[speed]) {
+				if(synchro.timer) window.clearInterval(synchro.timer);
+				synchro.timer = window.setInterval(synchro.ping,synchro.intervals[speed]);
+				synchro.speed = speed;
+			};
+		},
+		ping: function() {
+			if(synchro.online()) {
+				
+			};
 		}
 	};
 	for(var i in core) synchro[i] = core[i];
-	window.setInterval(synchro.online,15000);
+	synchro._init();
 	return(synchro);
 };
 
