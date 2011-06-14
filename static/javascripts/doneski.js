@@ -43,6 +43,7 @@ var _Doneski = function() {
 			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},500);
 			st(function(){doneski.ns(tb,{opacity:0.3,range:50},tb);},0);
 			st(function(){doneski.nb("body "+l+"s "+l);},0);
+			st(function(){doneski.nb("body header");},0);
 			w.scrollTo(0,0);
 			// st(function(){doneski.sync();},1000);
 			doneski.loaded = true;
@@ -58,7 +59,6 @@ var _Doneski = function() {
 		},
 		ns: function(selector,options,id,opts,strg) {
 			id&&(w=window)[(ls="localStorage")][(id="ns"+id)]&&(strg = w[ls][id]);
-			d=(doneski.styles||(doneski.styles=doneski.newStyle()));
 			if(!strg) {
 				opts = {
 					opacity: 0.2,
@@ -79,12 +79,11 @@ var _Doneski = function() {
 				strg = "url("+canvas.toDataURL("image/png")+")";
 				w[ls][id] = strg;
 			};
-			d.innerHTML+=selector+"{"+(b="background-")+"image:"+strg+";"+b+"repeat:repeat-y;"+b+"position:left top;}\n";
+			doneski.styles().innerHTML+=selector+"{"+(b="background-")+"image:"+strg+";"+b+"repeat:repeat-y;"+b+"position:left top;}\n";
 			return(true);
 		},
 		nb: function(selector,strg,offset,d) {
 			offset = 20;
-			d=(doneski.styles||(doneski.styles=doneski.newStyle()));
 			if(!(strg=localStorage["bg"])) {
 				if(!!!(d=document)[(ce="createElement")]('canvas').getContext) { return false; }
 				var canvas = d[ce]("canvas"), ctx = canvas.getContext('2d');
@@ -96,13 +95,14 @@ var _Doneski = function() {
 				strg = "url("+canvas.toDataURL("image/png")+")";
 				localStorage["bg"] = strg;
 			};
-			d.innerHTML+=selector+"{"+(b="background-")+"image:"+strg+";"+b+"repeat:repeat-y;"+b+"position:"+offset+"px top;}\n";
+			doneski.styles().innerHTML+=selector+"{"+(b="background-")+"image:"+strg+";"+b+"repeat:repeat-y;"+b+"position:"+offset+"px top;}\n";
 			return(true);
 		},
-		newStyle: function(a) {
-			a = (d=document).createElement("style");
-			d.getElementsByTagName("head")[0].appendChild(a);
-			return(a);
+		styles: function(a) {
+			if(doneski.css) return(doneski.css);
+			doneski.css = (d=document).createElement("style");
+			d.getElementsByTagName("head")[0].appendChild(doneski.css);
+			return(doneski.css);
 		},
 		swS: function(event) {
 			if((a=(doneski.swT=doneski.cL)["get"+(a="Attribute")]("style")||"").indexOf((w="-webkit-transform:translate3d("))==-1) {

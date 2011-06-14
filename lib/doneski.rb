@@ -24,6 +24,6 @@ require 'doneski/signup'
 require 'doneski/controller'
 require 'doneski/router'
 
-USE_MINIFIED = true
+USE_MINIFIED = false
 COMPRESS_ASSETS = false
 # Doneski.load_resources

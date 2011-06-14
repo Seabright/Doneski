@@ -40,12 +40,17 @@ tasks task:last-of-type{border-bottom:1px solid rgba(68,140,203,.3);}
 tasks.completed{padding-top:68px;background:transparent url(/images/logo-sm.png) 28px 34px no-repeat;opacity:0;}
 
 
-lists{position:relative;left:0;width:100%;display:block;text-align:left;z-index:0;top:24px;}
-lists list{position:absolute;top:0;display:inline-block;width:100%;padding-bottom:30px;-webkit-transform:translate3d(-120%,0px,0px);background:#ebebeb;/*-webkit-box-shadow: 0 0 50px rgba(0,0,0,.7);*/border:0 solid rgba(0,0,0,.2);border-width:0 1px;}
+lists{position:relative;left:0;width:100%;display:block;text-align:left;z-index:0;}
+.compact lists{top:24px;}
+lists list{position:absolute;top:0;display:inline-block;width:100%;padding-bottom:30px;-webkit-transform:translate3d(-120%,0px,0px);opacity:0;}
 lists list.after{-webkit-transform:translate3d(120%,0px,0px);}
-lists list.active{-webkit-transform:translate3d(0px,0px,0px);}
+lists list.active{-webkit-transform:translate3d(0px,0px,0px);opacity:1;}
 
-body.loaded lists list{-webkit-transition:-webkit-transform .2s linear;}
+lists list, header{background:#ebebeb;/*-webkit-box-shadow: 0 0 50px rgba(0,0,0,.7);*/border:0 solid rgba(0,0,0,.2);border-width:0 1px;}
+header{padding-left:34px;}
+
+
+body.loaded lists list{-webkit-transition:-webkit-transform .3s linear, opacity .2s linear;}
 
 
 /*@media only screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
