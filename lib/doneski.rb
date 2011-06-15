@@ -22,6 +22,7 @@ Seabright::ClassFactory.setup(Doneski::MODELS, Doneski)
 require 'doneski/page'
 require 'doneski/signup'
 require 'doneski/controller'
+require 'doneski/ping'
 require 'doneski/router'
 
 USE_MINIFIED = false
