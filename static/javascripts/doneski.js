@@ -582,7 +582,7 @@ var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
 			return(JSON.stringify(obj));
 		};
 		journal = function() {
-			if(obj.journal) {
+			if(obj.journal && !!obj.journal.call) {
 				obj.journal(Array.prototype.slice.call(arguments));
 			} else {
 				console.log("Journal: "+serialize(Array.prototype.slice.call(arguments)));
