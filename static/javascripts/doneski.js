@@ -48,14 +48,6 @@ var _Doneski = function() {
 			st(function(){doneski.sync();},1000);
 			doneski.loaded = true;
 		},
-		sync: function() {
-			doneski.syncer||(doneski.syncer = new Doneski.Synchro());
-			if(doneski.syncer.onLine) {
-				console.log("syncing");
-			} else {
-				console.log("offline");
-			};
-		},
 		ael: function(a,b,c) {
 			return(document.addEventListener(a,b,c));
 		},
@@ -257,7 +249,7 @@ var _Doneski = function() {
 			return('localStorage' in window && window['localStorage'] !== null);
 		},
 		ping: function() {
-			console.log("Yeah yeah.", doneski);
+			//console.log("Yeah yeah.", doneski);
 		},
 		bkp: function(event) {
 			if(event.keyCode==39) {
@@ -266,31 +258,13 @@ var _Doneski = function() {
 				doneski.goP();
 			};
 		},
-		swipe: function(event) {
-			// console.log(event);
-		},
 		intercepts: [],
 		queue: [0,1,2,3,4,5,6,7,8,9],
 		currentJournal: 0,
-		// intercept: function(obj) {
-		// 	if(obj.intercepts) {
-		// 		for(var i=0;i<obj.intercepts.length;i++) {
-		// 			var method = obj[obj.intercepts[i]];
-		// 			if(method) {
-		// 				console.log(method.constructor);
-		// 			};
-		// 		};
-		// 	};
-		// },
-		// perform: function() {
-		// 	var args = Array.prototype.slice.call(arguments);
-		// 	var obj = args.shift(), action = args.shift();
-		// 	doneski.journal(obj,action,args);
-		// 	return(obj[action].apply(obj,args));
-		// },
 		newJournal: function() {
-			doneski.currentJournal += 1;
-			localStorage["journal.current"] = doneski.currentJournal;
+			(l=localStorage)[(j="journal.")+"unsynced"] += doneski[(c="currentJournal")] + ",";
+			doneski[c] += 1;
+			l[j+"current"] = doneski[c];
 		},
 		journal: function() {
 			(a = Array.prototype.slice.call(arguments)[0]).unshift(new Date().getTime()+"-"+(d=doneski.queue.shift()));
@@ -299,6 +273,20 @@ var _Doneski = function() {
 			c = JSON.parse(localStorage[b]);
 			c.push(a);
 			localStorage[b] = doneski.serialize(c);
+			doneski.needsSync = true;
+		},
+		sync: function(currentJournal,unsynced,i) {
+			doneski.syncer||(doneski.syncer = new Doneski.Synchro(doneski));
+			if(doneski.needsSync && doneski.syncer.onLine) {
+				console.log("syncing");
+				doneski.newJournal();
+				(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(",")).pop();
+				for(i in unsynced) {
+					console.log(j+i,l[j+i]);
+				};
+			} else {
+				console.log("offline");
+			};
 		},
 		serialize: function(obj) {
 			return(JSON.stringify(obj));
@@ -350,6 +338,26 @@ _Doneski.prototype.Synchro = function(obj,opts,synchro) {
 				
 			};
 		}
+	};
+	if(obj.sync_intercepts) {
+		sync = function() {
+			if(obj.sync && !!obj.sync.call) {
+				obj.sync(Array.prototype.slice.call(arguments));
+			};
+		};
+		perform = function(name,args) {
+			sync(obj.id,name,(args = Array.prototype.slice.call(args)));
+			return(methods[name].apply(obj,args));
+		};
+		var methods = [];
+		for(i=0;i<obj.sync_intercepts.length;i++) {
+			methods[(m=obj.sync_intercepts[i])] = obj[m];
+			(function(obj,method) {
+				if(method) {
+					obj[method] = function(){perform.apply(obj,[method,arguments]);};
+				};
+			})(obj,m);
+		};
 	};
 	for(var i in core) synchro[i] = core[i];
 	synchro._init();
@@ -576,7 +584,6 @@ _Doneski.prototype.Task = function(list,obj,id) {
 };
 
 var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
-	j=this;
 	if(obj.intercepts) {
 		serialize = function(obj) {
 			return(JSON.stringify(obj));
