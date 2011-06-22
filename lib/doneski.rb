@@ -23,6 +23,7 @@ require 'doneski/page'
 require 'doneski/signup'
 require 'doneski/controller'
 require 'doneski/ping'
+require 'doneski/sync'
 require 'doneski/router'
 
 USE_MINIFIED = false
