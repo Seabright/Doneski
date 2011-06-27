@@ -291,7 +291,7 @@ var _Doneski = function() {
 				c = JSON.parse(cur);
 				c.push(a);
 				localStorage[b] = doneski.serialize(c);
-				doneski.needsSync = true;
+				doneski.needsSync = 1;
 			};
 		},
 		sync: function(unsynced,i,s) {
