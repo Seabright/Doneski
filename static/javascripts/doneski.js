@@ -303,10 +303,10 @@ var _Doneski = function() {
 				if(doneski.syncer.onLine) {
 					(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(","));
 					for(i in unsynced) {
-						if(l[j+i]) (s=s||[]).push("["+i+","+l[j+i]+"]");
+						if(l[j+i]) (s=s||[]).push([parseInt(i,10),JSON.parse(l[j+i])]);
 					};
-					s=s.join(",");
-					doneski.upload(s);
+					//s="["+s.join(",")+"]";
+					doneski.upload(doneski.serialize({account:"test",device:"test",data:s}));
 				} else {
 					console.log("offline");
 				};
