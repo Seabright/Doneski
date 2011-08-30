@@ -26,8 +26,11 @@ var _Doneski = function() {
 			doneski.fudge = gtn("content")[0];
 			if((ls='localStorage') in (w=window) && w[ls] !== null) {
 				doneski.touch();
-				doneski.currentJournal = parseInt((w[ls]["journal.current"] || 1),10);
-				doneski.lastSync = parseInt((w[ls]["journal.lastsync"] || 0),10);
+				doneski.currentJournal = parseInt((w[ls][(j="journal.")+"current"] || 1),10);
+				doneski.lastSync = parseInt((w[ls][j+"lastsync"] || 0),10);
+				if(!w[ls][j+"started"]) {
+					doneski.do_journal = true;
+				};
 				w.scrollTo(0,35);
 				if(localStorage[l+"s"]) {
 					var lists = w[ls][l+"s"].split(",");
@@ -61,7 +64,8 @@ var _Doneski = function() {
 			st(function(){doneski.cachedTexture("body header",doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			w.scrollTo(0,0);
 			st(function(){doneski.sync();},1000);
-			doneski.loaded = true;
+			w[ls][j+"started"] = 1;
+			doneski.loaded = doneski.do_journal = doneski.do_sync = true;
 		},
 		ael: function(a,b,c) {
 			return(document.addEventListener(a,b,c));
@@ -284,28 +288,25 @@ var _Doneski = function() {
 			l[j+"current"] = doneski[c];
 		},
 		journal: function() {
-			if(doneski.loaded) {
+			if(doneski.do_journal) {
 				(a = Array.prototype.slice.call(arguments)[0]).unshift(new Date().getTime()+"-"+(d=doneski.queue.shift()));
 				doneski.queue.push(doneski.queue[doneski.queue.length-1]+1);
-				cur = localStorage[(b="journal."+doneski.currentJournal)] || "[]";
-				c = JSON.parse(cur);
-				c.push(a);
-				localStorage[b] = doneski.serialize(c);
+				localStorage["journal."+doneski.currentJournal] = doneski.serialize(a);
+				doneski.newJournal();
 				doneski.needsSync = 1;
 			};
 		},
 		sync: function(unsynced,i,s) {
-			if(doneski.loaded && !doneski.syncing && doneski.needsSync) {
+			if(doneski.do_sync && !doneski.syncing && doneski.needsSync) {
 				doneski.syncing=1;
 				doneski.syncer||(doneski.syncer = new Doneski.Synchro(doneski));
 				if(doneski.syncer.onLine) {
-					doneski.newJournal();
 					(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(","));
 					for(i in unsynced) {
-						if(l[j+i]) (s=s||[]).push("["+i+","+l[j+i]+"]");
+						if(l[j+i]) (s=s||[]).push([parseInt(i,10),JSON.parse(l[j+i])]);
 					};
-					s=s.join(",");
-					doneski.upload(s);
+					//s="["+s.join(",")+"]";
+					doneski.upload(doneski.serialize({account:"test",device:"test",data:s}));
 				} else {
 					console.log("offline");
 				};
@@ -391,7 +392,7 @@ _Doneski.prototype.Synchro = function(obj,opts,synchro,sync,perform) {
 	return(synchro);
 };
 
-_Doneski.prototype.List = function(id,title,tasks) {
+_Doneski.prototype.List = function(id,title,tasks,itms) {
 	var tag = Doneski.tag;
 	var list = tag("list");
 	list.name_input = tag("input",{ "type":"text", "name":"title", "placeholder":"Name this list", "class":"delayed"});
@@ -501,8 +502,7 @@ _Doneski.prototype.List = function(id,title,tasks) {
 		list.name_input.value = localStorage["lists."+list.id+".name"];
 		list.name_input.className = "setted";
 	};
-	if(localStorage["lists."+list.id]) {
-		var itms = localStorage["lists."+list.id].split(",");
+	if(localStorage["lists."+list.id] && (itms = localStorage["lists."+list.id].split(","))) {
 		for(i=0;i<itms.length;i++) {
 			list.loadTask(itms[i]);
 		};
@@ -565,7 +565,7 @@ _Doneski.prototype.Task = function(list,obj,id) {
 			task.nocancel = true;
 		},
 		save: function() {
-			(task.killed && localStorage.removeItem("tasks."+task.id)) || (localStorage["tasks."+task.id] = [task.innerHTML,task.completed].join(Doneski.separator));
+			task.killed ? localStorage.removeItem("tasks."+task.id) : (localStorage["tasks."+task.id] = [task.innerHTML,task.completed].join(Doneski.separator));
 		},
 		complete: function() {
 			task.className = "";
@@ -590,7 +590,9 @@ _Doneski.prototype.Task = function(list,obj,id) {
 			task["dispatch"+e](evObj);
 			console.log("dispatched",type);
 		},
-		setText: function(txt) {task.innerHTML = txt;}
+		setText: function(txt) {
+			task.innerHTML = txt;
+		}
 	};
 	for(var i in core) {
 		task[i] = core[i];
@@ -606,7 +608,7 @@ _Doneski.prototype.Task = function(list,obj,id) {
 		task.className = "active";
 	};
 	
-	task.intercepts = ["complete","uncomplete","kill","setText"];
+	task.intercepts = ["complete","uncomplete","kill","setText","create"];
 	task.sync_intercepts = task.intercepts;
 	task.journal = Doneski.journal;
 	task.sync = Doneski.sync;
