@@ -125,8 +125,8 @@ var _Doneski = function() {
 			return(doneski.css);
 		},
 		swS: function(event) {
-			if((a=(doneski.swT=doneski.cL)["get"+(a="Attribute")]("style")||"").indexOf((w="-webkit-transform:translate3d("))==-1) {
-				doneski.swT["set"+a]("style", a+w+"0px,0px,0px);");
+			if((g=(doneski.swT=doneski.cL)["get"+(a="Attribute")]("style")||"").indexOf((w="-webkit-transform:translate3d("))==-1) {
+				doneski.swT["set"+a]("style", g+w+"0px,0px,0px);");
 			};
 			//doneski.swT.orig = a;
 		},
@@ -140,7 +140,7 @@ var _Doneski = function() {
 		},
 		scS: function(event) {
 			if((a=(doneski.scT=doneski.cL).getAttribute("style")||"").indexOf((w="-webkit-transform:translate3d("))==-1) {
-				doneski.scT.setAttribute("style", a+w+"0px,0px,0px);");
+				doneski.scT.setAttribute("style", a+w+"0px,0px,0px);-webkit-transition:none;");
 				doneski.scS = 0;
 			} else {
 				doneski.scS = parseInt(a.replace(/.*-webkit-transform:translate3d\((-)?[0-9]{1,5}(px)?,((-)?[0-9]{1,5})(px)?,.*/,"$3"),10);

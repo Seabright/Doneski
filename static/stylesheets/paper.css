@@ -52,7 +52,7 @@ header{padding-left:34px;}
 
 body.loaded lists list{-webkit-transition:-webkit-transform .3s linear, opacity .2s linear;}
 
-
+/*lists{overflow:scroll;-webkit-overflow-scrolling:touch;}*/
 /*@media only screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
 	/* This block specifies CSS that only applies to an iPhone with Retina display 
 	toolbar{background:#205c82;height:56px;}

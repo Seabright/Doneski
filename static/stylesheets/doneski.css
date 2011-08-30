@@ -16,7 +16,7 @@ toolbar{}
 toolbar buttons{float:right;max-width:30%;height:100%;overflow:hidden;padding:0 .5em;}
 toolbar buttons button{width:20px;height:20px;margin:3px;border:0px dashed rgba(255,255,255,.5);-webkit-border-radius:4px;background:transparent;}
 toolbar listnav{float:left;max-width:100%;}
-header{position:relative;padding:1em 0 .5em;}
+header{position:relative;padding:3em 0 .5em;}
 .compact .initial{-webkit-transform:scale3d(1,0,0);padding:0;height:0;display:none;}
 .compact.quick .initial{-webkit-transition:none;}
 .delayed{height:0px;opacity:0;overflow:hidden;display:none;}
