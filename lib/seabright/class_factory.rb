@@ -1,7 +1,6 @@
 module Seabright
   DEBUG = const_defined?(:DEBUG) ? ::DEBUG : false
   class ClassFactory
-    require 'seabright/redis_object'
     def self.setup(classes,namespace=nil)
       (classes.class==Array ? classes : classes.keys).each do |cls|
         sub_class = (namespace ? namespace : Object.const_defined?(:MODEL_NAMESPACE) ? MODEL_NAMESPACE : Object).const_set(cls, Class.new(Seabright::RedisObject)) if !load_from_file(cls)

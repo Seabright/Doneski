@@ -42,7 +42,8 @@ var _Doneski = function() {
 					if(!focus) focus = doneski.l[0];
 					doneski.go(focus);
 				} else {
-					doneski.newList();
+				doneski.newList();
+				doneski.newList();
 				};
 				console.log("got",doneski.currentJournal,doneski.lastSync);
 				doneski.sFH();
@@ -50,14 +51,24 @@ var _Doneski = function() {
 				// No local storage - hmmm...
 			};
 			(ael=doneski.ael)("keyup",doneski.bkp,true);
-			if(typeof TouchyFeely != "undefined") {
-				doneski.toucher = new TouchyFeely(document,{cscroll : 0});
-				ael((a="swipe")+"start",doneski.swS,true);
-				ael(a+"move",doneski.swM,true);
-				ael(a+"end",doneski.swE,true);
-				ael((a="scroll")+"start",doneski.scS,true);
-				ael(a+"move",doneski.scM,true);
-			};
+			// if(typeof TouchyFeely != "undefined") {
+			// 	doneski.toucher = new TouchyFeely(document,{cscroll : 0});
+			// 	ael((a="swipe")+"start",doneski.swS,true);
+			// 	ael(a+"move",doneski.swM,true);
+			// 	ael(a+"end",doneski.swE,true);
+			// 	ael((a="scroll")+"start",doneski.scS,true);
+			// 	ael(a+"move",doneski.scM,true);
+			// };
+			
+			
+			// Scroller!!!!!!!!!!!!! ----------------------------------------------
+
+			// doneski.iscroller = new iScroll(doneski.lcon,{ hScrollbar: false, vScrollbar: false, snap: "list", vScroll: false });
+
+
+
+
+			
 			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},500);
 			st(function(){doneski.cachedTexture(tb,doneski.ns,{opacity:0.3,range:50},tb);},0);
 			st(function(){doneski.cachedTexture("body "+l+"s "+l,doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
@@ -401,7 +412,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 	list.appendChild(list.form);
 	list.task_input = tag("input",{"type":"text", "class":"task", "placeholder":"Add your first to-do"});
 	list.form.appendChild(list.task_input);
-	list.form.appendChild(tag("button",{"class":"add"},"+"));
+	// list.form.appendChild(tag("button",{"class":"add"},"+"));
 	list.form.appendChild(tag("input",{"type":"submit", "value":"Add", "style":"display:none;"}));
 	list.task_container = tag("tasks",{"class":"active"});
 	list.appendChild(list.task_container);
@@ -497,7 +508,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 	list.id = id;
 	list.title = title || "";
 	list.items = [];
-	// list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
+	
 	if(localStorage["lists."+list.id+".name"]) {
 		list.name_input.value = localStorage["lists."+list.id+".name"];
 		list.name_input.className = "setted";

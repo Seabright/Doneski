@@ -16,19 +16,11 @@
 		<link rel="apple-touch-icon" href="/images/icon-dark.png" />
 		<link rel="apple-touch-startup-image" href="/images/splash.png" />
 		
-		<link rel="icon" href="data:image/png;base64,<%= @@doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
-		<link rel="shortcut icon" href="data:image/png;base64,<%= @@doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
-		<% if COMPRESS_ASSETS||=false %>
-		<style>
-		<%= @@doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified%>
-		<%= @@papercss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/paper.css')).minified%>
-		</style>
-		<% else %>
 		<link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
 		<link href="/stylesheets/paper.css" media="screen" rel="stylesheet" type="text/css" />
-		<% end %>
 	</head>
 	<body class="init">
+		<fudge>&nbsp;</fudge>
 		<content>
 			<header class="initial">
 				<logo>Doneski</logo>
@@ -45,29 +37,8 @@
 			</toolbar>
 		</content>
 	</body>
-	<% if COMPRESS_ASSETS||=false %>
-	<script type="text/javascript">
-	<%= @@iscrolljs ||= Closure::Compiler.new.compile(File.open('static/javascripts/iscroll.js', 'r'))%>
-	<%= @@doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))%>
-	</script>
-	<% elsif USE_MINIFIED||=false %>
-	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
-	<script type="text/javascript" src="/javascripts/doneski-min.js"></script>
-	<% else %>
-	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
+	<script type="text/javascript" src="/javascripts/touchyfeely.js"></script>
 	<script type="text/javascript" src="/javascripts/doneski.js"></script>
-	<% end %>
-	<% if 1==0 %>
-		<% if COMPRESS_ASSETS||=false %>
-		<script type="text/javascript">
-		<%= @@touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchyfeely.js', 'r'))%>
-		</script>
-		<% elsif USE_MINIFIED||=false %>
-		<script type="text/javascript" src="/javascripts/touchyfeely-min.js"></script>
-		<% else %>
-		<script type="text/javascript" src="/javascripts/touchyfeely.js"></script>
-		<% end %>
-	<% end %>
 	<script language="javascript">
 	if(!('localStorage' in window && window['localStorage'] !== null && localStorage["doneski.lists"])) document.body.className = document.body.className.replace("init","");
 	</script>

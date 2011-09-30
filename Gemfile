@@ -1,12 +1,10 @@
-source 'http://rubygems.org'
+# source 'http://rubygems.org'
 
-#gem "SystemTimer"
 gem "redis"
 
-#gem "memcache-client"
+gem "redis_object", "0.0.2a", :git => "git://github.com/remotezygote/RedisObject.git"
 
 gem 'yajl-ruby'
-#gem 'utf8_utils'
 
 gem 'unicorn'
 
