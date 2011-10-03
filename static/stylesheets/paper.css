@@ -37,7 +37,7 @@ task.clicky{text-decoration:line-through;background-color:rgba(20,53,65,.7);colo
 tasks.completed task{text-decoration:line-through;color:rgba(0,0,0,.9);opacity:.5;}
 tasks task:last-of-type{border-bottom:1px solid rgba(68,140,203,.3);}
 
-tasks.completed{padding-top:68px;background:transparent url(/images/logo-sm.png) 28px 34px no-repeat;opacity:0;}
+tasks.completed{padding-top:68px;background-position:28px 34px;opacity:0;}
 
 
 lists{position:relative;left:0;width:100%;display:block;text-align:left;z-index:0;}

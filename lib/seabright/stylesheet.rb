@@ -11,7 +11,7 @@ module Seabright
     def minify(content)
       class << content; include Minifier; end
       content.compress_whitespace.remove_comments.remove_spaces_outside_block.
-        remove_spaces_inside_block.trim_last_semicolon.strip
+        remove_spaces_inside_block.trim_last_semicolon.encode_images.strip
     end
 
     module Minifier
@@ -26,6 +26,11 @@ module Seabright
         end
       end
       def trim_last_semicolon; compress!(/;(?=\})/, ''); end
+      def encode_images
+        compress!(/\{(.*?)(?=\})/) do |m|
+          m.gsub(/\burl\(([^\)]+)\)/) { |n| "url(data:image/png;base64,#{Base64.encode64(IO.read("static#{$1}")).gsub("\n",'')})" }.strip
+        end
+      end
     private
       def compress!(*args, &block) gsub!(*args, &block) || self; end
     end

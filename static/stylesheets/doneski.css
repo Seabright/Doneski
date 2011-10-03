@@ -21,7 +21,8 @@ header{position:relative;padding:3em 0 .5em;}
 .compact.quick .initial{-webkit-transition:none;}
 .delayed{height:0px;opacity:0;overflow:hidden;display:none;}
 .compact .delayed{opacity:1;height:auto;display:block;}
-header logo{margin-left:-4px;height:30px;display:block;background:transparent url(/images/logo-sm.png) left top no-repeat;text-indent:-9999em;}
+header logo{margin-left:-4px;height:30px;display:block;text-indent:-9999em;}
+header logo,tasks.completed{background:transparent url(/images/logo-sm.png) left top no-repeat;}
 header tagline{font-weight:500;font-size:14pt;letter-spacing:-0.04em;line-height:28px;text-align:left;display:block;}
 a{color:#3892b2;text-decoration:none;}
 h1{font-weight:300;font-size:33pt;letter-spacing:-0.04em;line-height:1em;margin-bottom:.8em;}
@@ -45,7 +46,8 @@ tasks task:last-of-type{border-bottom:none;}
 
 toolbar{display:block;}
 
-tasks.completed{padding-top:68px;background:transparent url(/images/logo-sm.png) .5em 34px no-repeat;opacity:0;}
+tasks.completed{padding-top:68px;background-position:.5em 34px;opacity:0;}
+
 tasks.completed task{text-decoration:line-through;}
 .compact tasks.completed{opacity:1;}
 
@@ -79,7 +81,7 @@ max-device-width: 1024px seems to only select the iPad
 
 /*@media only screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
 	/* This block specifies CSS that only applies to an iPhone with Retina display 
-	header logo{margin-left:-4px;height:60px;display:block;background:transparent url(/images/logo-sm.png) left top no-repeat;text-indent:-9999em;}
-	tasks.completed{padding-top:120px;background:transparent url(/images/logo-sm.png) .5em 64px no-repeat;opacity:0;}
+	header logo{margin-left:-4px;height:60px;display:block;text-indent:-9999em;}
+	tasks.completed{padding-top:120px;opacity:0;}
 	content{width:640px;}
 }*/
