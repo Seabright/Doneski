@@ -45,19 +45,20 @@ var _Doneski = function() {
 				doneski.newList();
 				doneski.newList();
 				};
-				console.log("got",doneski.currentJournal,doneski.lastSync);
+				// console.log("got",doneski.currentJournal,doneski.lastSync);
 				doneski.sFH();
 			} else {
 				// No local storage - hmmm...
 			};
 			(ael=doneski.ael)("keyup",doneski.bkp,true);
 			if(typeof TouchyFeely != "undefined") {
-				doneski.toucher = new TouchyFeely(document,{cscroll : 0});
+				doneski.toucher = new TouchyFeely(document,{mL: 10, cscroll : 0});
 				ael((a="swipe")+"start",doneski.swS,true);
 				ael(a+"move",doneski.swM,true);
 				ael(a+"end",doneski.swE,true);
 				ael((a="scroll")+"start",doneski.scS,true);
 				ael(a+"move",doneski.scM,true);
+				ael(a+"end",doneski.scE,true);
 			};
 			
 			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},500);
@@ -141,7 +142,7 @@ var _Doneski = function() {
 		},
 		swE: function(event) {
 			var a = doneski.swT;
-			// window.setTimeout(function(){a.setAttribute("style","");},100);
+			window.setTimeout(function(){a.removeAttribute("style");},100);
 			event.direction=="left"?doneski.goN() : doneski.goP();
 		},
 		scS: function(event) {
@@ -155,6 +156,9 @@ var _Doneski = function() {
 		scM: function(event,b) {
 			b = ((e=doneski.scS + event.dY) > 0 ? 0 : e < (d=doneski.mSc()) ? d : e);
 			doneski.scT.setAttribute("style", doneski.scT.getAttribute("style").replace(/-webkit-transform:translate3d\(((-)?[0-9]{1,5}(px)?),(-)?[0-9]{1,5}(px)?,/,"-webkit-transform:translate3d($1,"+b+"px,"));
+		},
+		scE: function(event) {
+			doneski.scT.setAttribute("style", doneski.scT.getAttribute("style").replace("-webkit-transition:none;",''));
 		},
 		mSc: function() {
 			return(0-doneski.scT.clientHeight+window.innerHeight);
@@ -200,13 +204,12 @@ var _Doneski = function() {
 			localStorage["last_list"] = lst.id;
 			//lst.activate();
 		},
-		sFH: function(again) {
-			again==false||(again=true);
-			if(!(cl=doneski.cL)) return;
-			cl.style.height = "";
-			doneski.fudge.style.height = ((cL = cl.clientHeight) > (wh=window.innerHeight) ? cL : wh) + "px";
-			cl.style.height = (cL > wh) ? "" : wh+"px";
-			again&&window.setTimeout(function(){doneski.sFH(false);},200);
+		sFH: function() {
+			if((s=doneski.styles())&&s.innerHTML.indexOf("/*fudge heights*/")==-1) {
+				doneski.styles().innerHTML += "\n/*fudge heights*/content,lists list{min-height:"+window.innerHeight+"px;}";
+			} else {
+				doneski.styles().innerHTML.replace("\n\/\*fudge heights\*\/content,lists list\{[^\}]+\}","\n/*fudge heights*/content,lists list{min-height:"+window.innerHeight+"px;}");
+			};
 		},
 		goN: function() {
 			var idx = doneski.l.indexOf(doneski.cL) + 1;
@@ -480,10 +483,13 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 		activate: function() {
 			list.className = "active";
 			list.nav_item.className = "active";
+			if(list.old_style) list.setAttribute("style",list.old_style);
 		},
 		deactivate: function(cls) {
 			list.className = cls || "";
 			list.nav_item.className = "";
+			list.old_style = list.getAttribute("style");
+			list.removeAttribute("style");
 		}
 	};
 	for(var i in core) {
@@ -589,7 +595,6 @@ _Doneski.prototype.Task = function(list,obj,id) {
 			(evObj = document.createEvent('UIEvents')).initUIEvent(type || "update", true, true, window, 1);
 			evObj.t_id = task.id;
 			task.dispatchEvent(evObj);
-			console.log("dispatched",type);
 		},
 		setText: function(txt) {
 			task.innerHTML = txt;
@@ -632,7 +637,7 @@ var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
 			if(obj.journal && !!obj.journal.call) {
 				obj.journal(Array.prototype.slice.call(arguments));
 			} else {
-				console.log("Journal: "+serialize(Array.prototype.slice.call(arguments)));
+				// console.log("Journal: "+serialize(Array.prototype.slice.call(arguments)));
 			};
 		};
 		perform = function(name,args) {

@@ -1,6 +1,6 @@
 // /*
 //  TouchyFeely
-// 	Swipe controller library - handles swipes, touches, and pinches on any object, icnluding the body
+// 	Swipe controller library - handles swipes, touches, and pinches on any object, including the body
 // 	Created by John Bragg for Seabright Studios
 // */
 

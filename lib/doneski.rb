@@ -26,6 +26,6 @@ require 'doneski/ping'
 require 'doneski/sync'
 require 'doneski/router'
 
-USE_MINIFIED = true
-COMPRESS_ASSETS = true
+USE_MINIFIED = !DEBUG
+COMPRESS_ASSETS = !DEBUG
 # Doneski.load_resources
