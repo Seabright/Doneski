@@ -47,17 +47,14 @@
 	</body>
 	<% if COMPRESS_ASSETS||=false %>
 	<script type="text/javascript">
-	<%= @@iscrolljs ||= Closure::Compiler.new.compile(File.open('static/javascripts/iscroll.js', 'r'))%>
 	<%= @@doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))%>
 	</script>
 	<% elsif USE_MINIFIED||=false %>
-	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
 	<script type="text/javascript" src="/javascripts/doneski-min.js"></script>
 	<% else %>
-	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
 	<script type="text/javascript" src="/javascripts/doneski.js"></script>
 	<% end %>
-	<% if 1==0 %>
+	<% if 1==1 %>
 		<% if COMPRESS_ASSETS||=false %>
 		<script type="text/javascript">
 		<%= @@touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchyfeely.js', 'r'))%>

@@ -27,15 +27,15 @@ a{color:#3892b2;text-decoration:none;}
 h1{font-weight:300;font-size:33pt;letter-spacing:-0.04em;line-height:1em;margin-bottom:.8em;}
 strong{font-weight:600;}
 section{text-align:left;}
-section form{margin:0;background:#F1F3F4;padding:.75em;margin-top:.4em;font-size:14pt;line-height:1.5em;-webkit-border-radius:.2em;}
+section form{display:block;margin:0;background:#F1F3F4;padding:.75em;margin-top:.4em;font-size:14pt;line-height:1.5em;-webkit-border-radius:.2em;}
 input{-webkit-appearance: none;}
 lists list > input{border:none;-webkit-border-radius:.1em;padding:.05em .1em;display:block;width:100%;font-size:22pt;font-weight:600;}
 .compact lists list > input{margin:10px 0;}
 .compact lists list > input:hover{background:rgba(213,233,245,.5);}
 input.setted{border-color:transparent;}
 task h2{display:none;}
-form.tasklist input{border:1px solid rgba(21,53,64,.5);-webkit-border-radius:.1em;padding:.2em .4em;width:100%;margin-right:4%;font-size:17pt;}
-list button{display:none;font-size:22pt;border:none;margin:0;-webkit-border-radius:.1em;overflow:hidden;text-align:center;line-height:1em;position:relative;top:.15em;background:-webkit-gradient(linear,left top, left bottom, color-stop(0,#60aae1), color-stop(49.9%,#60aae1), color-stop(50%,#59a0d7), color-stop(100%,#59a0d7));color:#FFF;text-shadow: rgba(0,0,0,.1) 0px 1px 2px;width:10%;}
+form.tasklist input{border:1px solid rgba(21,53,64,.5);/*-webkit-border-radius:.1em;*/padding:.2em .4em;width:100%;margin-right:4%;font-size:17pt;}
+list button{display:none;/*font-size:22pt;border:none;margin:0;-webkit-border-radius:.1em;overflow:hidden;text-align:center;line-height:1em;position:relative;top:.15em;background:-webkit-gradient(linear,left top, left bottom, color-stop(0,#60aae1), color-stop(49.9%,#60aae1), color-stop(50%,#59a0d7), color-stop(100%,#59a0d7));color:#FFF;text-shadow: rgba(0,0,0,.1) 0px 1px 2px;width:10%;*/}
 button.add{}
 tasks{font-size:17pt;padding:0;}
 /*tasks.completed task.active, task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}

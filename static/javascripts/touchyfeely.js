@@ -12,6 +12,7 @@ var TouchyFeely = function(element,options) {
 			touchy.b.s = event;
 		},
 		move : function(event) {
+			event.preventDefault();
 			if(touchy.b) {
 				touchy.u(event);
 				touchy.b.type&&TouchEvent(touchy.b.type+"move");
@@ -88,7 +89,7 @@ var TouchyFeely = function(element,options) {
 				v.direction = undefined;
 			};
 		};
-		event.preventDefault();
+		// event.preventDefault();
 	};
 	touchy.n = function() { delete touchy["b"]; touchy.b = {h : []}; return(touchy.b); };
 	touchy.z = function() { delete touchy["b"]; };

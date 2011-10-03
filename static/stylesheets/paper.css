@@ -25,7 +25,7 @@ header{padding-left:10%;}
 header logo{}
 header tagline{}
 section form{margin:0;background:transparent;padding:0 4% 1em 28px;margin-top:.4em;font-size:14pt;line-height:1.5em;outline:none;-webkit-appearance:none;border-bottom:1px solid rgba(68,140,203,.3);}
-form.tasklist input{-webkit-box-shadow: inset 0 0 4px rgba(0,0,0,.1);border-color:rgba(0,0,0,.2);border-width:2px;background:#FFF;-webkit-border-radius:.85em;outline:none;-webkit-appearance:none;}
+form.tasklist input{/*-webkit-box-shadow: inset 0 0 4px rgba(0,0,0,.1);*/border-color:rgba(0,0,0,.2);border-width:2px;background:#FFF;-webkit-border-radius:.85em;outline:none;-webkit-appearance:none;}
 
 content{margin:0 auto;padding:0;max-width:960px;background-color:transparent;-webkit-box-shadow:none;-webkit-border-radius:0;overflow:hidden;position:relative;}
 content,fudge{min-height:0;}
@@ -42,20 +42,26 @@ tasks.completed{padding-top:68px;background:transparent url(/images/logo-sm.png)
 
 lists{position:relative;left:0;width:100%;display:block;text-align:left;z-index:0;}
 .compact lists{top:24px;}
-lists list{display:inline-block;width:480px;height:100%;min-height:100%;padding-bottom:30px;opacity:.8;}
+lists list{position:absolute;top:0;display:inline-block;width:100%;padding-bottom:30px;-webkit-transform:translate3d(-120%,0px,0px);opacity:0;}
+lists list.after{-webkit-transform:translate3d(120%,0px,0px);}
+lists list.active{-webkit-transform:translate3d(0px,0px,0px);opacity:1;}
+
+/*lists list{display:block;width:100%;height:100%;min-height:100%;padding-bottom:30px;opacity:.8;}
 lists list.after{}
 lists list.active{opacity:1}
-
+*/
 lists list, header{background:#ebebeb;/*-webkit-box-shadow: 0 0 50px rgba(0,0,0,.7);*/border:0 solid rgba(0,0,0,.2);border-width:0 1px;}
 header{padding-left:34px;}
 
-
-body.loaded lists list{-webkit-transition:left .3s linear, opacity .2s linear;}
-
-content>section{width:100%;}
-lists{width:99999em;vertical-align:top;}
+body.loaded lists list{-webkit-transition:-webkit-transform .3s linear, opacity .4s linear;}
+/*body.loaded lists list{-webkit-transition:left .3s linear, opacity .2s linear;}
+*/
+/*content>section{width:100%;}
+lists{width:99999em;vertical-align:top;-webkit-transition:-webkit-transform .2s linear;}
+lists.moving{-webkit-transition:none;}
 lists list{display:inline-block;}
-
+*/
+/*lists{margin-left:-480px;}*/
 
 
 /*lists{overflow:scroll;-webkit-overflow-scrolling:touch;}*/
