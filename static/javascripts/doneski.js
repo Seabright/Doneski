@@ -60,7 +60,7 @@ var _Doneski = function() {
 				ael(a+"end",doneski.scE,true);
 			};
 			
-			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},500);
+			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},200);
 			st(function(){doneski.cachedTexture(tb,doneski.ns,{opacity:0.3,range:50},tb);},0);
 			st(function(){doneski.cachedTexture("body "+l+"s "+l,doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			st(function(){doneski.cachedTexture("body header",doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
@@ -141,8 +141,7 @@ var _Doneski = function() {
 			// doneski.swT["set"+(a="Attribute")]("style", doneski.swT["get"+a]("style").replace(/-webkit-transform:translate3d\((-)?[0-9]{1,5}(px)?,/,"-webkit-transform:translate3d("+event.dX+"px,"));
 		},
 		swE: function(event) {
-			var a = doneski.swT;
-			window.setTimeout(function(){a.removeAttribute("style");},100);
+			(function(a){window.setTimeout(function(){a.removeAttribute("style");},200);})(doneski.swT);
 			event.direction=="left" ? doneski.goN() : doneski.goP();
 		},
 		scS: function(event) {
