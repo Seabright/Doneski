@@ -13,11 +13,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<link rel="apple-touch-icon" href="data:image/png;base64,<%= $doneskitouchicon ||= Base64.encode64(IO.read("static/images/icon-dark.png"))%>" />
-		<link rel="apple-touch-startup-image" href="data:image/png;base64,<%= $doneskitouchsplash ||= Base64.encode64(IO.read("static/images/splash.png"))%>" />
+		<link rel="apple-touch-icon" href="data:image/png;base64,<%= $doneskitouchicon ||= Seabright::Stylesheet.b64("/images/icon-dark.png")%>" />
+		<link rel="apple-touch-startup-image" href="data:image/png;base64,<%= $doneskitouchsplash ||= Seabright::Stylesheet.b64("/images/splash.png")%>" />
 		
-		<link rel="icon" href="data:image/png;base64,<%= $doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
-		<link rel="shortcut icon" href="data:image/png;base64,<%= $doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
+		<link rel="icon" href="data:image/png;base64,<%= $doneskifavicon ||= Seabright::Stylesheet.b64("/images/doneski.png")%>" type="image/png" />
+		<link rel="shortcut icon" href="data:image/png;base64,<%= $doneskifavicon ||= Seabright::Stylesheet.b64("/images/doneski.png")%>" type="image/png" />
 		<% if COMPRESS_ASSETS %>
 		<style>
 		<%= $doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified%>
