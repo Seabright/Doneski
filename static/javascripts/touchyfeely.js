@@ -8,6 +8,7 @@ var TouchyFeely = function(element,options) {
 	var touchy = this;
 	var TouchHooks = {
 		start : function(event) {
+			touchy.z();
 			(event.touches.length == 1)&&touchy.u(event,true);
 			touchy.b.s = event;
 		},
@@ -74,13 +75,17 @@ var TouchyFeely = function(element,options) {
 		v.sY!=undefined||(v.sY = v.cY);
 		v.dX = v.cX - v.sX;
 		v.dY = v.cY - v.sY;
-		// console.log("Current: "+v.cX+", "+v.cY+" Diff: "+v.dX+", "+v.dY);
 		v.hD = v.sX - v.cX;
 		v.vD = v.cY - v.sY;
 		if(v.dX||v.dY) {
 			if((v.length = touchy.l()) >= touchy.c.mL) {
 				v.angle = touchy.a();
+				var dir = v.direction;
 				v.direction = touchy.d();
+				if(dir && dir != v.direction) {
+					v.type = touchy.t();
+					TouchEvent(v.type+"start");
+				};
 				if(!v.type&&(v.type = touchy.t())) {
 					TouchEvent(v.type+"start");
 				};
