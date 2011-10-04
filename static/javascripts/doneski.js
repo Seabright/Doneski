@@ -134,6 +134,7 @@ var _Doneski = function() {
 			if((g=(doneski.swT=doneski.cL)["get"+(a="Attribute")]("style")||"").indexOf((w="-webkit-transform:translate3d("))==-1) {
 				// doneski.swT["set"+a]("style", g+w+"0px,0px,0px);");
 			};
+			doneski.swiping = true;
 			//doneski.swT.orig = a;
 		},
 		swM: function(event) {
@@ -142,7 +143,7 @@ var _Doneski = function() {
 		swE: function(event) {
 			var a = doneski.swT;
 			window.setTimeout(function(){a.removeAttribute("style");},100);
-			event.direction=="left"?doneski.goN() : doneski.goP();
+			event.direction=="left" ? doneski.goN() : doneski.goP();
 		},
 		scS: function(event) {
 			if((a=(doneski.scT=doneski.cL).getAttribute("style")||"").indexOf((w="-webkit-transform:translate3d("))==-1) {

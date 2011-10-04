@@ -13,8 +13,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<link rel="apple-touch-icon" href="/images/icon-dark.png" />
-		<link rel="apple-touch-startup-image" href="/images/splash.png" />
+		<link rel="apple-touch-icon" href="data:image/png;base64,<%= $doneskifavicon ||= Base64.encode64(IO.read("static/images/icon-dark.png"))%>" />
+		<link rel="apple-touch-startup-image" href="data:image/png;base64,<%= $doneskifavicon ||= Base64.encode64(IO.read("static/images/splash.png"))%>" />
 		
 		<link rel="icon" href="data:image/png;base64,<%= $doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
 		<link rel="shortcut icon" href="data:image/png;base64,<%= $doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))%>" type="image/png" />
@@ -48,22 +48,14 @@
 	<% if COMPRESS_ASSETS %>
 	<script type="text/javascript">
 	<%= $doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))%>
+	<%= $touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchyfeely.js', 'r'))%>
 	</script>
 	<% elsif USE_MINIFIED %>
 	<script type="text/javascript" src="/javascripts/doneski-min.js"></script>
+	<script type="text/javascript" src="/javascripts/touchyfeely-min.js"></script>
 	<% else %>
 	<script type="text/javascript" src="/javascripts/doneski.js"></script>
-	<% end %>
-	<% if 1==1 %>
-		<% if COMPRESS_ASSETS %>
-		<script type="text/javascript">
-		<%= $touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchyfeely.js', 'r'))%>
-		</script>
-		<% elsif USE_MINIFIED %>
-		<script type="text/javascript" src="/javascripts/touchyfeely-min.js"></script>
-		<% else %>
-		<script type="text/javascript" src="/javascripts/touchyfeely.js"></script>
-		<% end %>
+	<script type="text/javascript" src="/javascripts/touchyfeely.js"></script>
 	<% end %>
 	<script language="javascript">
 	if(!('localStorage' in window && window['localStorage'] !== null && localStorage["doneski.lists"])) document.body.className = document.body.className.replace("init","");
