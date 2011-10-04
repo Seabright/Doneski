@@ -42,8 +42,7 @@ var _Doneski = function() {
 					if(!focus) focus = doneski.l[0];
 					doneski.go(focus);
 				} else {
-				doneski.newList();
-				doneski.newList();
+					doneski.newList();
 				};
 				// console.log("got",doneski.currentJournal,doneski.lastSync);
 				doneski.sFH();
