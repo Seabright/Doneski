@@ -292,7 +292,7 @@ var _Doneski = function() {
 		},
 		journal: function() {
 			if(doneski.do_journal) {
-				(a = Array.prototype.slice.call(arguments)[0]).unshift(new Date().getTime()+"-"+(d=doneski.queue.shift()));
+				(a = Array.prototype.slice.call(arguments)[0]).unshift(new Date().getTime()-(d=doneski.queue.shift()));
 				doneski.queue.push(doneski.queue[doneski.queue.length-1]+1);
 				localStorage["journal."+doneski.currentJournal] = doneski.serialize(a);
 				doneski.newJournal();
@@ -303,15 +303,12 @@ var _Doneski = function() {
 			if(doneski.do_sync && !doneski.syncing && doneski.needsSync) {
 				doneski.syncing=1;
 				doneski.syncer||(doneski.syncer = new Doneski.Synchro(doneski));
-				if(doneski.syncer.onLine) {
+				if(doneski.syncer.online()) {
 					(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(","));
 					for(i in unsynced) {
 						if(l[j+i]) (s=s||[]).push([parseInt(i,10),JSON.parse(l[j+i])]);
 					};
-					//s="["+s.join(",")+"]";
-					doneski.upload(doneski.serialize({account:"test",device:"test",data:s}));
-				} else {
-					console.log("offline");
+					doneski.upload(doneski.serialize({lastsync:doneski.lastSync,account:"test",device:"test",data:s}));
 				};
 				doneski.syncing=0;
 			};
@@ -327,17 +324,26 @@ var _Doneski = function() {
 			};
 			return(1);
 		},
-		upback: function(resp,synced) {
+		upback: function(resp,reply,synced) {
 			if(resp.target.readyState==4) {
-				synced = resp.target.responseText.split(",");
-				for(i in synced) {
-					(l=localStorage)[(j="journal.")+"unsynced"].replace(new RegExp("^"+(n=synced[i])+",|,"+n+","),',');
+				reply = eval("(" + resp.target.responseText + ")");
+				for(i in (synced=reply.synced)) {
+					(l=localStorage)[(j="journal.")+"unsynced"].replace(new RegExp("^"+(n=synced[i])+"\,|\,"+n+"\,"),',');
 					l.removeItem(j+n);
 				};
+				doneski.replay(reply.replay);
 				doneski.lastSync = new Date().getTime();
 				l["journal.lastsync"] = doneski.lastSync;
 				doneski.needsSync = 0;
 			};
+		},
+		replay: function(jnl) {
+			doneski.replaying = 1;
+			
+			console.log(jnl);
+			
+			doneski.replaying = 0;
+			return(true);
 		},
 		serialize: function(obj) {
 			return(JSON.stringify(obj));
@@ -358,20 +364,20 @@ _Doneski.prototype.Synchro = function(obj,opts,synchro,sync,perform) {
 		offs: 0,
 		speed: -1,
 		_init: function(o) {
-			synchro.ping();
+			// synchro.ping();
 			// synchro.setSpeed(0);
 		},
 		online: function() {
-			synchro.onLine = false;
+			synchro.onLine = 0;
 			try {
 				var x=new XMLHttpRequest();
-				x.open('HEAD', '/ping', false);
+				x.open('HEAD', '/ping', 0);
 				x.send();
-				synchro.onLine = true;
+				synchro.onLine = 1;
 				synchro.offs = 0;
 				synchro.setSpeed(0);
 			} catch(e) {
-				synchro.onLine = false;
+				synchro.onLine = 0;
 				synchro.offs++;
 				if(synchro.offs>synchro.retries) synchro.setSpeed(parseInt(synchro.offs/synchro.retries,10));
 			};
@@ -391,7 +397,7 @@ _Doneski.prototype.Synchro = function(obj,opts,synchro,sync,perform) {
 		}
 	};
 	for(var i in core) synchro[i] = core[i];
-	synchro._init();
+	synchro._init(opts);
 	return(synchro);
 };
 
@@ -640,8 +646,10 @@ var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
 			};
 		};
 		perform = function(name,args) {
-			args = Array.prototype.slice.call(args);
-			journal(obj.id,name,args);
+			if(!obj.replaying) {
+				args = Array.prototype.slice.call(args);
+				journal(obj.id,name,args);
+			};
 			return(methods[name].apply(obj,args));
 		};
 		var methods = [];
