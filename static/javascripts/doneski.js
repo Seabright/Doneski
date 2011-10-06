@@ -18,6 +18,7 @@ var _Doneski = function() {
 	doneski.tag = function(id,attr,content){var tg=document.createElement(id);if(!content && typeof attr=="string"){attr=undefined;content=attr;};if(attr){for(var k in attr){tg.setAttribute(k,attr[k]);};};if(content){tg.innerHTML=content;};return(tg);};
 	doneski.bind = function(f,obj) {obj=obj||doneski;return(function(){f.apply(obj,arguments);});};
 	doneski.l = [];
+	doneski.id = "doneski";
 	var core = {
 		_init: function(options) {
 			doneski.lcon = (gtn=doneski.gtn)((l="list")+"s")[0];
@@ -164,12 +165,15 @@ var _Doneski = function() {
 		},
 		lL: function(id,cls,a,b) {
 			(a = new Doneski.List(id)).nav_item = (b = new Doneski.ListNav(a));
-			doneski.l.push(a);
+			doneski.addList(a.id);
 			cls && (a.className += cls);
 			doneski.lcon.appendChild(a);
 			doneski.ln.appendChild(b);
 			doneski.rN();
 			return(a);
+		},
+		addList: function(lid) {
+			doneski.l.push(window.o_register[lid] || doneski.lL(lid));
 		},
 		rN: function() {
 			ln=doneski.ln;
@@ -178,9 +182,9 @@ var _Doneski = function() {
 				for(i=4;i--;) { ln.className = ln.className.replace(a+(i-1),a+i); };
 			};
 		},
-		newList: function() {
-			var b = doneski.lL(doneski.gLId(),"after");
-			doneski.go(b);
+		newList: function(nl) {
+			nl = doneski.lL(doneski.gLId(),"after");
+			doneski.go(nl);
 		},
 		find: function(id) {
 			for(var i=0;i<doneski.l.length;i++) {
@@ -281,7 +285,7 @@ var _Doneski = function() {
 				doneski.goP();
 			};
 		},
-		intercepts: [],
+		intercepts: ["addList"],
 		queue: [0,1,2,3,4,5,6,7,8,9],
 		// currentJournal: 0,
 		newJournal: function() {
@@ -345,7 +349,9 @@ var _Doneski = function() {
 			for(i=0;i<jnl.length;i++) {
 				var itm = eval("(" + jnl[i] + ")");
 				// [timestamp,id,function_name,args]
-				console.log(itm);
+				var obj = window.o_register[itm[1]];
+				if(obj && obj[itm[2]]) obj[itm[2]].apply(obj,itm[3]);
+				console.log(itm,obj);
 			};
 			doneski.replaying = 0;
 			return(true);
@@ -453,8 +459,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			tsk.addEventListener("update",function(e){/*console.log("update",e.target);*/},true);
 		},
 		addTask: function(id) {
-			(a=list.items.indexOf(id))==-1 && list.items.push(id);
-			list.updated("add");
+			(a=list.items.indexOf(id))==-1 && list.items.push(id) && list.updated("add");
 		},
 		updated: function(type,evObj) {
 			if(Doneski.loaded) list.save();
@@ -524,7 +529,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			list.loadTask(itms[i]);
 		};
 	};
-	list.intercepts = ["create","addTask","removeTask","name"];
+	list.intercepts = ["addTask","removeTask","name"];
 	list.sync_intercepts = list.intercepts;
 	list.journal = Doneski.journal;
 	list.sync = Doneski.sync;
