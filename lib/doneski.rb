@@ -8,7 +8,9 @@ module Doneski
   def self.load_resources
     @@doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))
     @@doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified
+		@@papercss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/paper.css')).minified
     @@doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))
+  	@@touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchyfeely.js', 'r'))
   end
 end
 
