@@ -1,6 +1,6 @@
 // /*
 //  TouchyFeely
-// 	Swipe controller library - handles swipes, touches, and pinches on any object, icnluding the body
+// 	Swipe controller library - handles swipes, touches, and pinches on any object, including the body
 // 	Created by John Bragg for Seabright Studios
 // */
 
@@ -8,10 +8,12 @@ var TouchyFeely = function(element,options) {
 	var touchy = this;
 	var TouchHooks = {
 		start : function(event) {
+			touchy.z();
 			(event.touches.length == 1)&&touchy.u(event,true);
 			touchy.b.s = event;
 		},
 		move : function(event) {
+			event.preventDefault();
 			if(touchy.b) {
 				touchy.u(event);
 				touchy.b.type&&TouchEvent(touchy.b.type+"move");
@@ -73,13 +75,17 @@ var TouchyFeely = function(element,options) {
 		v.sY!=undefined||(v.sY = v.cY);
 		v.dX = v.cX - v.sX;
 		v.dY = v.cY - v.sY;
-		// console.log("Current: "+v.cX+", "+v.cY+" Diff: "+v.dX+", "+v.dY);
 		v.hD = v.sX - v.cX;
 		v.vD = v.cY - v.sY;
 		if(v.dX||v.dY) {
 			if((v.length = touchy.l()) >= touchy.c.mL) {
 				v.angle = touchy.a();
+				var dir = v.direction;
 				v.direction = touchy.d();
+				if(dir && dir != v.direction) {
+					v.type = touchy.t();
+					TouchEvent(v.type+"start");
+				};
 				if(!v.type&&(v.type = touchy.t())) {
 					TouchEvent(v.type+"start");
 				};
@@ -88,7 +94,7 @@ var TouchyFeely = function(element,options) {
 				v.direction = undefined;
 			};
 		};
-		event.preventDefault();
+		// event.preventDefault();
 	};
 	touchy.n = function() { delete touchy["b"]; touchy.b = {h : []}; return(touchy.b); };
 	touchy.z = function() { delete touchy["b"]; };

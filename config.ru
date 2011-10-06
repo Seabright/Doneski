@@ -1,7 +1,7 @@
 $: << File.expand_path(File.dirname(__FILE__))
 $: << File.expand_path(File.dirname(__FILE__) + "/lib")
 
-DEBUG = true
+DEBUG = File.exists?(File.dirname(__FILE__) + "/.debug")
 
 require "rubygems"
 require "bundler/setup"

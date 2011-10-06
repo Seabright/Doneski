@@ -44,21 +44,23 @@ var _Doneski = function() {
 				} else {
 					doneski.newList();
 				};
-				console.log("got",doneski.currentJournal,doneski.lastSync);
+				// console.log("got",doneski.currentJournal,doneski.lastSync);
 				doneski.sFH();
 			} else {
 				// No local storage - hmmm...
 			};
 			(ael=doneski.ael)("keyup",doneski.bkp,true);
 			if(typeof TouchyFeely != "undefined") {
-				doneski.toucher = new TouchyFeely(document,{cscroll : 0});
+				doneski.toucher = new TouchyFeely(document,{mL: 10, cscroll : 0});
 				ael((a="swipe")+"start",doneski.swS,true);
 				ael(a+"move",doneski.swM,true);
 				ael(a+"end",doneski.swE,true);
 				ael((a="scroll")+"start",doneski.scS,true);
 				ael(a+"move",doneski.scM,true);
+				ael(a+"end",doneski.scE,true);
 			};
-			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},500);
+			
+			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},200);
 			st(function(){doneski.cachedTexture(tb,doneski.ns,{opacity:0.3,range:50},tb);},0);
 			st(function(){doneski.cachedTexture("body "+l+"s "+l,doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			st(function(){doneski.cachedTexture("body header",doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
@@ -130,17 +132,17 @@ var _Doneski = function() {
 		},
 		swS: function(event) {
 			if((g=(doneski.swT=doneski.cL)["get"+(a="Attribute")]("style")||"").indexOf((w="-webkit-transform:translate3d("))==-1) {
-				doneski.swT["set"+a]("style", g+w+"0px,0px,0px);");
+				// doneski.swT["set"+a]("style", g+w+"0px,0px,0px);");
 			};
+			doneski.swiping = true;
 			//doneski.swT.orig = a;
 		},
 		swM: function(event) {
-			doneski.swT["set"+(a="Attribute")]("style", doneski.swT["get"+a]("style").replace(/-webkit-transform:translate3d\((-)?[0-9]{1,5}(px)?,/,"-webkit-transform:translate3d("+event.dX+"px,"));
+			// doneski.swT["set"+(a="Attribute")]("style", doneski.swT["get"+a]("style").replace(/-webkit-transform:translate3d\((-)?[0-9]{1,5}(px)?,/,"-webkit-transform:translate3d("+event.dX+"px,"));
 		},
 		swE: function(event) {
-			var a = doneski.swT;
-			window.setTimeout(function(){a.setAttribute("style","");},100);
-			event.direction=="left"?doneski.goN() : doneski.goP();
+			(function(a){window.setTimeout(function(){a.removeAttribute("style");},200);})(doneski.swT);
+			event.direction=="left" ? doneski.goN() : doneski.goP();
 		},
 		scS: function(event) {
 			if((a=(doneski.scT=doneski.cL).getAttribute("style")||"").indexOf((w="-webkit-transform:translate3d("))==-1) {
@@ -153,6 +155,9 @@ var _Doneski = function() {
 		scM: function(event,b) {
 			b = ((e=doneski.scS + event.dY) > 0 ? 0 : e < (d=doneski.mSc()) ? d : e);
 			doneski.scT.setAttribute("style", doneski.scT.getAttribute("style").replace(/-webkit-transform:translate3d\(((-)?[0-9]{1,5}(px)?),(-)?[0-9]{1,5}(px)?,/,"-webkit-transform:translate3d($1,"+b+"px,"));
+		},
+		scE: function(event) {
+			doneski.scT.setAttribute("style", doneski.scT.getAttribute("style").replace("-webkit-transition:none;",''));
 		},
 		mSc: function() {
 			return(0-doneski.scT.clientHeight+window.innerHeight);
@@ -198,13 +203,12 @@ var _Doneski = function() {
 			localStorage["last_list"] = lst.id;
 			//lst.activate();
 		},
-		sFH: function(again) {
-			again==false||(again=true);
-			if(!(cl=doneski.cL)) return;
-			cl.style.height = "";
-			doneski.fudge.style.height = ((cL = cl.clientHeight) > (wh=window.innerHeight) ? cL : wh) + "px";
-			cl.style.height = (cL > wh) ? "" : wh+"px";
-			again&&window.setTimeout(function(){doneski.sFH(false);},200);
+		sFH: function() {
+			if((s=doneski.styles())&&s.innerHTML.indexOf("/*fudge heights*/")==-1) {
+				doneski.styles().innerHTML += "\n/*fudge heights*/content,lists list{min-height:"+window.innerHeight+"px;}";
+			} else {
+				doneski.styles().innerHTML.replace("\n\/\*fudge heights\*\/content,lists list\{[^\}]+\}","\n/*fudge heights*/content,lists list{min-height:"+window.innerHeight+"px;}");
+			};
 		},
 		goN: function() {
 			var idx = doneski.l.indexOf(doneski.cL) + 1;
@@ -284,12 +288,11 @@ var _Doneski = function() {
 			(l=localStorage)[(j="journal.")+"unsynced"]||((l=localStorage)[(j="journal.")+"unsynced"]="");
 			if(doneski[(c="currentJournal")]) (l=localStorage)[(j="journal.")+"unsynced"] += doneski[c] + ",";
 			doneski[c] = doneski[c] ? doneski[c] + 1 : 1;
-			console.log("set current journal to:",doneski[c]);
 			l[j+"current"] = doneski[c];
 		},
 		journal: function() {
 			if(doneski.do_journal) {
-				(a = Array.prototype.slice.call(arguments)[0]).unshift(new Date().getTime()+"-"+(d=doneski.queue.shift()));
+				(a = Array.prototype.slice.call(arguments)[0]).unshift(new Date().getTime()-(d=doneski.queue.shift()));
 				doneski.queue.push(doneski.queue[doneski.queue.length-1]+1);
 				localStorage["journal."+doneski.currentJournal] = doneski.serialize(a);
 				doneski.newJournal();
@@ -300,15 +303,12 @@ var _Doneski = function() {
 			if(doneski.do_sync && !doneski.syncing && doneski.needsSync) {
 				doneski.syncing=1;
 				doneski.syncer||(doneski.syncer = new Doneski.Synchro(doneski));
-				if(doneski.syncer.onLine) {
+				if(doneski.syncer.online()) {
 					(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(","));
 					for(i in unsynced) {
 						if(l[j+i]) (s=s||[]).push([parseInt(i,10),JSON.parse(l[j+i])]);
 					};
-					//s="["+s.join(",")+"]";
-					doneski.upload(doneski.serialize({account:"test",device:"test",data:s}));
-				} else {
-					console.log("offline");
+					doneski.upload(doneski.serialize({lastsync:doneski.lastSync,account:"test",device:"test",data:s}));
 				};
 				doneski.syncing=0;
 			};
@@ -324,17 +324,26 @@ var _Doneski = function() {
 			};
 			return(1);
 		},
-		upback: function(resp,synced) {
+		upback: function(resp,reply,synced) {
 			if(resp.target.readyState==4) {
-				synced = resp.target.responseText.split(",");
-				for(i in synced) {
-					(l=localStorage)[(j="journal.")+"unsynced"].replace(new RegExp("^"+(n=synced[i])+",|,"+n+","),',');
+				reply = eval("(" + resp.target.responseText + ")");
+				for(i in (synced=reply.synced)) {
+					(l=localStorage)[(j="journal.")+"unsynced"].replace(new RegExp("^"+(n=synced[i])+"\,|\,"+n+"\,"),',');
 					l.removeItem(j+n);
 				};
+				doneski.replay(reply.replay);
 				doneski.lastSync = new Date().getTime();
 				l["journal.lastsync"] = doneski.lastSync;
 				doneski.needsSync = 0;
 			};
+		},
+		replay: function(jnl) {
+			doneski.replaying = 1;
+			
+			console.log(jnl);
+			
+			doneski.replaying = 0;
+			return(true);
 		},
 		serialize: function(obj) {
 			return(JSON.stringify(obj));
@@ -355,20 +364,20 @@ _Doneski.prototype.Synchro = function(obj,opts,synchro,sync,perform) {
 		offs: 0,
 		speed: -1,
 		_init: function(o) {
-			synchro.ping();
+			// synchro.ping();
 			// synchro.setSpeed(0);
 		},
 		online: function() {
-			synchro.onLine = false;
+			synchro.onLine = 0;
 			try {
 				var x=new XMLHttpRequest();
-				x.open('HEAD', '/ping', false);
+				x.open('HEAD', '/ping', 0);
 				x.send();
-				synchro.onLine = true;
+				synchro.onLine = 1;
 				synchro.offs = 0;
 				synchro.setSpeed(0);
 			} catch(e) {
-				synchro.onLine = false;
+				synchro.onLine = 0;
 				synchro.offs++;
 				if(synchro.offs>synchro.retries) synchro.setSpeed(parseInt(synchro.offs/synchro.retries,10));
 			};
@@ -388,7 +397,7 @@ _Doneski.prototype.Synchro = function(obj,opts,synchro,sync,perform) {
 		}
 	};
 	for(var i in core) synchro[i] = core[i];
-	synchro._init();
+	synchro._init(opts);
 	return(synchro);
 };
 
@@ -401,7 +410,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 	list.appendChild(list.form);
 	list.task_input = tag("input",{"type":"text", "class":"task", "placeholder":"Add your first to-do"});
 	list.form.appendChild(list.task_input);
-	list.form.appendChild(tag("button",{"class":"add"},"+"));
+	// list.form.appendChild(tag("button",{"class":"add"},"+"));
 	list.form.appendChild(tag("input",{"type":"submit", "value":"Add", "style":"display:none;"}));
 	list.task_container = tag("tasks",{"class":"active"});
 	list.appendChild(list.task_container);
@@ -436,7 +445,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			(!(l=localStorage["lists"]) || l.split(",").indexOf(list.id)==-1) && list.create(list.id);
 			list.addTask(tsk.id);
 			tsk.addEventListener("kill",list.deathWatch,true);
-			tsk.addEventListener("update",function(e){console.log("update",e.target);},true);
+			tsk.addEventListener("update",function(e){/*console.log("update",e.target);*/},true);
 		},
 		addTask: function(id) {
 			(a=list.items.indexOf(id))==-1 && list.items.push(id);
@@ -479,10 +488,13 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 		activate: function() {
 			list.className = "active";
 			list.nav_item.className = "active";
+			if(list.old_style) list.setAttribute("style",list.old_style);
 		},
 		deactivate: function(cls) {
 			list.className = cls || "";
 			list.nav_item.className = "";
+			list.old_style = list.getAttribute("style");
+			list.removeAttribute("style");
 		}
 	};
 	for(var i in core) {
@@ -497,7 +509,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 	list.id = id;
 	list.title = title || "";
 	list.items = [];
-	// list.scroller = new iScroll(list.getElementsByTagName("wrapper")[0]);
+	
 	if(localStorage["lists."+list.id+".name"]) {
 		list.name_input.value = localStorage["lists."+list.id+".name"];
 		list.name_input.className = "setted";
@@ -585,10 +597,9 @@ _Doneski.prototype.Task = function(list,obj,id) {
 		updated: function(type,evObj) {
 			if(Doneski.loaded) task.save();
 			Doneski.sFH();
-			(evObj = document["create"+(e="Event")]('UI'+e+'s'))["initUI"+e](type || "update", true, true, window, 1);
+			(evObj = document.createEvent('UIEvents')).initUIEvent(type || "update", true, true, window, 1);
 			evObj.t_id = task.id;
-			task["dispatch"+e](evObj);
-			console.log("dispatched",type);
+			task.dispatchEvent(evObj);
 		},
 		setText: function(txt) {
 			task.innerHTML = txt;
@@ -631,12 +642,14 @@ var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
 			if(obj.journal && !!obj.journal.call) {
 				obj.journal(Array.prototype.slice.call(arguments));
 			} else {
-				console.log("Journal: "+serialize(Array.prototype.slice.call(arguments)));
+				// console.log("Journal: "+serialize(Array.prototype.slice.call(arguments)));
 			};
 		};
 		perform = function(name,args) {
-			args = Array.prototype.slice.call(args);
-			journal(obj.id,name,args);
+			if(!obj.replaying) {
+				args = Array.prototype.slice.call(args);
+				journal(obj.id,name,args);
+			};
 			return(methods[name].apply(obj,args));
 		};
 		var methods = [];

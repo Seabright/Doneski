@@ -6,11 +6,9 @@ module Doneski
   }
   PAGES = [:signin, :list]
   def self.load_resources
-    @@doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))
-    @@doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified
-		@@papercss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/paper.css')).minified
-    @@doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))
-  	@@touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchyfeely.js', 'r'))
+    $doneskifavicon ||= Base64.encode64(IO.read("static/images/doneski.png"))
+    $doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified
+    $doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))
   end
 end
 
@@ -28,6 +26,6 @@ require 'doneski/ping'
 require 'doneski/sync'
 require 'doneski/router'
 
-USE_MINIFIED = false
-COMPRESS_ASSETS = false
+USE_MINIFIED = !DEBUG
+COMPRESS_ASSETS = !DEBUG
 # Doneski.load_resources
