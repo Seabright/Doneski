@@ -10,11 +10,11 @@ module Doneski
           dat = Yajl::Parser.parse(str)
           synced = dat["data"].collect do |d|
             data = d[1]
-            data.shift
+            # data.shift
             redis.zadd(key(dat), data[0].to_i, Yajl::Encoder.encode(data))
             d[0]
           end
-          replay = []
+          replay = redis.zrangebyscore(key(dat), dat["lastsync"].to_i, "+inf")
           [200,{"Content-Type" => "text/plain"},[Yajl::Encoder.encode({:synced => synced, :replay => replay})]]
         rescue
           [500,{"Content-Type" => "text/plain"},[""]]

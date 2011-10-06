@@ -65,7 +65,7 @@ var _Doneski = function() {
 			st(function(){doneski.cachedTexture("body "+l+"s "+l,doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			st(function(){doneski.cachedTexture("body header",doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			w.scrollTo(0,0);
-			st(function(){doneski.sync();},1000);
+			st(doneski.sync,1000);
 			w[ls][j+"started"] = 1;
 			doneski.loaded = doneski.do_journal = doneski.do_sync = true;
 		},
@@ -332,16 +332,21 @@ var _Doneski = function() {
 					l.removeItem(j+n);
 				};
 				doneski.replay(reply.replay);
-				doneski.lastSync = new Date().getTime();
-				l["journal.lastsync"] = doneski.lastSync;
+				doneski.justsynced();
 				doneski.needsSync = 0;
 			};
 		},
+		justsynced: function() {
+			doneski.lastSync = new Date().getTime();
+			l["journal.lastsync"] = doneski.lastSync;
+		},
 		replay: function(jnl) {
 			doneski.replaying = 1;
-			
-			console.log(jnl);
-			
+			for(i=0;i<jnl.length;i++) {
+				var itm = eval("(" + jnl[i] + ")");
+				// [timestamp,id,function_name,args]
+				console.log(itm);
+			};
 			doneski.replaying = 0;
 			return(true);
 		},
@@ -662,6 +667,8 @@ var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
 			})(obj,m);
 		};
 	};
+	window.o_register || (window.o_register = {});
+	window.o_register[obj.id] = obj;
 	return(obj);
 };
 
