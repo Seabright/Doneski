@@ -2,7 +2,7 @@ module Doneski
   class Sync
     class << self
       def call(env)
-        # begin
+        begin
           redis = Redis.new
           redis.select 2
           str = env["rack.input"].read
@@ -16,9 +16,9 @@ module Doneski
           end
           replay = []
           [200,{"Content-Type" => "text/plain"},[Yajl::Encoder.encode({:synced => synced, :replay => replay})]]
-        # rescue
-        #   [500,{"Content-Type" => "text/plain"},[""]]
-        # end
+        rescue
+          [500,{"Content-Type" => "text/plain"},[""]]
+        end
       end
       def key(data)
         data["account"]
