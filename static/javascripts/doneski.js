@@ -45,7 +45,6 @@ var _Doneski = function() {
 				} else {
 					doneski.newList();
 				};
-				// console.log("got",doneski.currentJournal,doneski.lastSync);
 				doneski.sFH();
 			} else {
 				// No local storage - hmmm...
@@ -66,9 +65,10 @@ var _Doneski = function() {
 			st(function(){doneski.cachedTexture("body "+l+"s "+l,doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			st(function(){doneski.cachedTexture("body header",doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			w.scrollTo(0,0);
-			st(doneski.sync,1000);
 			w[ls][j+"started"] = 1;
 			doneski.loaded = doneski.do_journal = doneski.do_sync = true;
+			doneski.needsSync = 1;
+			doneski.sync();
 		},
 		ael: function(a,b,c) {
 			return(document.addEventListener(a,b,c));
@@ -304,18 +304,21 @@ var _Doneski = function() {
 			};
 		},
 		sync: function(unsynced,i,s) {
+			if(doneski.replaying) return(false);
 			if(doneski.do_sync && !doneski.syncing && doneski.needsSync) {
 				doneski.syncing=1;
 				doneski.syncer||(doneski.syncer = new Doneski.Synchro(doneski));
 				if(doneski.syncer.online()) {
+					s = [];
 					(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(","));
 					for(i in unsynced) {
-						if(l[j+i]) (s=s||[]).push([parseInt(i,10),JSON.parse(l[j+i])]);
+						if(l[j+i]) s.push([parseInt(i,10),JSON.parse(l[j+i])]);
 					};
 					doneski.upload(doneski.serialize({lastsync:doneski.lastSync,account:"test",device:"test",data:s}));
 				};
 				doneski.syncing=0;
 			};
+			return(true);
 		},
 		upload: function(str,x) {
 			try {
@@ -337,12 +340,12 @@ var _Doneski = function() {
 				};
 				doneski.replay(reply.replay);
 				doneski.justsynced();
-				doneski.needsSync = 0;
 			};
 		},
 		justsynced: function() {
 			doneski.lastSync = new Date().getTime();
 			l["journal.lastsync"] = doneski.lastSync;
+			doneski.needsSync = 0;
 		},
 		replay: function(jnl) {
 			doneski.replaying = 1;
@@ -350,7 +353,9 @@ var _Doneski = function() {
 				var itm = eval("(" + jnl[i] + ")");
 				// [timestamp,id,function_name,args]
 				var obj = window.o_register[itm[1]];
+				obj.replaying = 1;
 				if(obj && obj[itm[2]]) obj[itm[2]].apply(obj,itm[3]);
+				obj.replaying = 0;
 				console.log(itm,obj);
 			};
 			doneski.replaying = 0;
@@ -451,10 +456,11 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			return(false);
 		},
 		push: function(obj) {
-			var tsk = new Doneski.Task(list,obj);
-			list.task_container.insertBefore(tsk,list.task_container.firstChild);
 			(!(l=localStorage["lists"]) || l.split(",").indexOf(list.id)==-1) && list.create(list.id);
-			list.addTask(tsk.id);
+			var tid = Doneski.gTId();
+			list.addTask(tid);
+			var tsk = new Doneski.Task(list,obj,tid);
+			list.task_container.insertBefore(tsk,list.task_container.firstChild);
 			tsk.addEventListener("kill",list.deathWatch,true);
 			tsk.addEventListener("update",function(e){/*console.log("update",e.target);*/},true);
 		},
@@ -560,7 +566,6 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	var txt, val;
 	if(id && localStorage["tasks."+id]) {
 		var s = localStorage["tasks."+id].split(Doneski.separator); txt = s[0]; val = s[1]=="true";
-		task.id = id;
 	} else {
 		if(typeof obj=="string") {
 			txt = obj;
@@ -569,8 +574,9 @@ _Doneski.prototype.Task = function(list,obj,id) {
 			txt = obj[0];
 			val = obj[1]=="true";
 		};
-		task.id = Doneski.gTId();
 	};
+
+	task.id = id || Doneski.gTId();
 	
 	var core = {
 		taskClick: function(event) {
