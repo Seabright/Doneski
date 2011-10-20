@@ -7,7 +7,7 @@ background: gradient #ebebeb mostly - top right subtle gradient from #f7f7f7
 */
 
 body,fudge{background-color:#ccc;padding:0;}
-toolbar{background:#205c82;height:28px;z-index:100;position:absolute;top:0;width:100%;}
+toolbar{background:#1a4c71;height:28px;z-index:100;position:absolute;top:0;width:100%;}
 section{z-index:99;}
 .compact lists list > input{margin-left:30px;margin-right:2%;display:block;background:transparent;outline:none;-webkit-appearance:none;width:auto;}
 toolbar listnav, toolbar listnav.delayed, .compact toolbar listnav.delayed{padding-left:30px;padding-top:.47em;height:16px;overflow:hidden;display:inline-block;}
@@ -32,7 +32,7 @@ content,fudge{min-height:0;}
 
 tasks{font-size:17pt;padding:0;}
 tasks.completed task.active, task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}
-tasks.completed task, task.active{padding:.55em .5em .15em 34px;border-bottom:1px solid rgba(68,140,203,.3);-webkit-transform:scale3d(1,1,1);text-decoration:none;height:auto;}
+tasks.completed task, task.active{padding:.7em .5em 0 34px;border-bottom:1px solid rgba(68,140,203,.3);-webkit-transform:scale3d(1,1,1);text-decoration:none;height:auto;}
 task.clicky{text-decoration:line-through;background-color:rgba(20,53,65,.7);color:#FFF;}
 tasks.completed task{text-decoration:line-through;color:rgba(0,0,0,.9);opacity:.5;}
 tasks task:last-of-type{border-bottom:1px solid rgba(68,140,203,.3);}
@@ -50,7 +50,7 @@ lists list.active{-webkit-transform:translate3d(0px,0px,0px);opacity:1;}
 lists list.after{}
 lists list.active{opacity:1}
 */
-lists list, header{background:#ebebeb;/*-webkit-box-shadow: 0 0 50px rgba(0,0,0,.7);*/border:0 solid rgba(0,0,0,.2);border-width:0 1px;}
+lists list, header{background:#ededed;/*-webkit-box-shadow: 0 0 50px rgba(0,0,0,.7);*/border:0 solid rgba(0,0,0,.2);border-width:0 1px;}
 header{padding-left:34px;}
 
 body.loaded lists list{-webkit-transition:-webkit-transform .3s, opacity .4s;-webkit-transition-timing-function: cubic-bezier(0, 0.35, .5, 1);}

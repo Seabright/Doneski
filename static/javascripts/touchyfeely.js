@@ -50,7 +50,7 @@ var TouchyFeely = function(element,options) {
 	};
 	touchy.a = function() {
 		var ang = (m=Math).round((m.atan2(touchy.b.vD,touchy.b.hD))*180/m.PI); //angle in degrees
-		return(ang||(360 - m.abs(ang)));
+		return(ang < 0 ? (360 - m.abs(ang)) : ang);
 	};
 	touchy.d = function() {
 		if ( (((b=touchy.b.angle) <= 45) && (b >= 0)) || ((b <= 360) && (b >= 315)) ) return('left');

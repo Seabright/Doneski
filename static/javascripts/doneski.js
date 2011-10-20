@@ -27,11 +27,11 @@ var _Doneski = function() {
 			doneski.fudge = gtn("content")[0];
 			if((ls='localStorage') in (w=window) && w[ls] !== null) {
 				doneski.touch();
-				doneski.currentJournal = parseInt((w[ls][(j="journal.")+"current"] || 1),10);
-				doneski.lastSync = parseInt((w[ls][j+"lastsync"] || 0),10);
-				if(!w[ls][j+"started"]) {
-					doneski.do_journal = true;
-				};
+				// doneski.currentJournal = parseInt((w[ls][(j="journal.")+"current"] || 1),10);
+				// doneski.lastSync = parseInt((w[ls][j+"lastsync"] || 0),10);
+				// if(!w[ls][j+"started"]) {
+				// 	doneski.do_journal = true;
+				// };
 				w.scrollTo(0,35);
 				if(localStorage[l+"s"]) {
 					var lists = w[ls][l+"s"].split(",");
@@ -64,11 +64,11 @@ var _Doneski = function() {
 			st(function(){doneski.cachedTexture(tb,doneski.ns,{opacity:0.3,range:50},tb);},0);
 			st(function(){doneski.cachedTexture("body "+l+"s "+l,doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			st(function(){doneski.cachedTexture("body header",doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
-			w.scrollTo(0,0);
-			w[ls][j+"started"] = 1;
-			doneski.loaded = doneski.do_journal = doneski.do_sync = true;
-			doneski.needsSync = 1;
-			doneski.sync();
+			// w[ls][j+"started"] = 1;
+			doneski.loaded = true; //doneski.do_journal = doneski.do_sync = true;
+			// doneski.needsSync = 1;
+			// doneski.sync();
+			window.scrollTo(0,0);
 		},
 		ael: function(a,b,c) {
 			return(document.addEventListener(a,b,c));
@@ -285,82 +285,82 @@ var _Doneski = function() {
 				doneski.goP();
 			};
 		},
-		intercepts: ["addList"],
+		intercepts: [], //["addList"],
 		queue: [0,1,2,3,4,5,6,7,8,9],
 		// currentJournal: 0,
-		newJournal: function() {
-			(l=localStorage)[(j="journal.")+"unsynced"]||((l=localStorage)[(j="journal.")+"unsynced"]="");
-			if(doneski[(c="currentJournal")]) (l=localStorage)[(j="journal.")+"unsynced"] += doneski[c] + ",";
-			doneski[c] = doneski[c] ? doneski[c] + 1 : 1;
-			l[j+"current"] = doneski[c];
-		},
+		// newJournal: function() {
+		// 	(l=localStorage)[(j="journal.")+"unsynced"]||((l=localStorage)[(j="journal.")+"unsynced"]="");
+		// 	if(doneski[(c="currentJournal")]) (l=localStorage)[(j="journal.")+"unsynced"] += doneski[c] + ",";
+		// 	doneski[c] = doneski[c] ? doneski[c] + 1 : 1;
+		// 	l[j+"current"] = doneski[c];
+		// },
 		journal: function() {
-			if(doneski.do_journal) {
-				(a = Array.prototype.slice.call(arguments)[0]).unshift(new Date().getTime()-(d=doneski.queue.shift()));
-				doneski.queue.push(doneski.queue[doneski.queue.length-1]+1);
-				localStorage["journal."+doneski.currentJournal] = doneski.serialize(a);
-				doneski.newJournal();
-				doneski.needsSync = 1;
-			};
+			// if(doneski.do_journal) {
+			// 	(a = Array.prototype.slice.call(arguments)[0]).unshift(new Date().getTime()-(d=doneski.queue.shift()));
+			// 	doneski.queue.push(doneski.queue[doneski.queue.length-1]+1);
+			// 	localStorage["journal."+doneski.currentJournal] = doneski.serialize(a);
+			// 	doneski.newJournal();
+			// 	doneski.needsSync = 1;
+			// };
 		},
-		sync: function(unsynced,i,s) {
-			if(doneski.replaying) return(false);
-			if(doneski.do_sync && !doneski.syncing && doneski.needsSync) {
-				doneski.syncing=1;
-				doneski.syncer||(doneski.syncer = new Doneski.Synchro(doneski));
-				if(doneski.syncer.online()) {
-					s = [];
-					(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(","));
-					for(i in unsynced) {
-						if(l[j+i]) s.push([parseInt(i,10),JSON.parse(l[j+i])]);
-					};
-					doneski.upload(doneski.serialize({lastsync:doneski.lastSync,account:"test",device:"test",data:s}));
-				};
-				doneski.syncing=0;
-			};
-			return(true);
-		},
-		upload: function(str,x) {
-			try {
-				x=new XMLHttpRequest();
-				x.open('POST', '/sync', 1);
-				x.onreadystatechange = doneski.upback;
-				x.send(str);
-			} catch(e) {
-				return(0);
-			};
-			return(1);
-		},
-		upback: function(resp,reply,synced) {
-			if(resp.target.readyState==4) {
-				reply = eval("(" + resp.target.responseText + ")");
-				for(i in (synced=reply.synced)) {
-					(l=localStorage)[(j="journal.")+"unsynced"].replace(new RegExp("^"+(n=synced[i])+"\,|\,"+n+"\,"),',');
-					l.removeItem(j+n);
-				};
-				doneski.replay(reply.replay);
-				doneski.justsynced();
-			};
-		},
-		justsynced: function() {
-			doneski.lastSync = new Date().getTime();
-			l["journal.lastsync"] = doneski.lastSync;
-			doneski.needsSync = 0;
-		},
-		replay: function(jnl) {
-			doneski.replaying = 1;
-			for(i=0;i<jnl.length;i++) {
-				var itm = eval("(" + jnl[i] + ")");
-				// [timestamp,id,function_name,args]
-				var obj = window.o_register[itm[1]];
-				obj.replaying = 1;
-				if(obj && obj[itm[2]]) obj[itm[2]].apply(obj,itm[3]);
-				obj.replaying = 0;
-				console.log(itm,obj);
-			};
-			doneski.replaying = 0;
-			return(true);
-		},
+		// sync: function(unsynced,i,s) {
+		// 	if(doneski.replaying) return(false);
+		// 	if(doneski.do_sync && !doneski.syncing && doneski.needsSync) {
+		// 		doneski.syncing=1;
+		// 		doneski.syncer||(doneski.syncer = new Doneski.Synchro(doneski));
+		// 		if(doneski.syncer.online()) {
+		// 			s = [];
+		// 			(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(","));
+		// 			for(i in unsynced) {
+		// 				if(l[j+i]) s.push([parseInt(i,10),JSON.parse(l[j+i])]);
+		// 			};
+		// 			doneski.upload(doneski.serialize({lastsync:doneski.lastSync,account:"test",device:"test",data:s}));
+		// 		};
+		// 		doneski.syncing=0;
+		// 	};
+		// 	return(true);
+		// },
+		// upload: function(str,x) {
+		// 	try {
+		// 		x=new XMLHttpRequest();
+		// 		x.open('POST', '/sync', 1);
+		// 		x.onreadystatechange = doneski.upback;
+		// 		x.send(str);
+		// 	} catch(e) {
+		// 		return(0);
+		// 	};
+		// 	return(1);
+		// },
+		// upback: function(resp,reply,synced) {
+		// 	if(resp.target.readyState==4) {
+		// 		reply = eval("(" + resp.target.responseText + ")");
+		// 		for(i in (synced=reply.synced)) {
+		// 			(l=localStorage)[(j="journal.")+"unsynced"].replace(new RegExp("^"+(n=synced[i])+"\,|\,"+n+"\,"),',');
+		// 			l.removeItem(j+n);
+		// 		};
+		// 		doneski.replay(reply.replay);
+		// 		doneski.justsynced();
+		// 	};
+		// },
+		// justsynced: function() {
+		// 	doneski.lastSync = new Date().getTime();
+		// 	l["journal.lastsync"] = doneski.lastSync;
+		// 	doneski.needsSync = 0;
+		// },
+		// replay: function(jnl) {
+		// 	doneski.replaying = 1;
+		// 	for(i=0;i<jnl.length;i++) {
+		// 		var itm = eval("(" + jnl[i] + ")");
+		// 		// [timestamp,id,function_name,args]
+		// 		var obj = window.o_register[itm[1]];
+		// 		obj.replaying = 1;
+		// 		if(obj && obj[itm[2]]) obj[itm[2]].apply(obj,itm[3]);
+		// 		obj.replaying = 0;
+		// 		console.log(itm,obj);
+		// 	};
+		// 	doneski.replaying = 0;
+		// 	return(true);
+		// },
 		serialize: function(obj) {
 			return(JSON.stringify(obj));
 		}
@@ -368,55 +368,56 @@ var _Doneski = function() {
 	for(var i in core) {
 		doneski[i] = core[i];
 	};
-	return(new Syncer(new _Journaller(doneski)));
+	return(new _Journaller(doneski));
+	// return(new Syncer(new _Journaller(doneski)));
 };
 
 // TODO: rework online detection to go only very infrequently except when accessed - ex: ping every few minutes, but ping if used after 60 seconds
-_Doneski.prototype.Synchro = function(obj,opts,synchro,sync,perform) {
-	synchro = this;
-	var core = {
-		intervals: [30000,90000,360000],
-		retries: 4,
-		offs: 0,
-		speed: -1,
-		_init: function(o) {
-			// synchro.ping();
-			// synchro.setSpeed(0);
-		},
-		online: function() {
-			synchro.onLine = 0;
-			try {
-				var x=new XMLHttpRequest();
-				x.open('HEAD', '/ping', 0);
-				x.send();
-				synchro.onLine = 1;
-				synchro.offs = 0;
-				synchro.setSpeed(0);
-			} catch(e) {
-				synchro.onLine = 0;
-				synchro.offs++;
-				if(synchro.offs>synchro.retries) synchro.setSpeed(parseInt(synchro.offs/synchro.retries,10));
-			};
-			return(synchro.onLine);
-		},
-		setSpeed: function(speed) {
-			if(speed!=synchro.speed && synchro.intervals[speed]) {
-				if(synchro.timer) window.clearInterval(synchro.timer);
-				synchro.timer = window.setInterval(synchro.ping,synchro.intervals[speed]);
-				synchro.speed = speed;
-			};
-		},
-		ping: function() {
-			if(synchro.online()) {
-				
-			};
-		}
-	};
-	for(var i in core) synchro[i] = core[i];
-	synchro._init(opts);
-	return(synchro);
-};
-
+// _Doneski.prototype.Synchro = function(obj,opts,synchro,sync,perform) {
+// 	synchro = this;
+// 	var core = {
+// 		intervals: [30000,90000,360000],
+// 		retries: 4,
+// 		offs: 0,
+// 		speed: -1,
+// 		_init: function(o) {
+// 			// synchro.ping();
+// 			// synchro.setSpeed(0);
+// 		},
+// 		online: function() {
+// 			synchro.onLine = 0;
+// 			try {
+// 				var x=new XMLHttpRequest();
+// 				x.open('HEAD', '/ping', 0);
+// 				x.send();
+// 				synchro.onLine = 1;
+// 				synchro.offs = 0;
+// 				synchro.setSpeed(0);
+// 			} catch(e) {
+// 				synchro.onLine = 0;
+// 				synchro.offs++;
+// 				if(synchro.offs>synchro.retries) synchro.setSpeed(parseInt(synchro.offs/synchro.retries,10));
+// 			};
+// 			return(synchro.onLine);
+// 		},
+// 		setSpeed: function(speed) {
+// 			if(speed!=synchro.speed && synchro.intervals[speed]) {
+// 				if(synchro.timer) window.clearInterval(synchro.timer);
+// 				synchro.timer = window.setInterval(synchro.ping,synchro.intervals[speed]);
+// 				synchro.speed = speed;
+// 			};
+// 		},
+// 		ping: function() {
+// 			if(synchro.online()) {
+// 				
+// 			};
+// 		}
+// 	};
+// 	for(var i in core) synchro[i] = core[i];
+// 	synchro._init(opts);
+// 	return(synchro);
+// };
+// 
 _Doneski.prototype.List = function(id,title,tasks,itms) {
 	var tag = Doneski.tag;
 	var list = tag("list");
@@ -535,12 +536,12 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			list.loadTask(itms[i]);
 		};
 	};
-	list.intercepts = ["addTask","removeTask","name"];
-	list.sync_intercepts = list.intercepts;
+	list.intercepts = []; //["addTask","removeTask","name"];
+	// list.sync_intercepts = list.intercepts;
 	list.journal = Doneski.journal;
 	list.sync = Doneski.sync;
 
-	list = new Syncer(list);
+	// list = new Syncer(list);
 	list = new _Journaller(list);
 	return(list);
 };
@@ -635,12 +636,12 @@ _Doneski.prototype.Task = function(list,obj,id) {
 		task.className = "active";
 	};
 	
-	task.intercepts = ["complete","uncomplete","kill","setText","create"];
-	task.sync_intercepts = task.intercepts;
+	task.intercepts = []; //["complete","uncomplete","kill","setText","create"];
+	// task.sync_intercepts = task.intercepts;
 	task.journal = Doneski.journal;
 	task.sync = Doneski.sync;
 
-	task = new Syncer(task);
+	// task = new Syncer(task);
 	task = new _Journaller(task);
 
 	task.setText(txt);
@@ -683,29 +684,29 @@ var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
 	return(obj);
 };
 
-var Syncer = function(obj,sync,perform,methods) {
-	if(obj.sync_intercepts) {
-		sync = function() {
-			if(obj.sync && !!obj.sync.call) {
-				obj.sync(Array.prototype.slice.call(arguments));
-			};
-		};
-		perform = function(name,args) {
-			sync(obj.id,name,(args = Array.prototype.slice.call(args)));
-			return(methods[name].apply(obj,args));
-		};
-		methods = [];
-		for(i=0;i<obj.sync_intercepts.length;i++) {
-			methods[(m=obj.sync_intercepts[i])] = obj[m];
-			(function(obj,method) {
-				if(method) {
-					obj[method] = function(){perform.apply(obj,[method,arguments]);};
-				};
-			})(obj,m);
-		};
-	};
-	return(obj);
-};
+// var Syncer = function(obj,sync,perform,methods) {
+// 	if(obj.sync_intercepts) {
+// 		sync = function() {
+// 			if(obj.sync && !!obj.sync.call) {
+// 				obj.sync(Array.prototype.slice.call(arguments));
+// 			};
+// 		};
+// 		perform = function(name,args) {
+// 			sync(obj.id,name,(args = Array.prototype.slice.call(args)));
+// 			return(methods[name].apply(obj,args));
+// 		};
+// 		methods = [];
+// 		for(i=0;i<obj.sync_intercepts.length;i++) {
+// 			methods[(m=obj.sync_intercepts[i])] = obj[m];
+// 			(function(obj,method) {
+// 				if(method) {
+// 					obj[method] = function(){perform.apply(obj,[method,arguments]);};
+// 				};
+// 			})(obj,m);
+// 		};
+// 	};
+// 	return(obj);
+// };
 
 window.Doneski = new _Doneski();
 // window.applicationCache.addEventListener("cached",function(){console.log("cached");},true);
