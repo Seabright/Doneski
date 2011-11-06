@@ -1,0 +1,88 @@
+/*
+
+Orange Doneski theme
+
+blue lines: #448ccb 30% rgba(68,140,203,.3)
+red lines: #ec008c 20% rgba(236,0,140,.2)
+background: gradient #ebebeb mostly - top right subtle gradient from #f7f7f7
+
+*/
+header{padding-left:0;}
+content,fudge{background:#FFF;}
+
+toolbar{background:rgba(255,255,255,.8);height:38px;}
+toolbar listnav, toolbar listnav.delayed, .compact toolbar listnav.delayed{padding:1.1em 1em 1em;height:16px;overflow:hidden;display:inline-block;}
+listnav list{width:.9em;height:1em;background:rgba(0,0,0,.04);margin-right:.8em;display:inline-block;opacity:1;border-radius:1px;border:1px solid rgba(0,0,0,.26);}
+listnav list.active{background:#ea5b1b;border-color:#ea5b1b;}
+.compact toolbar listnav.tight1{padding-top:.47em;}
+listnav.tight1 list{-webkit-transform:scale3d(.9,.9,1);margin-right:.6em;}
+.compact toolbar listnav.tight2{padding-top:.5em;}
+listnav.tight2 list{-webkit-transform:scale3d(.75,.75,1);margin-right:.4em;}
+.compact toolbar listnav.tight3{padding-top:.5em;width:85%;}
+listnav.tight3 list{-webkit-transform:scale3d(.6,.6,1);margin-right:.3em;}
+listnav list.hidden{opacity:0;}
+body.loaded listnav list, body.loaded listnav{-webkit-transition:background .5s;-webkit-transition-timing-function: linear;}
+
+lists{position:relative;left:0;width:100%;display:block;text-align:left;z-index:0;}
+.compact lists{top:34px;}
+lists list{position:absolute;top:0;display:inline-block;width:100%;padding-bottom:0;-webkit-transform:translate3d(-120%,0px,0px);opacity:0;overflow:hidden;}
+lists list.after{-webkit-transform:translate3d(120%,0px,0px);}
+lists list.active{-webkit-transform:translate3d(0px,0px,0px);opacity:1;}
+
+lists list,header{background:#FFF;border-width:0;}
+
+
+section form{display:block;-webkit-border-radius:.2em;margin:0;background:transparent;padding:0;margin-top:.4em;font-size:13pt;line-height:1.5em;outline:none;-webkit-appearance:none;border:none;}
+tasks.completed task, task.active{padding:.3em .5em .3em 14px;border:1px dashed #d4d4d4;border-width:1px 0 0;border-bottom:none;-webkit-transform:scale3d(1,1,1);text-decoration:none;height:auto;}
+
+form.tasklist input{background:#FaFaFa;-webkit-border-radius:0;outline:none;border:1px dashed #d4d4d4;border-width:1px 0;padding:.2em .4em .2em 14px;width:100%;font-size:16pt;margin-right:0;}
+tasks task:first-of-type{border:none;}
+tasks task:last-of-type{border:1px dashed #d4d4d4;border-width:1px 0 0;}
+
+header logo{margin-left:14px;height:30px;display:block;text-indent:-9999em;background:transparent url(/images/logo-wht.png) left top no-repeat;}
+header tagline{font-weight:500;font-size:14pt;letter-spacing:-0.04em;line-height:28px;text-align:left;display:block;margin-left:14px;}
+tasks.completed{border-top:1px solid #b04617;padding-top:1.5em;opacity:0;margin-top:1.5em;min-height:5000px;}
+tasks.completed{
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,.05)), color-stop(10%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0)));
+	background: -webkit-linear-gradient(top, rgba(0,0,0,.05) 0%,rgba(0,0,0,0) 10%,rgba(0,0,0,0) 100%);
+	background-color:#ea5b1b;
+}
+tasks.completed:before{content:url(/images/logo-org.png);padding:14px 0 0 14px;}
+.compact tasks.completed{opacity:1;}
+
+tasks.completed task.active, task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}
+tasks.completed task{text-decoration:line-through;color:rgba(255,255,255,.7);opacity:1;border:none;}
+task.clicky{text-decoration:line-through;background-color:rgba(232,100,41,.7);color:#FFF;}
+tasks.completed task.clicky{text-decoration:none;background-color:rgba(255,255,255,.7);color:#000;}
+
+body tutorial{display:none;}
+body.touch tutorial.newlist{background-color:rgba(255,255,255,.2);}
+
+body.loaded lists list{-webkit-transition:-webkit-transform .2s, opacity .4s;-webkit-transition-timing-function: cubic-bezier(0, 0.35, .5, 1);}
+section form, list > input, form.tasklist input, button, toolbar, list, menu{box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;}
+
+.compact lists list > input, lists list > name{margin-left:10px;margin-right:2%;display:block;background:transparent;outline:none;-webkit-appearance:none;width:95%;}
+.compact lists list > input,.compact lists list > name{margin:.2em 0;padding:.2em 0;}
+.compact lists list > input{margin-left:0;}
+lists list > input, lists list > name{border:none;-webkit-border-radius:0;padding:.05em .1em;display:block;width:100%;font-size:18pt;font-weight:600;display:block;margin-top:.4em;}
+lists list > name{width:100%;box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;-webkit-transition:all .2s linear;}
+lists list > name.popped{background:#ea5b1b;color:#FFF;}
+name span{margin-left:11px;}
+lists list > name span:after{content:'\25bc';margin-left:.5em;position:relative;top:-.3em;font-size:40%;font-family:sans-serif;}
+lists list > name:hover{cursor:pointer;}
+name{overflow:visible;position:relative;z-index:9999;-webkit-tap-highlight-color: rgba(0,0,0,0);}
+name menu{position:static;top:auto;left:auto;margin:0;padding:0;width:100%;background:transparent;border-radius:0;box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;overflow:hidden;display:block;-webkit-transition:height .2s linear;}
+name menu span{color:#FFF;display:block;}
+name menu items{display:block;margin:.3em 0;}
+name menu item{display:block;background:transparent;padding:7px 11px .3em 35px;font-size:65%;font-weight:300;border:none;background-repeat:no-repeat;box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;width:100%;}
+name menu item:hover{background-color:rgba(255,255,255,.25);}
+/*item.rename,item.delete{background:transparent;}*/
+menu item:first-of-type,menu item:last-of-type{border-radius:0;}
+.compact lists list > input, lists list > name{margin-left:11px;margin-right:2%;display:block;background:transparent;outline:none;-webkit-appearance:none;}
+
+@media only screen and (max-device-width: 480px) {
+/* This block specifies CSS that only applies to an iPhone */
+	/*.compact lists list > input{margin-left:0;}*/
+	tasks.completed{min-height:250px;}
+	
+}

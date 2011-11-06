@@ -24,14 +24,14 @@
 		<% if COMPRESS_ASSETS %>
 		<style>
 		<%= $doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified%>
-		<%= $papercss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/paper.css')).minified%>
+		<%= $orangecss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/orange.css')).minified%>
 		</style>
 		<% else %>
 		<link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
-		<link href="/stylesheets/paper.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href="/stylesheets/orange.css" media="screen" rel="stylesheet" type="text/css" />
 		<% end %>
 	</head>
-	<body class="init">
+	<body class="init firstlist">
 		<content>
 			<header class="initial">
 				<logo>Doneski</logo>
@@ -40,13 +40,15 @@
 			<section>
 				<lists></lists>
 			</section>
-			<toolbar class="delayed">
+			<toolbar class="">
 				<listnav class="delayed tight0"></listnav>
 				<buttons>
 					<button class="config"></button>
 				</buttons>
 			</toolbar>
+			<tutorial class="newlist delayed"></tutorial>
 		</content>
+		<%= yield %>
 	</body>
 	<% if COMPRESS_ASSETS %>
 	<script type="text/javascript">

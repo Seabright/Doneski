@@ -2,27 +2,20 @@ $: << File.expand_path(File.dirname(__FILE__))
 $: << File.expand_path(File.dirname(__FILE__) + "/lib")
 
 DEBUG = File.exists?(File.dirname(__FILE__) + "/.debug")
+puts "\e[31m" << "*******  We're in DEBUG mode, gentlemen. *******" << "\e[0m" if DEBUG
 
 require "rubygems"
 require "bundler/setup"
 
-require 'auth'
 require 'doneski'
 
 require 'rack/mount'
 
 app = Rack::Builder.new do
   
-  use Rack::Static, :urls => ["/stylesheets", "/images", "/javascripts", "/index.html"], :root => "static"
+  use Rack::Static, :urls => ["/stylesheets", "/images", "/javascripts"], :root => "static"
   
-  # use Rack::SslEnforcer, :only => ["/login", /\.xml$/], :strict => true
-  
-  use Rack::Session::Cookie, :secret => "9283d6ad6f3a66e74fc57e1dd502eeda1b57f976507bb4cee9f51407750b1d2bcfef283c13c960930a4693a4caed84f503626359d52dba0bca67f7cbb34b3538"
-  
-  use Warden::Manager do |manager|
-    manager.default_strategies :password, :certificate
-    manager.failure_app = AuthenticationFailure
-  end
+  use Rack::Session::Cookie, :secret => "TritiphamhockbiltongpigporkchoptbonebeefsalamichickenmeatballKielbasajowldrumstickbeefribsfiletmignonbiltongPorkbellyballtipbacontailgroundroundshankDrumstickcornedbeefbiltongpancettaTbone"
   
   run Doneski::Routes
   

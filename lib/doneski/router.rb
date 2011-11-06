@@ -8,11 +8,11 @@ module Doneski
     end
   end
   Routes = Rack::Mount::RouteSet.new do |set|
-    set.add_route Sync, { :request_method => 'POST', :path_info => %r{^/sync$} }, {}, :sync
-    set.add_route Ping, { :request_method => 'HEAD', :path_info => %r{^/ping$} }, {}, :ping
-    set.add_route Signup, { :request_method => 'POST', :path_info => %r{^/signup$} }, {}, :signup
-    set.add_route Manifest, { :request_method => 'GET', :path_info => %r{^/cache.manifest$} }, {}, :manifest
+    # set.add_route Sync, { :request_method => 'POST', :path_info => %r{^/sync$} }, {}, :sync
+    # set.add_route Manifest, { :request_method => 'GET', :path_info => %r{^/cache.manifest$} }, {}, :manifest
     set.add_route Page, { :request_method => 'GET', :path_info => %r{^/(?<page>[\w]+)?$} }, {}, :page
-    set.add_route Controller, { :request_method => 'GET', :path_info => %r{.*} }, {}, :app
+    # set.add_route Ping, { :request_method => 'HEAD', :path_info => %r{^/ping$} }, {}, :ping
+    # set.add_route Signup, { :request_method => 'POST', :path_info => %r{^/signup$} }, {}, :signup
+    # set.add_route Controller, { :request_method => 'GET', :path_info => %r{.*} }, {}, :app
   end
 end
