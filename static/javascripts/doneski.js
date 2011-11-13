@@ -656,7 +656,7 @@ _Doneski.prototype.ListNav = function(list) {
 	// for(var i in core) {
 	// 	nav[i] = core[i];
 	// };
-	// nav.addEventListener("click",function(){Doneski.go(nav.list);},true);
+	nav.addEventListener("click",function(){Doneski.go(nav.list);},true);
 	return(nav);
 };
 

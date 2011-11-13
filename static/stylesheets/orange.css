@@ -39,15 +39,25 @@ form.tasklist input{background:#FaFaFa;-webkit-border-radius:0;outline:none;bord
 tasks task:first-of-type{border:none;}
 tasks task:last-of-type{border:1px dashed #d4d4d4;border-width:1px 0 0;}
 
-header logo{margin-left:14px;height:30px;display:block;text-indent:-9999em;background:transparent url(/images/logo-wht.png) left top no-repeat;}
+header logo{margin-left:14px;height:30px;display:block;text-indent:-9999em;background:transparent url(/images/logo-wht.png) left top no-repeat;-webkit-background-size: 143px 27px;}
+@media screen and (-webkit-device-pixel-ratio: 2) {
+	header logo{background-image:url(/images/logo-wht-lg.png);}
+}
 header tagline{font-weight:500;font-size:14pt;letter-spacing:-0.04em;line-height:28px;text-align:left;display:block;margin-left:14px;}
-tasks.completed{border-top:1px solid #b04617;padding-top:1.5em;opacity:0;margin-top:1.5em;min-height:5000px;}
+tasks.completed{border-top:1px solid #b04617;padding-top:.5em;opacity:0;margin-top:1.5em;min-height:5000px;}
 tasks.completed{
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,.05)), color-stop(10%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0)));
-	background: -webkit-linear-gradient(top, rgba(0,0,0,.05) 0%,rgba(0,0,0,0) 10%,rgba(0,0,0,0) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,.1)), color-stop(10%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0)));
+	background: -webkit-linear-gradient(top, rgba(0,0,0,.1) 0%,rgba(0,0,0,0) 10%,rgba(0,0,0,0) 100%);
+	-webkit-background-size: 100% 400px;
+	background-repeat: no-repeat;
 	background-color:#ea5b1b;
 }
-tasks.completed:before{content:url(/images/logo-org.png);padding:14px 0 0 14px;}
+tasks.completed:before{content:' ';background:url(/images/logo-org.png) 14px 14px no-repeat;-webkit-background-size: 143px 27px;width:157px;height:27px;display:block;overflow:hidden;padding:0 0 20px 0;}
+@media screen and (-webkit-device-pixel-ratio: 2) {
+	tasks.completed:before{
+		background-image:url(/images/logo-org-lg.png);
+	}
+}
 .compact tasks.completed{opacity:1;}
 
 tasks.completed task.active, task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}
