@@ -6,7 +6,6 @@ log/*.pid
 tmp/**/*
 config/mongoid.yml
 vendor/cache/*
-Gemfile.lock
 *.psd
 *.tmproj
 .DS_Store

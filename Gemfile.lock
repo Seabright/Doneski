@@ -1,0 +1,18 @@
+GEM
+  specs:
+    closure-compiler (1.1.1)
+    kgio (2.3.3)
+    rack (1.2.2)
+    rack-mount (0.7.1)
+      rack (>= 1.0.0)
+    unicorn (3.5.0)
+      kgio (~> 2.3)
+      rack
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  closure-compiler
+  rack-mount
+  unicorn
