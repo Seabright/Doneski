@@ -394,15 +394,14 @@ var _Doneski = function() {
 		// 	doneski.replaying = 0;
 		// 	return(true);
 		// },
-		// serialize: function(obj) {
-		// 	return(JSON.stringify(obj));
-		// }
+		serialize: function(obj) {
+			return(JSON.stringify(obj));
+		}
 	};
 	for(var i in core) {
 		doneski[i] = core[i];
 	};
-	return(doneski);
-	// return(new _Journaller(doneski));
+	return(new _Journaller(doneski));
 	// return(new Syncer(new _Journaller(doneski)));
 };
 
@@ -639,13 +638,13 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			list.loadTask(itms[i]);
 		};
 	};
-	// list.intercepts = []; //["addTask","removeTask","name"];
-	// // list.sync_intercepts = list.intercepts;
-	// list.journal = Doneski.journal;
-	// list.sync = Doneski.sync;
-	// 
-	// // list = new Syncer(list);
-	// list = new _Journaller(list);
+	list.intercepts = []; //["addTask","removeTask","name"];
+	// list.sync_intercepts = list.intercepts;
+	list.journal = Doneski.journal;
+	list.sync = Doneski.sync;
+	
+	// list = new Syncer(list);
+	list = new _Journaller(list);
 	return(list);
 };
 
@@ -792,13 +791,13 @@ _Doneski.prototype.Task = function(list,obj,id) {
 		task.className = "active";
 	};
 	
-	// task.intercepts = []; //["complete","uncomplete","kill","setText","create"];
-	// task.sync_intercepts = task.intercepts;
-	// task.journal = Doneski.journal;
-	// task.sync = Doneski.sync;
+	task.intercepts = []; //["complete","uncomplete","kill","setText","create"];
+	task.sync_intercepts = task.intercepts;
+	task.journal = Doneski.journal;
+	task.sync = Doneski.sync;
 
 	// task = new Syncer(task);
-	// task = new _Journaller(task);
+	task = new _Journaller(task);
 
 	task.setText(txt);
 	task.del = task.querySelector("delete");
@@ -812,39 +811,39 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	return(task);
 };
 
-// var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
-// 	if(obj.intercepts) {
-// 		serialize = function(obj) {
-// 			return(JSON.stringify(obj));
-// 		};
-// 		journal = function() {
-// 			if(obj.journal && !!obj.journal.call) {
-// 				obj.journal(Array.prototype.slice.call(arguments));
-// 			} else {
-// 				// console.log("Journal: "+serialize(Array.prototype.slice.call(arguments)));
-// 			};
-// 		};
-// 		perform = function(name,args) {
-// 			if(!obj.replaying) {
-// 				args = Array.prototype.slice.call(args);
-// 				journal(obj.id,name,args);
-// 			};
-// 			return(methods[name].apply(obj,args));
-// 		};
-// 		var methods = [];
-// 		for(i=0;i<obj.intercepts.length;i++) {
-// 			methods[(m=obj.intercepts[i])] = obj[m];
-// 			(function(obj,method) {
-// 				if(method) {
-// 					obj[method] = function(){perform.apply(obj,[method,arguments]);};
-// 				};
-// 			})(obj,m);
-// 		};
-// 	};
-// 	window.o_register || (window.o_register = {});
-// 	window.o_register[obj.id] = obj;
-// 	return(obj);
-// };
+var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
+	if(obj.intercepts) {
+		serialize = function(obj) {
+			return(JSON.stringify(obj));
+		};
+		journal = function() {
+			if(obj.journal && !!obj.journal.call) {
+				obj.journal(Array.prototype.slice.call(arguments));
+			} else {
+				// console.log("Journal: "+serialize(Array.prototype.slice.call(arguments)));
+			};
+		};
+		perform = function(name,args) {
+			if(!obj.replaying) {
+				args = Array.prototype.slice.call(args);
+				journal(obj.id,name,args);
+			};
+			return(methods[name].apply(obj,args));
+		};
+		var methods = [];
+		for(i=0;i<obj.intercepts.length;i++) {
+			methods[(m=obj.intercepts[i])] = obj[m];
+			(function(obj,method) {
+				if(method) {
+					obj[method] = function(){perform.apply(obj,[method,arguments]);};
+				};
+			})(obj,m);
+		};
+	};
+	window.o_register || (window.o_register = {});
+	window.o_register[obj.id] = obj;
+	return(obj);
+};
 
 // var Syncer = function(obj,sync,perform,methods) {
 // 	if(obj.sync_intercepts) {
