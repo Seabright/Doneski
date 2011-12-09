@@ -14,8 +14,8 @@ content,header,section,tagline,tasks,task{display:block;}
 content{min-height:45em;margin:0 auto;padding:0;max-width:960px;background-color:transparent;-webkit-box-shadow:none;-webkit-border-radius:0;overflow:hidden;position:relative;}
 content,fudge{min-height:0;background:#ededed;}
 
-body.init header{display:none;}
-header{padding-left:34px;}
+header{padding-left:34px;display:none;}
+body.loaded header{display:block;}
 
 toolbar{background:#1a4c71;height:28px;z-index:100;position:absolute;top:0;width:100%;display:block;}
 toolbar buttons{float:right;max-width:30%;height:100%;overflow:hidden;padding:0 .5em;}
@@ -72,11 +72,12 @@ item.delete{background-image:url(/images/delete.png);background-position:10px ce
 .compact lists list > input,.compact lists list > name{margin:.7em 0 10px 30px;}
 .compact lists list > input:hover,.compact lists list > name:hover;{background:rgba(213,233,245,.5);}
 
-tasks{font-size:15pt;padding:0;}
+list{font-size:15pt;padding:0;}
 tasks.completed{padding-top:68px;background-position:28px 34px;opacity:0;}
 .compact tasks.completed{opacity:1;}
 task{position:relative;}
-task delete{display:none;width:px;height:px;position:absolute;top:50%;right:10px;margin-top:-px;}
+task delete{display:none;}
+tasks.completed task delete:first-of-type{display:block;width:27px;height:100%;min-height:100%;position:absolute;top:0;right:10px;}
 tasks.completed task.active, task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}
 tasks.completed task, task.active{padding:.7em .5em 0 34px;border-bottom:1px solid rgba(68,140,203,.3);-webkit-transform:scale3d(1,1,1);text-decoration:none;height:auto;}
 task.clicky{text-decoration:line-through;background-color:rgba(20,53,65,.7);color:#FFF;}

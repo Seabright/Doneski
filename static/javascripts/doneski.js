@@ -490,6 +490,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			if(!list.converted) return;
 			list.replaceChild(list.name_input, list.nm_e);
 			list.name_input.focus();
+			list.name_input.select();
 			list.converted = 0;
 			return;
 		},
@@ -682,36 +683,89 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	
 	var core = {
 		taskClick: function(event) {
-			if(!task.nocancel && !Doneski.swiping && !Doneski.scrolling) {
+			if(!task.nocancel && !Doneski.swiping && !Doneski.scrolling && !task.moving) {
 				task.className += " clicky";
-				if(task.completed) window.setTimeout(function(){task.uncomplete();},1000);
-				else window.setTimeout(function(){task.complete();},1000);
+				event.stopPropagation();
+				event.preventDefault();
+				if(task.completed) setTimeout(function(){task.uncomplete();},1000);
+				else setTimeout(function(){task.complete();},1000);
 				// if(task.completed) task.uncomplete();
 				// else task.complete();
 			};
 			task.nocancel = false;
+			return(false);
 		},
 		taskMove: function(event) {
 			task.nocancel = true;
 		},
 		save: function() {
-			task.killed ? localStorage.removeItem("tasks."+task.id) : (localStorage["tasks."+task.id] = [task.innerHTML,task.completed].join(Doneski.separator));
+			if(task.killed) {
+				localStorage.removeItem("tasks."+task.id);
+				task.list.removeTask(task.id);
+				task.parentNode.removeChild(task);
+			} else {
+				localStorage["tasks."+task.id] = [task.innerHTML.replace(/<\/?delete>/g,''),task.completed].join(Doneski.separator);
+			};
 			return(1);
 		},
+		clone: function(o) {
+			o = Doneski.tag("task",{});
+			o.className = task.className;
+			o.innerHTML = task.innerHTML;
+			return(o);
+		},
+		moveTo: function(container,curtop) {
+			if(task.moving) return(false);
+			task.moving = true;
+			curtop = task.offsetTop;
+			task.className = task.completed ? "moving" : "active moving";
+			task.srcclone = task.clone();
+			task.dstclone = task.clone();
+			task.parentNode.replaceChild(task.srcclone,task);
+			task.style.position = "absolute";
+			task.style.top = 0;
+			task.style.webkitTransform = "translate3d(0,"+curtop+"px,0)";
+			task.style.zIndex = "9999";
+			task.list.appendChild(task);
+			container.appendChild(task.dstclone);
+			task.dest = container;
+			task.style.webkitTransition = "-webkit-transform .3s ease-in";
+			task.style.webkitTransform = "translate3d(0,"+task.dstclone.offsetTop+"px,0)";
+			setTimeout(task.animDone,300);
+			return(true);
+		},
 		complete: function() {
-			task.className = "";
-			task.list.completed_container.insertBefore(task,task.list.completed_container.firstChild);
+			task.className += " moving";
 			task.completed = true;
+			task.moveTo(task.list.completed_container);
 			task.updated("complete");
 		},
+		animDone: function(ev) {
+			if(!task.dest) return;
+			dst = task.dest;
+			task.dest = undefined;
+			task.srcclone.style.display = "none";
+			task.dstclone.style.display = "none";
+			task.srcclone.parentNode.removeChild(task.srcclone);
+			task.dstclone.parentNode.removeChild(task.dstclone);
+			// task.dstclone = task.srcclone = undefined;
+			task.style.webkitTransition = "";
+			task.setAttribute("style","");
+			task.className = task.completed ? "" : "active";
+			dst.appendChild(task);
+			task.moving = false;
+		},
 		uncomplete: function() {
-			task.list.task_container.insertBefore(task,task.list.task_container.firstChild);
-			task.className = "active";
+			task.className += " moving";
 			task.completed = false;
+			task.moveTo(task.list.task_container);
 			task.updated("uncomplete");
 		},
-		kill: function() {
+		kill: function(ev) {
+			console.log("kill!");
 			(task.killed=1) && task.save() && task.updated("kill");
+			ev.stopPropagation();
+			ev.preventDefault();
 		},
 		updated: function(type,evObj) {
 			if(Doneski.loaded) task.save();
@@ -747,11 +801,12 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	task = new _Journaller(task);
 
 	task.setText(txt);
-	console.log("wtf?");
+	task.del = task.querySelector("delete");
 	if(!task.del) {
-		task.del = document.createElement("delete");
-		task.del.addEventListener("click",task.kill,1);
-		task.appendChild(task.del);
+		console.log("wtf?",task.id);
+		del = Doneski.tag("delete",{});
+		task.appendChild(del);
+		del.addEventListener("click",task.kill,true);
 	};
 	task.save();
 	
