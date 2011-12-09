@@ -24,11 +24,17 @@
 		<% if COMPRESS_ASSETS %>
 		<style>
 		<%= $doneskicss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/doneski.css')).minified%>
+		<%= $browsercss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/browser.css')).minified%>
+		<%= $mobilecss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/mobile.css')).minified%>
 		<%= $orangecss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/orange.css')).minified%>
+		<%= $orangemobilecss ||= Seabright::Stylesheet.new(IO.read('static/stylesheets/orange-mobile.css')).minified%>
 		</style>
 		<% else %>
 		<link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href="/stylesheets/browser.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href="/stylesheets/mobile.css" media="screen" rel="stylesheet" type="text/css" />
 		<link href="/stylesheets/orange.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href="/stylesheets/orange-mobile.css" media="screen" rel="stylesheet" type="text/css" />
 		<% end %>
 	</head>
 	<body class="init firstlist">
@@ -52,13 +58,14 @@
 	</body>
 	<% if COMPRESS_ASSETS %>
 	<script type="text/javascript">
+	<%= $journallerjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/journaller.js', 'r'))%>
+	<%#= $syncerjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/syncer.js', 'r'))%>
 	<%= $doneskijs ||= Closure::Compiler.new.compile(File.open('static/javascripts/doneski.js', 'r'))%>
 	<%= $touchyjs ||= Closure::Compiler.new.compile(File.open('static/javascripts/touchyfeely.js', 'r'))%>
 	</script>
-	<% elsif USE_MINIFIED %>
-	<script type="text/javascript" src="/javascripts/doneski-min.js"></script>
-	<script type="text/javascript" src="/javascripts/touchyfeely-min.js"></script>
 	<% else %>
+	<script type="text/javascript" src="/javascripts/journaller.js"></script>
+	<!--<script type="text/javascript" src="/javascripts/syncer.js"></script>-->
 	<script type="text/javascript" src="/javascripts/doneski.js"></script>
 	<script type="text/javascript" src="/javascripts/touchyfeely.js"></script>
 	<% end %>

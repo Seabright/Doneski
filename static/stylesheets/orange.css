@@ -40,9 +40,6 @@ tasks task:first-of-type{border:none;}
 tasks task:last-of-type{border:1px dashed #d4d4d4;border-width:1px 0 0;}
 
 header logo{margin-left:14px;height:30px;display:block;text-indent:-9999em;background:transparent url(/images/logo-wht.png) left top no-repeat;-webkit-background-size: 143px 27px;}
-@media screen and (-webkit-device-pixel-ratio: 2) {
-	header logo{background-image:url(/images/logo-wht-lg.png);}
-}
 header tagline{font-weight:500;font-size:14pt;letter-spacing:-0.04em;line-height:28px;text-align:left;display:block;margin-left:14px;}
 tasks.completed{border-top:1px solid #b04617;padding-top:.5em;opacity:0;margin-top:1.5em;min-height:5000px;}
 tasks.completed{
@@ -53,17 +50,8 @@ tasks.completed{
 	background-color:#ea5b1b;
 }
 tasks.completed:before{content:' ';background:url(/images/logo-org.png) 14px 14px no-repeat;-webkit-background-size: 143px 27px;width:157px;height:27px;display:block;overflow:hidden;padding:0 0 20px 0;}
-@media screen and (-webkit-device-pixel-ratio: 2) {
-	tasks.completed:before{
-		background-image:url(/images/logo-org-lg.png);
-	}
-	tasks.completed task delete:first-of-type{
-		background-image:url(/images/trash-lg.png);
-	}
-}
 .compact tasks.completed{opacity:1;}
 tasks.completed task delete:first-of-type{display:block;width:50px;height:100%;min-height:100%;position:absolute;top:0;right:10px;background:transparent url(/images/trash.png) right center no-repeat;-webkit-background-size: 18px 22px;}
-
 
 tasks.completed task.active, task{-webkit-transform:scale3d(1,0,0);height:0;padding:0 .5em;border:none;cursor:pointer;-webkit-tap-highlight-color: rgba(0,0,0,0);}
 tasks.completed task{text-decoration:line-through;color:rgba(255,255,255,.7);opacity:1;border:none;}
@@ -86,7 +74,7 @@ name span{margin-left:11px;}
 lists list > name span:after{content:'\25bc';margin-left:.5em;position:relative;top:-.3em;font-size:40%;font-family:sans-serif;}
 lists list > name:hover{cursor:pointer;}
 name{overflow:visible;position:relative;z-index:9999;-webkit-tap-highlight-color: rgba(0,0,0,0);}
-name menu{position:static;top:auto;left:auto;margin:0;padding:0;width:102%;background:transparent;border-radius:0;display:block;-webkit-transition:height .2s linear;}
+name menu{position:static;top:auto;left:auto;margin:0;padding:0;width:102%;background:transparent;border-radius:0;display:block;-webkit-transition:height .2s linear;overflow:hidden;}
 name menu span{color:#FFF;display:block;}
 name menu items{display:block;margin:.3em 0;}
 name menu item{display:block;background:transparent;padding:7px 11px .3em 35px;font-size:65%;font-weight:300;border:none;background-repeat:no-repeat;width:100%;}
@@ -94,10 +82,3 @@ name menu item:hover{background-color:rgba(255,255,255,.25);}
 /*item.rename,item.delete{background:transparent;}*/
 menu item:first-of-type,menu item:last-of-type{border-radius:0;}
 .compact lists list > input, lists list > name{margin-left:11px;margin-right:2%;display:block;background:transparent;outline:none;-webkit-appearance:none;}
-
-@media only screen and (max-device-width: 480px) {
-/* This block specifies CSS that only applies to an iPhone */
-	/*.compact lists list > input{margin-left:0;}*/
-	tasks.completed{min-height:250px;}
-	
-}

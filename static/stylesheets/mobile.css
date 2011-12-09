@@ -1,0 +1,11 @@
+@media only screen and (max-device-width: 480px) {
+/* This block specifies CSS that only applies to an iPhone */
+
+	body{padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;background:none;}
+	fudge{display:none;}
+	content{margin:0 auto;padding:0;-webkit-box-shadow: none;-webkit-border-radius:0;min-height:0;}
+	body lists list > name:after{top:-.2em;font-size:60%;}
+	name menu{border-radius:.15em;}
+	lists list, header{border:none;}
+	
+}

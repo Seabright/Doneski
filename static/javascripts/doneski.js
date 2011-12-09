@@ -1,15 +1,3 @@
-// var Class = function(core,mixins,init,cls,item,mixin) {
-// 	cls = this;
-// 	for(item in core) {
-// 		cls[item] = core[item];
-// 	};
-// 	for(mixin in mixins) {
-// 		cls = new mixins[mixin](cls);
-// 	};
-// 	if(cls[init] && cls[init].call) window.setTimeout(cls[init](),0);
-// 	return(cls);
-// };
-//
 var _Doneski = function() {
 	var doneski = this;
 	doneski.linger = 1000;
@@ -26,7 +14,6 @@ var _Doneski = function() {
 			doneski.tb = (t=gtn((tb="toolbar"))[0]);
 			doneski.fudge = gtn("content")[0];
 			if((ls='localStorage') in (w=window) && w[ls] !== null) {
-				// doneski.touch();
 				// doneski.currentJournal = parseInt((w[ls][(j="journal.")+"current"] || 1),10);
 				// doneski.lastSync = parseInt((w[ls][j+"lastsync"] || 0),10);
 				// if(!w[ls][j+"started"]) {
@@ -61,9 +48,6 @@ var _Doneski = function() {
 			};
 			
 			(st=w.setTimeout)(function(){doneski.gtn('body')[0].className += ' loaded';},200);
-			// st(function(){doneski.cachedTexture(tb,doneski.ns,{opacity:0.3,range:50},tb);},0);
-			// st(function(){doneski.cachedTexture("body "+l+"s "+l,doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
-			// st(function(){doneski.cachedTexture("body header",doneski.nb,{bg:{position:"20px top",repeat:"repeat-y"}},"nb");},0);
 			// w[ls][j+"started"] = 1;
 			doneski.dT();
 			doneski.loaded = true; //doneski.do_journal = doneski.do_sync = true;
@@ -79,55 +63,6 @@ var _Doneski = function() {
 		},
 		dT: function(d) {
 			try{(d=document).createEvent("TouchEvent") && (d.body.className += " touch");}catch(e){};
-		},
-		ns: function(options,opts,canvas,ctx) {
-			opts = {
-				opacity: 0.2,
-				range: 100
-			};
-			if(options) {for(var i in options) opts[i]=options[i];};
-			if(!!!(d=document)[(ce="createElement")]('canvas').getContext) { return false; }
-			ctx = (canvas = d[ce]("canvas")).getContext('2d');
-			canvas.width = opts.width || 960;
-			canvas.height = opts.height || 30;
-			for(var x=0;x<canvas.width;x++) {
-				for(var y=0;y<canvas.height;y++) {
-					var number = Math.floor(Math.random()*opts.range);
-					ctx.fillStyle = "rgba("+number+","+number+","+number+","+opts.opacity+")";
-					ctx.fillRect(x, y, 1, 1);
-				};
-			};
-			return("url("+canvas.toDataURL("image/png")+")");
-		},
-		nb: function(selector,strg,offset,d,canvas,ctx) {
-			if(!!!(d=document)[(ce="createElement")]('canvas').getContext) { return false; }
-			ctx = (canvas = d[ce]("canvas")).getContext('2d');
-			canvas.width = 4;
-			canvas.height = 1;
-			ctx.fillStyle = "rgba(236,0,140,.2)";
-			ctx.fillRect(0, 0, 1, 1);
-			ctx.fillRect(3, 0, 1, 1);
-			return("url("+canvas.toDataURL("image/png")+")");
-		},
-		cachedTexture: function(selector,func,options,id,opts,strg,i) {
-			id&&(w=window)[(ls="localStorage")][(id="tx."+id)]&&(strg = w[ls][id]);
-			opts = {
-				bg: {
-					repeat: "no-repeat",
-					position: "left top"
-				}
-			};
-			if(options) {for(i in options) opts[i]=options[i];};
-			if(!strg) {
-				strg = func(options);
-				w[ls][id] = strg;
-			};
-			(st=doneski.styles()).innerHTML += selector+"{"+(b="background-")+"image:"+strg+";";
-			for(i in (bg=opts.bg)) {
-				st.innerHTML += b+i+":"+bg[i]+";";
-			};
-			st.innerHTML += "}\n";
-			return(true);
 		},
 		styles: function(a) {
 			if(doneski.css) return(doneski.css);
@@ -171,7 +106,7 @@ var _Doneski = function() {
 			return(0-doneski.scT.clientHeight+window.innerHeight);
 		},
 		lL: function(id,cls,a,b) {
-			(a = new Doneski.List(id)).nav_item = (b = new Doneski.ListNav(a));
+			(a = new D.List(id)).nav_item = (b = new D.ListNav(a));
 			a.addEventListener("killed",doneski.lK,0);
 			doneski.addList(a.id);
 			cls && (a.className += cls);
@@ -296,21 +231,9 @@ var _Doneski = function() {
 			doneski.aCN(document.body,"compact");
 			window.scrollTo(0,0);
 		},
-		// add: function(event) {
-		// 	
-		// },
-		// touch: function() {
-		// 	doneski.hLS() && (localStorage["lastSeen"] = new Date());
-		// },
-		// lastSeen: function() {
-		// 	return(doneski.hLS() && localStorage["lastSeen"]);
-		// },
 		hLS: function() {
 			return('localStorage' in window && window['localStorage'] !== null);
 		},
-		// ping: function() {
-		// 	//console.log("Yeah yeah.", doneski);
-		// },
 		bkp: function(event) {
 			if(event.keyCode==39) {
 				doneski.goN();
@@ -318,7 +241,7 @@ var _Doneski = function() {
 				doneski.goP();
 			};
 		},
-		// intercepts: [], //["addList"],
+		intercepts: [], //["addList"],
 		// queue: [0,1,2,3,4,5,6,7,8,9],
 		// currentJournal: 0,
 		// newJournal: function() {
@@ -340,7 +263,7 @@ var _Doneski = function() {
 		// 	if(doneski.replaying) return(false);
 		// 	if(doneski.do_sync && !doneski.syncing && doneski.needsSync) {
 		// 		doneski.syncing=1;
-		// 		doneski.syncer||(doneski.syncer = new Doneski.Synchro(doneski));
+		// 		doneski.syncer||(doneski.syncer = new D.Synchro(doneski));
 		// 		if(doneski.syncer.online()) {
 		// 			s = [];
 		// 			(unsynced = (l=localStorage)[(j="journal.")+"unsynced"].split(","));
@@ -405,54 +328,8 @@ var _Doneski = function() {
 	// return(new Syncer(new _Journaller(doneski)));
 };
 
-// TODO: rework online detection to go only very infrequently except when accessed - ex: ping every few minutes, but ping if used after 60 seconds
-// _Doneski.prototype.Synchro = function(obj,opts,synchro,sync,perform) {
-// 	synchro = this;
-// 	var core = {
-// 		intervals: [30000,90000,360000],
-// 		retries: 4,
-// 		offs: 0,
-// 		speed: -1,
-// 		_init: function(o) {
-// 			// synchro.ping();
-// 			// synchro.setSpeed(0);
-// 		},
-// 		online: function() {
-// 			synchro.onLine = 0;
-// 			try {
-// 				var x=new XMLHttpRequest();
-// 				x.open('HEAD', '/ping', 0);
-// 				x.send();
-// 				synchro.onLine = 1;
-// 				synchro.offs = 0;
-// 				synchro.setSpeed(0);
-// 			} catch(e) {
-// 				synchro.onLine = 0;
-// 				synchro.offs++;
-// 				if(synchro.offs>synchro.retries) synchro.setSpeed(parseInt(synchro.offs/synchro.retries,10));
-// 			};
-// 			return(synchro.onLine);
-// 		},
-// 		setSpeed: function(speed) {
-// 			if(speed!=synchro.speed && synchro.intervals[speed]) {
-// 				if(synchro.timer) window.clearInterval(synchro.timer);
-// 				synchro.timer = window.setInterval(synchro.ping,synchro.intervals[speed]);
-// 				synchro.speed = speed;
-// 			};
-// 		},
-// 		ping: function() {
-// 			if(synchro.online()) {
-// 				
-// 			};
-// 		}
-// 	};
-// 	for(var i in core) synchro[i] = core[i];
-// 	synchro._init(opts);
-// 	return(synchro);
-// };
-// 
 _Doneski.prototype.List = function(id,title,tasks,itms) {
-	var tag = Doneski.tag;
+	var tag = D.tag;
 	var list = tag("list");
 	list.name_input = tag("input",{ "type":"text", "name":"title", "placeholder":"Name this list", "class":"delayed"});
 	list.appendChild(list.name_input);
@@ -511,12 +388,12 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			m=e.menu||(e.menu=list.newMenu());
 			if(!e.popped) {
 				e.style.webkitTransition = 'background-color 2s linear;';
-				Doneski.aCN(e,"popped");
+				D.aCN(e,"popped");
 				m.setAttribute("style",'height:0;');
 				setTimeout(function(){m.style.height = "70px";},0);
 				e.popped = true;
 			} else {
-				Doneski.rCN(e,"popped");
+				D.rCN(e,"popped");
 				m.setAttribute("style",'height:0;');
 				setTimeout(function(){m.style.display = "none";},300);
 				e.popped = false;
@@ -550,7 +427,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 		},
 		formHandler: function(event) {
 			event.preventDefault();
-			Doneski.rollup();
+			D.rollup();
 			list.push(list.task_input.value);
 			list.task_input.value = "";
 			return(false);
@@ -558,9 +435,9 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 		tasks: [],
 		push: function(obj) {
 			(!(l=localStorage["lists"]) || l.split(",").indexOf(list.id)==-1) && list.create(list.id);
-			var tid = Doneski.gTId();
+			var tid = D.gTId();
 			list.addTask(tid);
-			var tsk = new Doneski.Task(list,obj,tid);
+			var tsk = new D.Task(list,obj,tid);
 			list.tasks.push(tsk);
 			list.task_container.insertBefore(tsk,list.task_container.firstChild);
 			tsk.addEventListener("kill",list.deathWatch,true);
@@ -570,21 +447,21 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			(a=list.items.indexOf(id))==-1 && list.items.push(id) && list.updated("add");
 		},
 		updated: function(type,evObj) {
-			if(Doneski.loaded) list.save();
+			if(D.loaded) list.save();
 			list.task_input.setAttribute("placeholder",list.items.length?"Add another one":"Add your first to-do");
-			Doneski.sFH();
+			D.sFH();
 			(evObj = document["create"+(e="Event")]('UI'+e+'s'))["initUI"+e](type || "update", true, true, window, 1);
 			evObj.l_id = list.id;
 			list["dispatch"+e](evObj);
-			if(list.items.length>1) Doneski.aCN(document.body,"manyitems");
+			if(list.items.length>1) D.aCN(document.body,"manyitems");
 		},
 		loadTask: function(id) {
-			var tsk = new Doneski.Task(list,false,id);
+			var tsk = new D.Task(list,false,id);
 			if(tsk.completed) list.completed_container.insertBefore(tsk,list.completed_container.firstChild);
 			else list.task_container.insertBefore(tsk,list.task_container.firstChild);
 			list.items.push(tsk.id);
 			list.task_input.setAttribute("placeholder","Add another one");
-			if(list.items.length>1) Doneski.aCN(document.body,"manyitems");
+			if(list.items.length>1) D.aCN(document.body,"manyitems");
 		},
 		create: function(id) {
 			var cur = localStorage["lists"] ? localStorage["lists"].split(",") : [];
@@ -640,8 +517,8 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 	};
 	list.intercepts = []; //["addTask","removeTask","name"];
 	// list.sync_intercepts = list.intercepts;
-	list.journal = Doneski.journal;
-	list.sync = Doneski.sync;
+	list.journal = D.journal;
+	list.sync = D.sync;
 	
 	// list = new Syncer(list);
 	list = new _Journaller(list);
@@ -649,26 +526,21 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 };
 
 _Doneski.prototype.ListNav = function(list) {
-	var tag = Doneski.tag;
+	var tag = D.tag;
 	var nav = tag("list",{"class":"hidden"});
 	nav.list = list;
-	// var core = {
-	// };
-	// for(var i in core) {
-	// 	nav[i] = core[i];
-	// };
-	nav.addEventListener("click",function(){Doneski.go(nav.list);},true);
+	nav.addEventListener("click",function(){D.go(nav.list);},true);
 	return(nav);
 };
 
 _Doneski.prototype.Task = function(list,obj,id) {
 	
-	var task = Doneski.tag("task",{});
+	var task = D.tag("task",{});
 	task.list = list;
 
 	var txt, val;
 	if(id && localStorage["tasks."+id]) {
-		var s = localStorage["tasks."+id].split(Doneski.separator); txt = s[0]; val = s[1]=="true";
+		var s = localStorage["tasks."+id].split(D.separator); txt = s[0]; val = s[1]=="true";
 	} else {
 		if(typeof obj=="string") {
 			txt = obj;
@@ -679,11 +551,11 @@ _Doneski.prototype.Task = function(list,obj,id) {
 		};
 	};
 
-	task.id = id || Doneski.gTId();
+	task.id = id || D.gTId();
 	
 	var core = {
 		taskClick: function(event) {
-			if(!task.nocancel && !Doneski.swiping && !Doneski.scrolling && !task.moving) {
+			if(!task.nocancel && !D.swiping && !D.scrolling && !task.moving) {
 				task.className += " clicky";
 				event.stopPropagation();
 				event.preventDefault();
@@ -704,12 +576,12 @@ _Doneski.prototype.Task = function(list,obj,id) {
 				task.list.removeTask(task.id);
 				task.parentNode.removeChild(task);
 			} else {
-				localStorage["tasks."+task.id] = [task.innerHTML.replace(/<\/?delete>/g,''),task.completed].join(Doneski.separator);
+				localStorage["tasks."+task.id] = [task.text,task.completed].join(D.separator);
 			};
 			return(1);
 		},
 		clone: function(o) {
-			o = Doneski.tag("task",{});
+			o = D.tag("task",{});
 			o.className = task.className;
 			o.innerHTML = task.innerHTML;
 			return(o);
@@ -767,13 +639,14 @@ _Doneski.prototype.Task = function(list,obj,id) {
 			ev.preventDefault();
 		},
 		updated: function(type,evObj) {
-			if(Doneski.loaded) task.save();
-			Doneski.sFH();
+			if(D.loaded) task.save();
+			D.sFH();
 			(evObj = document.createEvent('UIEvents')).initUIEvent(type || "update", true, true, window, 1);
 			evObj.t_id = task.id;
 			task.dispatchEvent(evObj);
 		},
 		setText: function(txt) {
+			task.text = txt;
 			task.innerHTML = txt;
 		}
 	};
@@ -793,84 +666,29 @@ _Doneski.prototype.Task = function(list,obj,id) {
 	
 	task.intercepts = []; //["complete","uncomplete","kill","setText","create"];
 	task.sync_intercepts = task.intercepts;
-	task.journal = Doneski.journal;
-	task.sync = Doneski.sync;
+	task.journal = D.journal;
+	task.sync = D.sync;
 
 	// task = new Syncer(task);
 	task = new _Journaller(task);
 
 	task.setText(txt);
-	task.del = task.querySelector("delete");
 	if(!task.del) {
-		del = Doneski.tag("delete",{});
-		task.appendChild(del);
-		del.addEventListener("click",task.kill,true);
+		task.del = D.tag("delete",{});
+		task.appendChild(task.del);
+		task.del.addEventListener("click",task.kill,true);
+	};
+	if(!task.mv) {
+		task.mv = D.tag("mover",{});
+		task.appendChild(task.mv);
+		// task.mv.addEventListener("click",task.mv,true);
 	};
 	task.save();
 	
 	return(task);
 };
 
-var _Journaller = function(obj,intercept,perform,journal,serialize,i,g,j) {
-	if(obj.intercepts) {
-		serialize = function(obj) {
-			return(JSON.stringify(obj));
-		};
-		journal = function() {
-			if(obj.journal && !!obj.journal.call) {
-				obj.journal(Array.prototype.slice.call(arguments));
-			} else {
-				// console.log("Journal: "+serialize(Array.prototype.slice.call(arguments)));
-			};
-		};
-		perform = function(name,args) {
-			if(!obj.replaying) {
-				args = Array.prototype.slice.call(args);
-				journal(obj.id,name,args);
-			};
-			return(methods[name].apply(obj,args));
-		};
-		var methods = [];
-		for(i=0;i<obj.intercepts.length;i++) {
-			methods[(m=obj.intercepts[i])] = obj[m];
-			(function(obj,method) {
-				if(method) {
-					obj[method] = function(){perform.apply(obj,[method,arguments]);};
-				};
-			})(obj,m);
-		};
-	};
-	window.o_register || (window.o_register = {});
-	window.o_register[obj.id] = obj;
-	return(obj);
-};
+window.Doneski = window.D = new _Doneski();
 
-// var Syncer = function(obj,sync,perform,methods) {
-// 	if(obj.sync_intercepts) {
-// 		sync = function() {
-// 			if(obj.sync && !!obj.sync.call) {
-// 				obj.sync(Array.prototype.slice.call(arguments));
-// 			};
-// 		};
-// 		perform = function(name,args) {
-// 			sync(obj.id,name,(args = Array.prototype.slice.call(args)));
-// 			return(methods[name].apply(obj,args));
-// 		};
-// 		methods = [];
-// 		for(i=0;i<obj.sync_intercepts.length;i++) {
-// 			methods[(m=obj.sync_intercepts[i])] = obj[m];
-// 			(function(obj,method) {
-// 				if(method) {
-// 					obj[method] = function(){perform.apply(obj,[method,arguments]);};
-// 				};
-// 			})(obj,m);
-// 		};
-// 	};
-// 	return(obj);
-// };
-
-window.Doneski = new _Doneski();
-// window.applicationCache.addEventListener("cached",function(){console.log("cached");},true);
-// window.applicationCache.addEventListener("noupdate",function(){console.log("cache up to date");},true);
-window.applicationCache.addEventListener("updateready",function(){/*console.log("got updated stuff");*/window.applicationCache.swapCache();/*console.log("swapped");*/},true);
-window.setTimeout("Doneski._init();",0);
+window.applicationCache.addEventListener("updateready",function(){window.applicationCache.swapCache();},true);
+window.setTimeout("D._init();",0);

@@ -1,0 +1,12 @@
+@media only screen and (max-device-width: 480px) {
+	tasks.completed{min-height:250px;}
+}
+@media screen and (-webkit-device-pixel-ratio: 2) {
+	header logo{background-image:url(/images/logo-wht-lg.png);}
+	tasks.completed:before{
+		background-image:url(/images/logo-org-lg.png);
+	}
+	tasks.completed task delete:first-of-type{
+		background-image:url(/images/trash-lg.png);
+	}
+}
