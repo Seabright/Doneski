@@ -17,7 +17,7 @@ content,fudge{min-height:0;background:#ededed;}
 header{padding-left:34px;display:none;}
 body.loaded header{display:block;}
 
-toolbar{background:#1a4c71;height:28px;z-index:100;position:absolute;top:0;width:100%;display:block;}
+toolbar{background:#1a4c71;height:28px;z-index:100;position:fixed;top:0;width:100%;display:block;}
 toolbar buttons{float:right;max-width:30%;height:100%;overflow:hidden;padding:0 .5em;}
 toolbar buttons button{width:20px;height:20px;margin:3px;border:0px dashed rgba(255,255,255,.5);-webkit-border-radius:4px;background:transparent;}
 

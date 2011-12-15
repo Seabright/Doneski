@@ -359,7 +359,8 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			list.nm_e = document.createElement("name");
 			list.nm_e.innerHTML = "<span>" + list.nm + "</span>";
 			list.nm_e.addEventListener("click",list.name_click,0);
-			list.replaceChild(list.nm_e, list.name_input);
+			list.insertBefore(list.nm_e, list.name_input);
+			list.name_input.style.display = "none";
 			list.converted = 1;
 			return;
 		},
@@ -381,6 +382,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			if((i = cur.indexOf(list.id))>-1) cur.splice(i, 1);
 			localStorage["lists"] = cur;
 			list.parentNode.removeChild(list);
+			list.killed = 1;
 			list.updated("killed");
 		},
 		name_click: function(ev,e,m) {
@@ -403,7 +405,6 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 		},
 		newMenu: function(m,it,r,d) {
 			m = document.createElement("menu");
-			// m.innerHTML = list.nm_e.innerHTML;
 			m.appendChild((it=document.createElement("items")));
 			it.appendChild((r=document.createElement("item")));
 			r.addEventListener("click",list.rename,1);
@@ -447,7 +448,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			(a=list.items.indexOf(id))==-1 && list.items.push(id) && list.updated("add");
 		},
 		updated: function(type,evObj) {
-			if(D.loaded) list.save();
+			if(D.loaded && !list.killed) list.save();
 			list.task_input.setAttribute("placeholder",list.items.length?"Add another one":"Add your first to-do");
 			D.sFH();
 			(evObj = document["create"+(e="Event")]('UI'+e+'s'))["initUI"+e](type || "update", true, true, window, 1);
@@ -574,7 +575,8 @@ _Doneski.prototype.Task = function(list,obj,id) {
 			if(task.killed) {
 				localStorage.removeItem("tasks."+task.id);
 				task.list.removeTask(task.id);
-				task.parentNode.removeChild(task);
+				task.parentNode && task.parentNode.removeChild(task);
+				localStorage.removeItem("tasks."+task.id);
 			} else {
 				localStorage["tasks."+task.id] = [task.text,task.completed].join(D.separator);
 			};
