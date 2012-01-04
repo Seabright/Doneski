@@ -5,7 +5,7 @@ Seabright.debug! if DEBUG
 module Doneski
   PAGES = [:signin, :list, :clean, :about]
   def self.load_resources!
-    $favicon = Seabright::Image.from_file("static/images/doneski.png")
+    $favicon = Seabright::Image.from_file("static/images/favicon.png")
     $top = Seabright::Bundle.new(:top,:inline) do
       css 'static/stylesheets/doneski.css'
       css 'static/stylesheets/browser.css'
