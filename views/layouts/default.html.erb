@@ -19,8 +19,8 @@
 		<link rel="apple-touch-icon" href="/images/icon-dark.png" />
 		<link rel="apple-touch-startup-image" href="/images/splash.png" />
 		
-		<link rel="icon" href="data:image/png;base64,<%= $favicon %>" type="image/png" />
-		<link rel="shortcut icon" href="data:image/png;base64,<%= $favicon%>" type="image/png" />
+		<link rel="icon" href="<%= $favicon %>" type="image/png" />
+		<link rel="shortcut icon" href="<%= $favicon%>" type="image/png" />
 		<% if COMPRESS_ASSETS %>
 		<%= Seabright::Bundle[:top] %>
 		<% else %>
