@@ -4,7 +4,7 @@ module Doneski
       :format => "html",
       :page => "list",
       :layout_name => "default",
-      :title => "Signin"
+      :title => "Doneski"
     }
     require 'erb'
     class << self
@@ -29,6 +29,7 @@ module Doneski
         out
       end
       def template
+        puts "Rendering: views/#{page}.#{format}.erb"
         File.read("views/#{page}.#{format}.erb") rescue ""
       end
     end

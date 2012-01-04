@@ -1,0 +1,12 @@
+#!/usr/bin/ruby
+require 'irb'
+require 'irb/completion'
+require 'wirble'
+$: << File.expand_path(File.dirname(__FILE__))
+$: << File.expand_path(File.dirname(__FILE__) + "/lib")
+DEBUG = File.exists?(File.dirname(__FILE__) + "/.debug")
+puts "\e[31m" << "*******  We're in DEBUG mode, gentlemen. *******" << "\e[0m" if DEBUG
+require 'doneski'
+Wirble.init
+Wirble.colorize
+IRB.start

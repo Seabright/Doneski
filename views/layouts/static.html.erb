@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<% if DEBUG %>
 <html lang="en">
-<% else %>
-<html lang="en" manifest="cache.manifest">
-<% end %>
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-		<title>Doneski</title>
+		<title>Doneski: <%= title %></title>
 		<meta name="keywords" content="todo list, productivity, doneski"/>
 		<meta name="description" content="Doneski is an app for to-do lists, simple as that. It's dirt simple, easy to use, and works seriously everywhere." />
 		<meta name="author" content="Seabright Studios Ltd."/>
@@ -21,41 +17,24 @@
 		
 		<link rel="icon" href="data:image/png;base64,<%= $favicon %>" type="image/png" />
 		<link rel="shortcut icon" href="data:image/png;base64,<%= $favicon%>" type="image/png" />
-		<% if COMPRESS_ASSETS %>
-		<%= Seabright::Bundle[:top] %>
-		<% else %>
 		<link href="/stylesheets/doneski.css" media="screen" rel="stylesheet" type="text/css" />
 		<link href="/stylesheets/browser.css" media="screen" rel="stylesheet" type="text/css" />
 		<link href="/stylesheets/mobile.css" media="screen" rel="stylesheet" type="text/css" />
 		<link href="/stylesheets/orange.css" media="screen" rel="stylesheet" type="text/css" />
 		<link href="/stylesheets/orange-mobile.css" media="screen" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="/javascripts/journaller.js"></script>
-		<!--<script type="text/javascript" src="/javascripts/syncer.js"></script>-->
-		<script type="text/javascript" src="/javascripts/doneski.js"></script>
-		<script type="text/javascript" src="/javascripts/touchyfeely.js"></script>
-		<% end %>
+		<link href="/stylesheets/static.css" media="screen" rel="stylesheet" type="text/css" />
 	</head>
-	<body class="init firstlist">
+	<body class="loaded">
 		<content>
-			<header class="initial">
-				<logo>Doneski</logo>
-				<tagline>The dirt simplest to-do app that works everywhere.</tagline>
+			<header>
+				<logo>Doneski</logo><nav>&nbsp;/&nbsp;<%= title %></nav>
 			</header>
 			<section>
-				<lists></lists>
+				<%= yield %>
 			</section>
-			<toolbar class="">
-				<listnav class="delayed tight0"></listnav>
-				<buttons>
-					<button class="config"></button>
-				</buttons>
-			</toolbar>
-			<tutorial class="newlist delayed"></tutorial>
-			<a href="/about" class="initial about">What's Doneski?</a>
 		</content>
-		<%= yield %>
+		<script language="javascript">
+		window.scrollTo(0,0);
+		</script>
 	</body>
-	<script language="javascript">
-	if(!('localStorage' in window && window['localStorage'] !== null && localStorage["doneski.lists"])) document.body.className = document.body.className.replace("init","");
-	</script>
 </html>

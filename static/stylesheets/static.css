@@ -1,0 +1,7 @@
+section{padding:2em 1em;font-size:120%;line-height:1.5em;}
+h2{font-weight:600;}
+a.bar{display:block;border:1px dashed #ccc;border-width:1px 0;background:#fafafa;padding:.35em .5em;font-size:120%;font-weight:500;}
+p{padding-bottom:1em;max-width:420px;}
+header nav, header logo{display:inline-block;}
+header logo{width:150px;}
+header nav{font-size:150%;font-weight:600;line-height:23px;vertical-align:bottom;}

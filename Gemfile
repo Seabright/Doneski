@@ -6,9 +6,8 @@
 # 
 # gem 'yajl-ruby'
 
+gem "seabright", :git => "git@github.com:Seabright/SeabrightGem.git"
+
+gem 'wirble'
 gem 'unicorn'
-
 gem 'rack-mount'
-
-gem 'closure-compiler'
-

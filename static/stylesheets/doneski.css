@@ -13,9 +13,11 @@ fudge{z-index:-1;height:100%;width:100%;position:absolute;top:0;left:0;}
 content,header,section,tagline,tasks,task{display:block;}
 content{min-height:45em;margin:0 auto;padding:0;max-width:960px;background-color:transparent;-webkit-box-shadow:none;-webkit-border-radius:0;overflow:hidden;position:relative;}
 content,fudge{min-height:0;background:#ededed;}
+a,a:visited{color:#dd713d;}
 
 header{padding-left:34px;display:none;}
 body.loaded header{display:block;}
+a.about{font-weight:600;display:inline-block;position:absolute;right:10px;top:10px;z-index:999;}
 
 toolbar{background:#1a4c71;height:28px;z-index:100;position:fixed;top:0;width:960px;display:block;}
 toolbar buttons{float:right;max-width:30%;height:100%;overflow:hidden;padding:0 .5em;}
@@ -42,9 +44,9 @@ header{position:relative;padding:3em 0 .5em;}
 .delayed{height:0px;opacity:0;overflow:hidden;display:none;}
 .compact .delayed{opacity:1;height:auto;display:block;}
 header logo{margin-left:-4px;height:30px;display:block;text-indent:-9999em;}
-header logo,tasks.completed{background:transparent url(/images/logo-sm.png) left top no-repeat;}
+header logo,tasks.completed{background:transparent;}
 header tagline{font-weight:500;font-size:14pt;letter-spacing:-0.04em;line-height:28px;text-align:left;display:block;}
-a{color:#3892b2;text-decoration:none;}
+a{color:#dd713d;text-decoration:none;}
 h1{font-weight:300;font-size:33pt;letter-spacing:-0.04em;line-height:1em;margin-bottom:.8em;}
 strong{font-weight:600;}
 section{text-align:left;z-index:99;}
@@ -67,7 +69,7 @@ name menu item:hover{background-color:rgba(255,255,255,.95);}
 menu item:first-of-type{border-top-left-radius:.4em;border-top-right-radius:.4em;}
 menu item:last-of-type{border-bottom-left-radius:.4em;border-bottom-right-radius:.4em;border:none;}
 item.rename{background-image:url(/images/rename.png);background-position:8px center;}
-item.delete{background-image:url(/images/delete.png);background-position:10px center;}
+item.delete{background-image:url(/images/trash.png);background-position:10px center;}
 .compact lists list > input, lists list > name{margin-left:30px;margin-right:2%;display:block;background:transparent;outline:none;-webkit-appearance:none;width:95%;}
 .compact lists list > input,.compact lists list > name{margin:.7em 0 10px 30px;}
 .compact lists list > input:hover,.compact lists list > name:hover;{background:rgba(213,233,245,.5);}
