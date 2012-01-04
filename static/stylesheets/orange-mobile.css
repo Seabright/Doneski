@@ -1,5 +1,7 @@
 @media only screen and (max-device-width: 480px) {
 	tasks.completed{min-height:250px;}
+	swath{background:#EA5B1B;position:fixed;bottom:0;height:100px;width:100%;z-index:0;display:block;top:90%;}
+	lists list{border-bottom:60px solid #EA5B1B;}
 }
 @media screen and (-webkit-device-pixel-ratio: 2) {
 	header logo{background-image:url(/images/logo-wht-lg.png);}

@@ -62,7 +62,9 @@ var _Doneski = function() {
 			return(document.getElementsByTagName(a));
 		},
 		dT: function(d) {
-			try{(d=document).createEvent("TouchEvent") && (d.body.className += " touch");}catch(e){};
+			// try{('ontouchstart' in window) && (d.body.className += " touch");}catch(e){};
+			if('ontouchstart' in window) doneski.aCN(document.body,"touch");
+			// if('ontouchstart' in window || "ontouchend" in document) {console.log("touch!"); doneski.aCN(d.body,"touch");};
 		},
 		styles: function(a) {
 			if(doneski.css) return(doneski.css);
@@ -175,11 +177,12 @@ var _Doneski = function() {
 			localStorage["last_list"] = lst.id;
 			//lst.activate();
 		},
-		sFH: function() {
+		sFH: function(fudge) {
+			fudge = navigator.userAgent.match(/(iPod|iPhone)/) ? 60 : 0; // I HATE THIS
 			if((s=doneski.styles())&&s.innerHTML.indexOf("/*fudge heights*/")==-1) {
-				doneski.styles().innerHTML += "\n/*fudge heights*/content,lists list{min-height:"+(window.innerHeight + 60)+"px;}";
+				doneski.styles().innerHTML += "\n/*fudge heights*/content,lists list{min-height:"+(window.innerHeight + fudge)+"px;}";
 			} else {
-				doneski.styles().innerHTML.replace("\n\/\*fudge heights\*\/content,lists list\{[^\}]+\}","\n/*fudge heights*/content,lists list{min-height:"+(window.innerHeight + 60)+"px;}");
+				doneski.styles().innerHTML.replace("\n\/\*fudge heights\*\/content,lists list\{[^\}]+\}","\n/*fudge heights*/content,lists list{min-height:"+(window.innerHeight + fudge)+"px;}");
 			};
 		},
 		goN: function() {

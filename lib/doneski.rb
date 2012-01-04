@@ -32,4 +32,4 @@ require 'doneski/router'
 USE_MINIFIED = !DEBUG
 COMPRESS_ASSETS = !DEBUG
 
-Doneski.load_resources! if COMPRESS_ASSETS
+Doneski.load_resources!# if COMPRESS_ASSETS

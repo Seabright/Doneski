@@ -10,6 +10,7 @@ body{font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-s
 body,fudge{background-color:#ccc;padding:0;}
 body{margin:0;font-family:Helvetica,Arial,sans-serif;}
 fudge{z-index:-1;height:100%;width:100%;position:absolute;top:0;left:0;}
+swath{display:none;}
 content,header,section,tagline,tasks,task{display:block;}
 content{min-height:45em;margin:0 auto;padding:0;max-width:960px;background-color:transparent;-webkit-box-shadow:none;-webkit-border-radius:0;overflow:hidden;position:relative;}
 content,fudge{min-height:0;background:#ededed;}
@@ -98,6 +99,6 @@ body.loaded lists list{-webkit-transition:-webkit-transform .2s, opacity .4s;-we
 section form, list > input, form.tasklist input, button, toolbar, list, menu{box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;}
 
 body tutorial{display:none;}
-body.touch tutorial.newlist{position:absolute;width:250px;height:90px;bottom:5%;left:50%;margin-left:-125px;padding:0;border-radius:1em;border:2px dashed rgba(0,0,0,.5);background:rgba(255,255,255,.5) url(/images/tut_newlist.png) center center no-repeat;opacity:1;}
+body.touch tutorial.newlist{position:fixed;width:250px;height:90px;bottom:5%;left:50%;margin-left:-125px;padding:0;border-radius:1em;border:2px dashed rgba(0,0,0,.5);background:rgba(255,255,255,.5) url(/images/tut_newlist.png) center center no-repeat;opacity:1;}
 body.loaded.compact.touch tutorial.newlist{display:block;-webkit-transition:bottom .5s ease-in,opacity .3s linear;}
 body.manylists tutorial.newlist, body.manyitems tutorial.newlist{bottom:-50%;opacity:0;}

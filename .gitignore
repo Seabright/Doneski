@@ -9,3 +9,4 @@ vendor/cache/*
 *.psd
 *.tmproj
 .DS_Store
+config/

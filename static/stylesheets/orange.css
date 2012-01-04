@@ -23,9 +23,9 @@ listnav.tight3 list{-webkit-transform:scale3d(.6,.6,1);margin-right:.3em;}
 listnav list.hidden{opacity:0;}
 body.loaded listnav list, body.loaded listnav{-webkit-transition:background .5s;-webkit-transition-timing-function: linear;}
 
-lists{position:relative;left:0;width:100%;display:block;text-align:left;z-index:0;}
+lists{position:relative;left:0;width:100%;display:block;text-align:left;z-index:0;background-color:#EA5B1B;}
 .compact lists{top:34px;}
-lists list{position:absolute;top:0;display:inline-block;width:100%;padding-bottom:0;-webkit-transform:translate3d(-120%,0px,0px);opacity:0;overflow:hidden;}
+lists list{position:absolute;top:0;display:inline-block;width:100%;padding-bottom:0;-webkit-transform:translate3d(-120%,0px,0px);opacity:0;overflow:hidden;background-color:#FFF;}
 lists list.after{-webkit-transform:translate3d(120%,0px,0px);}
 lists list.active{-webkit-transform:translate3d(0px,0px,0px);opacity:1;}
 
@@ -59,7 +59,7 @@ task.clicky{text-decoration:line-through;background-color:rgba(232,100,41,.7);co
 tasks.completed task.clicky{text-decoration:none;background-color:rgba(255,255,255,.7);color:#000;}
 
 body tutorial{display:none;}
-body.touch tutorial.newlist{background-color:rgba(255,255,255,.2);}
+body.touch tutorial.newlist{background-color:rgba(255,255,255,.5);border-color:#FFF;}
 
 body.loaded lists list{-webkit-transition:-webkit-transform .2s, opacity .4s;-webkit-transition-timing-function: cubic-bezier(0, 0.35, .5, 1);}
 section form, list > input, form.tasklist input, button, toolbar, list, menu{box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;}
