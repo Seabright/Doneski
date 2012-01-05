@@ -7,8 +7,9 @@ red lines: #ec008c 20% rgba(236,0,140,.2)
 background: gradient #ebebeb mostly - top right subtle gradient from #f7f7f7
 
 */
-/*header{padding-left:0;}*/
+header{padding-left:0;padding: 3em 0 .5em;}
 content,fudge{background:#FFF;}
+fudge{background:#EA5B1B;position:fixed;bottom:0;height:100px;width:100%;z-index:0;display:block;top:90%;}
 
 toolbar{background:rgba(255,255,255,.8);height:38px;}
 toolbar listnav, toolbar listnav.delayed, .compact toolbar listnav.delayed{padding:1.1em 1em 1em;height:16px;overflow:hidden;display:inline-block;}
@@ -25,7 +26,7 @@ body.loaded listnav list, body.loaded listnav{-webkit-transition:background .5s;
 
 lists{position:relative;left:0;width:100%;display:block;text-align:left;z-index:0;background-color:#EA5B1B;}
 .compact lists{top:34px;}
-lists list{position:absolute;top:0;display:inline-block;width:100%;padding-bottom:0;-webkit-transform:translate3d(-120%,0px,0px);opacity:0;overflow:hidden;}
+lists list{position:absolute;top:0;display:inline-block;width:100%;padding-bottom:0;-webkit-transform:translate3d(-120%,0px,0px);opacity:0;overflow:hidden;background-color:#FFF;}
 lists list.after{-webkit-transform:translate3d(120%,0px,0px);}
 lists list.active{-webkit-transform:translate3d(0px,0px,0px);opacity:1;}
 
@@ -64,7 +65,7 @@ body.touch tutorial.newlist{background-color:rgba(255,255,255,.5);border-color:#
 body.loaded lists list{-webkit-transition:-webkit-transform .2s, opacity .4s;-webkit-transition-timing-function: cubic-bezier(0, 0.35, .5, 1);}
 section form, list > input, form.tasklist input, button, toolbar, list, menu{box-sizing: border-box;-webkit-box-sizing:border-box;-moz-box-sizing: border-box;}
 
-.compact lists list > input{width:95%;}
+.compact lists list > input, lists list > name{margin-left:10px;margin-right:2%;display:block;background:transparent;outline:none;-webkit-appearance:none;width:95%;}
 .compact lists list > input,.compact lists list > name{margin:.2em 0;padding:.2em 0;}
 .compact lists list > input{margin-left:0;}
 lists list > input, lists list > name{border:none;-webkit-border-radius:0;padding:.05em .1em;display:block;width:100%;font-size:18pt;font-weight:600;display:block;margin-top:.4em;}
@@ -79,5 +80,6 @@ name menu span{color:#FFF;display:block;}
 name menu items{display:block;margin:.3em 0;}
 name menu item{display:block;background:transparent;padding:7px 11px .3em 35px;font-size:65%;font-weight:300;border:none;background-repeat:no-repeat;width:100%;}
 name menu item:hover{background-color:rgba(255,255,255,.25);}
+/*item.rename,item.delete{background:transparent;}*/
 menu item:first-of-type,menu item:last-of-type{border-radius:0;}
 .compact lists list > input, lists list > name{margin-left:11px;margin-right:2%;display:block;background:transparent;outline:none;-webkit-appearance:none;}
