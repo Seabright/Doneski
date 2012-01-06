@@ -22,6 +22,7 @@ toolbar{z-index:100;position:fixed;top:0;width:960px;display:block;}
 toolbar buttons{float:right;max-width:30%;height:100%;overflow:hidden;padding:0 .5em;}
 toolbar buttons button{width:20px;height:20px;margin:3px;border:0px dashed rgba(255,255,255,.5);-webkit-border-radius:4px;background:transparent;}
 
+input{-webkit-appearance:none;}
 toolbar listnav{float:left;max-width:100%;}
 listnav{display:inline-block;padding:.3em;}
 listnav list.active{background:rgba(0,0,0,.8);}
