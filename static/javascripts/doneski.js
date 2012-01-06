@@ -370,7 +370,7 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 		rename: function(nm) {
 			if(!list.converted) return;
 			list.replaceChild(list.name_input, list.nm_e);
-			list.name_input.style.display = "none";
+			list.name_input.style.display = "block";
 			list.name_input.focus();
 			list.name_input.select();
 			list.converted = 0;
