@@ -490,12 +490,18 @@ _Doneski.prototype.List = function(id,title,tasks,itms) {
 			list.className = "active";
 			list.nav_item.className = "active";
 			if(list.old_style) list.setAttribute("style",list.old_style);
+			list.task_input.style.display = "inline-block";
+			list.task_input.disabled = false;
+			list.name_input.disabled = false;
 		},
 		deactivate: function(cls) {
 			list.className = cls || "";
 			list.nav_item.className = "";
 			list.old_style = list.getAttribute("style");
 			list.removeAttribute("style");
+			list.task_input.style.display = "none";
+			list.task_input.disabled = true;
+			list.name_input.disabled = true;
 		}
 	};
 	for(var i in core) {
